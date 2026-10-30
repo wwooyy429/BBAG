@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from bbag.contracts import ExperimentRecord, ResearchProtocol, ReviewReceipt, canonical_protocol_bytes
+from bbag.evidence_paths import validate_evidence_tree, validate_package_paths
 from bbag.jsonio import read_json_object
 from bbag.junit import validate_junit
 
@@ -37,6 +38,7 @@ def read_object(path: Path) -> dict[str, Any]:
 
 
 def validate_evidence(evidence: Path, commit: str) -> tuple[dict, dict, dict[str, int]]:
+    validate_evidence_tree(evidence)
     verification = read_object(evidence / "verification.json")
     if verification.get("implementation_commit") != commit or verification.get("working_tree_dirty") is not False:
         raise ValueError("Verification evidence is not from this clean implementation commit")
@@ -136,9 +138,11 @@ def main() -> int:
     if git(root, "status", "--porcelain"):
         raise ValueError("Committed source must be clean before packaging")
     evidence = args.evidence_dir.resolve()
-    verification, receipt, counts = validate_evidence(evidence, commit)
     output_base = args.output_dir.resolve()
     output = output_base / commit
+    destination = output_base / f"BBAG_S0_GPT_Work_{commit[:12]}.zip"
+    validate_package_paths(evidence, output, destination)
+    verification, receipt, counts = validate_evidence(evidence, commit)
     output.mkdir(parents=True, exist_ok=False)
     source_zip = output / "source.zip"
     subprocess.run(["git", "archive", "--format=zip", f"--output={source_zip}", commit], cwd=root, check=True)
@@ -150,7 +154,7 @@ def main() -> int:
         f"| {item['name']} | {item['exit_code']} | {item['expected_exit_code']} | {'PASS' if item['passed'] else 'FAIL'} |"
         for item in verification["checks"]
     )
-    remediation = root / "docs/S0_REMEDIATION.md"
+    remediation = root / "docs/S0_SUPPLEMENT_CHECK.md"
     remediation_details = remediation.read_text(encoding="utf-8") if remediation.is_file() else ""
     remediation_report = evidence / "remediation/S0_FIX_REPORT.md"
     remediation_results = remediation_report.read_text(encoding="utf-8") if remediation_report.is_file() else "补充复验报告未提供，不能宣称已执行额外检查。"
@@ -162,12 +166,13 @@ def main() -> int:
 
 ## 本轮 S0 修复
 
-基线：`b2d502048dfed1f8765514a018bc91560d87ec22`。任务范围、三项缺陷及契约兼容策略见下方修复记录；原审核 CHANGES_REQUIRED 仅覆盖基线，新实现独立审核保持 PENDING。
+本轮基线：`2eccc6418674314c2463a34783b8dd9fa1ad2971`。按负责人补充材料核查 S0，修复四项状态与交付边界遗漏。此前 `b2d502048dfed1f8765514a018bc91560d87ec22` 的 CHANGES_REQUIRED 及原始失败记录继续保留；两版旧材料均不构成本实现的独立验收。
 
-- S0-001：回执和全部打包 JSON 共享严格读取器。
-- S0-002：JUnit 明细与各层摘要逐项核对，拒绝失败、空测试和无成功执行证据。
-- S0-003：打包前完整校验协议、实验及待审回执，再核对规范字节、哈希和准确版本。
-- 澄清 DRAFT 研究参数及正式资源门槛的确认责任，不填造研究批准值。
+- S0-SUP-001：S0 结构批准要求平台 NOT_APPLICABLE，拒绝矛盾的批准状态。
+- S0-SUP-002：打包前拒绝证据子链接、junction、根外路径及特殊文件，普通云占位符不因 reparse 标记被误拒。
+- S0-SUP-003：在创建输出前拒绝证据与实际交付路径重叠，防止复制回输入。
+- S0-SUP-004：前置检查已有 SHA 目录和 ZIP，ZIP 使用排他创建，避免覆盖或在已知冲突后留下就绪形态的部分交付。
+- 前轮严格 JSON、JUnit 明细、完整契约与规范字节/哈希/SHA 校验保留；DRAFT 参数继续待负责人确认。
 
 ## 保留的 S0 基础能力
 
@@ -227,6 +232,7 @@ S1 因子算子、时序运行审计及因子有效性评估尚未实现。没�
 7. 检查分支和报告治理：main 只含初始化标记，当前实现等待此 SHA 的独立审核。
 8. 对照 evidence/prior_audit 的 S0-001—S0-003 原反例逐项独立复测；检查完整 JSON 入口、嵌套 JUnit 明细及协议/实验/回执契约，失败不得生成包。自行增加反例，不以开发者原测试复跑代替独立判断。
 9. 核对 evidence/remediation（如有）的原件哈希、适配差异、原始失败与新结果，以及新源码与 PR 的准确 SHA；旧版工程 FAIL 不自动覆盖修复效果，新版也不得自填 ACCEPTED。
+10. 对照 docs/S0_SUPPLEMENT_CHECK.md 复测 S0 回执平台状态、证据 symlink/junction 与越界、输入输出重叠、已有 ZIP 冲突；所有拒绝均须发生在新交付目录和源码 archive 创建前。普通目录、合法兄弟路径及云占位符正例须保留。
 
 ## 结论要求
 
@@ -275,10 +281,7 @@ py -3.13 -m venv .venv
         "validation_scope": "S0 developer tests and package integrity; no independent acceptance or platform tests",
     }
     write_json(output / "manifest.json", manifest)
-    destination = output_base / f"BBAG_S0_GPT_Work_{commit[:12]}.zip"
-    if destination.exists():
-        raise ValueError("Audit archive already exists")
-    with zipfile.ZipFile(destination, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+    with zipfile.ZipFile(destination, "x", compression=zipfile.ZIP_DEFLATED) as archive:
         for path in sorted(output.rglob("*")):
             if path.is_file():
                 archive.write(path, path.relative_to(output).as_posix())

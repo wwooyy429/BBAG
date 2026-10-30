@@ -307,12 +307,13 @@ class ReviewReceipt(StrictContract):
         _unique(self.evidence, "evidence")
         if self.decision == "APPROVED" and (
             self.engineering_status != "PASS"
+            or self.platform_status != "NOT_APPLICABLE"
             or self.blocking_findings != 0
             or not self.evidence
             or self.reviewed_at is None
         ):
             raise ValueError(
-                "APPROVED requires engineering PASS, zero blocking findings, "
+                "S0 APPROVED requires engineering PASS, platform NOT_APPLICABLE, zero blocking findings, "
                 "non-empty evidence and an aware reviewed_at"
             )
         return self

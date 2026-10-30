@@ -32,6 +32,8 @@ S0 的模型调用、平台任务、优化任务和支出预算强制为零。�
 
 赋值校验不能拦截列表、字典的每次原地修改；使用前应重新校验。规范序列化入口会执行该复验。工件路径规范为 `/`，禁止绝对路径、盘符、上级目录、空或点组件及 Windows 歧义名称；这只是路径语法校验，文件存在性、内容哈希和链接解析由交付工具核验。
 
-ReviewReceipt 的 APPROVED 需要工程 PASS、零阻断项、非空证据和带时区审核时刻。回执默认 PENDING，S0 经济状态固定 NOT_APPLICABLE；任何人构造合法回执都不能由此证明身份或产生真实批准。
+ReviewReceipt 的 S0 APPROVED 需要工程 PASS、平台 NOT_APPLICABLE、零阻断项、非空证据和带时区审核时刻。平台 PASS、FAIL 或 NOT_RUN 均不构成 S0 的有效批准状态。PENDING 和 CHANGES_REQUIRED 仍可读取上述原有平台枚举，始终不能通过批准检查。
+
+此次修正只收紧 APPROVED 的跨字段语义校验，Schema 版本仍为 1.0，字段、枚举和默认值不变；原先被错误接受的矛盾批准现在被拒绝。回执默认 PENDING，S0 经济状态固定 NOT_APPLICABLE；普通合法 NOT_APPLICABLE 批准仍只产生 advisory 一致性结果，不能认证审核者身份、授权合并或进入下一阶段。
 
 `configs/s0.example.json` 只演示合成配置。2015–2020 开发区和 2021–2022 最终区是日期校验样例，不取数；公式、费用、门槛、敞口和窗口均为 DRAFT，未决研究参数明确保存在 pending_decisions。本阶段不得据样例执行公式、平台任务、付费优化或真实交易。

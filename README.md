@@ -26,6 +26,7 @@ Linux 或 macOS 可用 `python3 -m venv .venv` 建立环境，并将后续解释
 ## 开发文档
 
 - [阶段 0 任务与验收](docs/STAGE0.md)
+- [S0 补充材料核对与修补](docs/S0_SUPPLEMENT_CHECK.md)
 - [研究协议与待确定参数](docs/RESEARCH_PROTOCOL.md)
 - [Git 与独立审核流程](docs/GIT_WORKFLOW.md)
 - [标准接口说明](contracts/README.md)
