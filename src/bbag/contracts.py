@@ -20,6 +20,8 @@ from pydantic import (
     model_validator,
 )
 
+from .jsonio import read_json_object
+
 
 Text = Annotated[str, StringConstraints(strict=True, strip_whitespace=True, min_length=1)]
 Sha256 = Annotated[
@@ -336,27 +338,9 @@ CONTRACT_MODELS: dict[str, type[StrictContract]] = {
 }
 
 
-def _unique_json_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
-    result: dict[str, Any] = {}
-    for key, value in pairs:
-        if key in result:
-            raise ValueError(f"duplicate JSON key: {key}")
-        result[key] = value
-    return result
-
-
-def _reject_json_constant(value: str) -> Any:
-    raise ValueError(f"non-finite JSON constant is not allowed: {value}")
-
-
 def load_protocol(path: str | Path) -> ResearchProtocol:
     """Read a UTF-8 JSON draft protocol, rejecting duplicate keys and NaN/Infinity."""
-    payload = json.loads(
-        Path(path).read_text(encoding="utf-8"),
-        object_pairs_hook=_unique_json_object,
-        parse_constant=_reject_json_constant,
-    )
-    return ResearchProtocol.model_validate(payload)
+    return ResearchProtocol.model_validate(read_json_object(path))
 
 
 def canonical_protocol_bytes(protocol: ResearchProtocol) -> bytes:

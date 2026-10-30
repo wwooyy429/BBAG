@@ -8,10 +8,14 @@ import json
 import shutil
 import subprocess
 import sys
-import xml.etree.ElementTree as ET
 import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
+
+from bbag.contracts import ExperimentRecord, ResearchProtocol, ReviewReceipt, canonical_protocol_bytes
+from bbag.jsonio import read_json_object
+from bbag.junit import validate_junit
 
 
 def digest(path: Path) -> str:
@@ -26,13 +30,10 @@ def git(root: Path, *arguments: str) -> str:
     return subprocess.check_output(["git", *arguments], cwd=root, text=True, encoding="utf-8").strip()
 
 
-def read_object(path: Path) -> dict:
+def read_object(path: Path) -> dict[str, Any]:
     if not path.is_file():
         raise ValueError(f"Required evidence file is missing: {path}")
-    value = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(value, dict):
-        raise ValueError(f"Evidence must be a JSON object: {path}")
-    return value
+    return read_json_object(path)
 
 
 def validate_evidence(evidence: Path, commit: str) -> tuple[dict, dict, dict[str, int]]:
@@ -50,13 +51,16 @@ def validate_evidence(evidence: Path, commit: str) -> tuple[dict, dict, dict[str
     if not isinstance(verification.get("python"), str) or not verification["python"].strip():
         raise ValueError("Verification must record its actual Python version")
     receipt = read_object(evidence / "review_request.json")
+    # JSON mode preserves strict ISO datetime validation after ambiguity checks.
+    ReviewReceipt.model_validate_json(json.dumps(receipt, allow_nan=False))
     pending_status = {
         "stage": "S0", "audited_commit": commit, "decision": "PENDING",
         "engineering_status": "INCOMPLETE", "platform_status": "NOT_APPLICABLE",
         "economic_status": "NOT_APPLICABLE",
     }
     if (any(receipt.get(key) != value for key, value in pending_status.items())
-            or receipt.get("reviewed_at") is not None):
+            or receipt.get("reviewed_at") is not None
+            or receipt.get("blocking_findings") != 0 or receipt.get("evidence") != []):
         raise ValueError("Audit request must remain pending and bind the S0 implementation commit")
     required_checks = {
         "pip_check": 0, "pytest": 0, "validate": 0, "schemas": 0,
@@ -88,19 +92,17 @@ def validate_evidence(evidence: Path, commit: str) -> tuple[dict, dict, dict[str
     junit = evidence / "junit.xml"
     if not junit.is_file():
         raise ValueError("Required JUnit evidence is missing")
-    try:
-        suites = list(ET.parse(junit).getroot().iter("testsuite"))
-    except ET.ParseError as exc:
-        raise ValueError("JUnit evidence is not valid XML") from exc
-    counts = {key: sum(int(suite.get(key, "0")) for suite in suites)
-              for key in ("tests", "failures", "errors", "skipped")}
-    if (any(value < 0 for value in counts.values()) or counts["tests"] <= counts["skipped"]
-            or counts["failures"] or counts["errors"]):
-        raise ValueError("JUnit evidence does not show a successful nonempty executed test suite")
+    counts = validate_junit(junit)
     experiment_dir = evidence / "experiments" / "s0-demo"
     protocol_path = experiment_dir / "protocol.json"
     protocol = read_object(protocol_path)
     experiment = read_object(experiment_dir / "experiment.json")
+    checked_protocol = ResearchProtocol.model_validate(protocol)
+    ExperimentRecord.model_validate_json(json.dumps(experiment, allow_nan=False))
+    # The collector writes canonical bytes. Both semantic validity and exact raw
+    # bytes are required; recomputing a hash cannot legitimize invalid content.
+    if protocol_path.read_bytes() != canonical_protocol_bytes(checked_protocol):
+        raise ValueError("Experiment protocol evidence must use canonical protocol bytes")
     if (protocol.get("stage") != "S0" or protocol.get("purpose") != "ENGINEERING_TEST"
             or protocol.get("status") != "DRAFT"):
         raise ValueError("Experiment protocol must remain an S0 ENGINEERING_TEST DRAFT")
@@ -148,13 +150,26 @@ def main() -> int:
         f"| {item['name']} | {item['exit_code']} | {item['expected_exit_code']} | {'PASS' if item['passed'] else 'FAIL'} |"
         for item in verification["checks"]
     )
+    remediation = root / "docs/S0_REMEDIATION.md"
+    remediation_details = remediation.read_text(encoding="utf-8") if remediation.is_file() else ""
+    remediation_report = evidence / "remediation/S0_FIX_REPORT.md"
+    remediation_results = remediation_report.read_text(encoding="utf-8") if remediation_report.is_file() else "补充复验报告未提供，不能宣称已执行额外检查。"
     development = f"""# BBAG S0 开发报告
 
 实现 commit SHA：`{commit}`
 
 本报告在提交后生成，审核对象为 source.zip 中该 SHA 的完整源码。开发分支为 `{git(root, 'branch', '--show-current')}`，独立 GPT Work 审核保持 PENDING；未合并 main，未进入 S1。
 
-## 本次交付
+## 本轮 S0 修复
+
+基线：`b2d502048dfed1f8765514a018bc91560d87ec22`。任务范围、三项缺陷及契约兼容策略见下方修复记录；原审核 CHANGES_REQUIRED 仅覆盖基线，新实现独立审核保持 PENDING。
+
+- S0-001：回执和全部打包 JSON 共享严格读取器。
+- S0-002：JUnit 明细与各层摘要逐项核对，拒绝失败、空测试和无成功执行证据。
+- S0-003：打包前完整校验协议、实验及待审回执，再核对规范字节、哈希和准确版本。
+- 澄清 DRAFT 研究参数及正式资源门槛的确认责任，不填造研究批准值。
+
+## 保留的 S0 基础能力
 
 - Python 工程骨架、依赖锁定和离线命令入口。
 - 数据、因子、标签、执行、评估、实验记录和发布清单等标准契约及 JSON Schema。
@@ -174,11 +189,25 @@ def main() -> int:
 
 pending_review_gate 的预期退出码为 3，表示未取得独立批准时保持阻止。原始命令、输出、JUnit、实验清单和待审核请求均在 evidence 中。
 
+`evidence/prior_audit/` 保留负责人提供的旧审核及失败记录；原报告注明独立 Codex 会话、未认证 GPT Work 身份。`evidence/remediation/` 保存本轮缺陷对照、原测试适配差异、开发者复跑及 CI 状态（存在时以实际文件为准）。开发者重跑原审核测试不产生独立验收结论。PR 为 https://github.com/wwooyy429/BBAG/pull/1 ，保持草稿。
+
+配置/契约版本 1.0，样例保持 ENGINEERING_TEST/DRAFT；依赖锁随 source.zip 交付，数据为合成样例，模型与平台版本不适用。S0 外部模型、平台任务和费用消耗为零；GitHub CI 仅属于开发验证。测试耗时及实际环境见 verification.json，内存、存储、并发、延迟门槛尚待项目负责人确认，未根据本轮观测倒填。
+
+F01—F08 完整业务路径均为 NOT_RUN（依赖 S1—S7）；本轮仅实际执行适用的 S0 契约、CLI、来源与证据接纳回归。平台与经济结论均为 NOT_APPLICABLE，经济评估执行有效性不适用。
+
+## 缺陷对照与补充实测
+
+{remediation_results}
+
 ## 尚未实现或验证
 
 S1 因子算子、时序运行审计及因子有效性评估尚未实现。没有 GPT API、QuantConnect 研究/回测/优化、模拟或真实资金部署；平台集成和经济证据在 S0 不适用。配置的日期边界校验不替代后续平台访问控制。2026-10-31 仓库初始化核实时服务器分支保护未启用；打包器不重新查询远端，当前保护状态须另行核实。当前采用开发分支、草稿 PR、本地 hook 和人工治理，hook 不构成服务器硬门禁。
 
 当前状态为 READY_FOR_REVIEW。开发自测与 CI 不能代替独立 GPT Work 对此 SHA 的审核。任何受影响源码、契约或配置变化都需要新提交、新证据和新审核包。
+
+## 修复约束与旧审核适用范围
+
+{remediation_details}
 """
     (output / "DEVELOPMENT_REPORT.md").write_text(development, encoding="utf-8")
     audit = f"""# BBAG S0 GPT Work 独立审核任务
@@ -196,6 +225,8 @@ S1 因子算子、时序运行审计及因子有效性评估尚未实现。没�
 5. 检查审核缺失、PENDING、陈旧 SHA、需要修改时保持阻止；结构合格回执仍不认证审核者或执行合并。
 6. 确认 S0 未实现 S1 逻辑、未调用平台或模型服务，DRAFT 配置未被当作研究批准。
 7. 检查分支和报告治理：main 只含初始化标记，当前实现等待此 SHA 的独立审核。
+8. 对照 evidence/prior_audit 的 S0-001—S0-003 原反例逐项独立复测；检查完整 JSON 入口、嵌套 JUnit 明细及协议/实验/回执契约，失败不得生成包。自行增加反例，不以开发者原测试复跑代替独立判断。
+9. 核对 evidence/remediation（如有）的原件哈希、适配差异、原始失败与新结果，以及新源码与 PR 的准确 SHA；旧版工程 FAIL 不自动覆盖修复效果，新版也不得自填 ACCEPTED。
 
 ## 结论要求
 

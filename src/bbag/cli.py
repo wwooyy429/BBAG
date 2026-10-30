@@ -12,6 +12,7 @@ from typing import Any
 from pydantic import ValidationError
 
 from .contracts import CONTRACT_MODELS, ExperimentRecord, ReviewReceipt, canonical_protocol_bytes, load_protocol
+from .jsonio import read_json_object
 from .provenance import SHA_PATTERN, git_provenance, json_bytes, safe_run_directory, sha256_bytes
 
 
@@ -94,7 +95,8 @@ def review_command(receipt_path: Path, commit: str) -> int:
     if not receipt_path.is_file():
         emit({**base, "receipt_structurally_passed": False, "reason": "review_receipt_missing"})
         return 3
-    receipt = ReviewReceipt.model_validate_json(receipt_path.read_bytes())
+    # Parse strictly before JSON-mode contract validation (which accepts ISO timestamps).
+    receipt = ReviewReceipt.model_validate_json(json.dumps(read_json_object(receipt_path), allow_nan=False))
     reasons = []
     if receipt.audited_commit != commit:
         reasons.append("review_commit_mismatch")

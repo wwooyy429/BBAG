@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
+import platform
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -54,14 +57,20 @@ def main() -> int:
     environment = dict(os.environ, PYTHONUTF8="1", PYTHONIOENCODING="utf-8")
     for name, arguments, expected in commands:
         command = [sys.executable, *arguments]
-        result = subprocess.run(command, cwd=root, capture_output=True, text=True, encoding="utf-8", errors="replace", env=environment)
-        (output / f"{name}.stdout.txt").write_text(result.stdout, encoding="utf-8")
-        (output / f"{name}.stderr.txt").write_text(result.stderr, encoding="utf-8")
+        started_at = datetime.now(timezone.utc).isoformat()
+        started = time.perf_counter()
+        result = subprocess.run(command, cwd=root, capture_output=True, env=environment)
+        (output / f"{name}.stdout.txt").write_bytes(result.stdout)
+        (output / f"{name}.stderr.txt").write_bytes(result.stderr)
         records.append({"name": name, "command": command, "exit_code": result.returncode,
-                        "expected_exit_code": expected, "passed": result.returncode == expected})
+                        "expected_exit_code": expected, "passed": result.returncode == expected,
+                        "started_at_utc": started_at, "duration_seconds": time.perf_counter() - started})
     summary = {
         "stage": "S0", "implementation_commit": commit, "working_tree_dirty": dirty,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(), "python": sys.version,
+        "python_executable": sys.executable, "platform": platform.platform(),
+        "subprocess_output_encoding": "UTF-8 requested; original stdout/stderr bytes preserved",
+        "dependency_lock_sha256": hashlib.sha256((root / "requirements.lock").read_bytes()).hexdigest(),
         "checks": records, "developer_checks_passed": all(item["passed"] for item in records),
         "independent_review": "PENDING", "platform_integration": "NOT_APPLICABLE",
         "economic_evidence": "NOT_APPLICABLE", "next_stage_authorized": False,
