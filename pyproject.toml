@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bbag"
+version = "0.1.0"
+description = "Stage-zero contracts and research protocol skeleton for BBAG"
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2.12,<3", "tzdata>=2025.2"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+
+[project.scripts]
+bbag = "bbag.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+junit_family = "xunit2"

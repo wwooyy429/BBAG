@@ -1,0 +1,98 @@
+{
+  "additionalProperties": false,
+  "description": "Receipt consistency only: this does not authenticate a reviewer or authorize Git.",
+  "properties": {
+    "audited_commit": {
+      "pattern": "^[0-9a-fA-F]{40}$",
+      "title": "Audited Commit",
+      "type": "string"
+    },
+    "blocking_findings": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Blocking Findings",
+      "type": "integer"
+    },
+    "decision": {
+      "default": "PENDING",
+      "enum": [
+        "PENDING",
+        "APPROVED",
+        "CHANGES_REQUIRED"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "economic_status": {
+      "const": "NOT_APPLICABLE",
+      "default": "NOT_APPLICABLE",
+      "title": "Economic Status",
+      "type": "string"
+    },
+    "engineering_status": {
+      "default": "INCOMPLETE",
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INCOMPLETE"
+      ],
+      "title": "Engineering Status",
+      "type": "string"
+    },
+    "evidence": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "platform_status": {
+      "default": "NOT_RUN",
+      "enum": [
+        "PASS",
+        "FAIL",
+        "NOT_RUN",
+        "NOT_APPLICABLE"
+      ],
+      "title": "Platform Status",
+      "type": "string"
+    },
+    "reviewed_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reviewed At"
+    },
+    "reviewer": {
+      "minLength": 1,
+      "title": "Reviewer",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "stage": {
+      "const": "S0",
+      "default": "S0",
+      "title": "Stage",
+      "type": "string"
+    }
+  },
+  "required": [
+    "audited_commit",
+    "reviewer"
+  ],
+  "title": "ReviewReceipt",
+  "type": "object"
+}

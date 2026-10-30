@@ -1,0 +1,12 @@
+#!/bin/sh
+# Keep implementation changes on review branches; main changes use reviewed PRs.
+while read local_ref local_sha remote_ref remote_sha
+do
+  case "$remote_ref" in
+    refs/heads/main|refs/heads/master)
+      echo "BBAG: direct pushes to the base branch are blocked. Use an independently reviewed PR." >&2
+      exit 1
+      ;;
+  esac
+done
+exit 0

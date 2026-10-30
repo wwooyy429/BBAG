@@ -1,0 +1,41 @@
+{
+  "$defs": {
+    "TimeRange": {
+      "additionalProperties": false,
+      "description": "A closed date interval; both start and end are included.",
+      "properties": {
+        "end": {
+          "format": "date",
+          "title": "End",
+          "type": "string"
+        },
+        "start": {
+          "format": "date",
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "title": "TimeRange",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "development": {
+      "$ref": "#/$defs/TimeRange"
+    },
+    "final_test": {
+      "$ref": "#/$defs/TimeRange"
+    }
+  },
+  "required": [
+    "development",
+    "final_test"
+  ],
+  "title": "DataSplitSpec",
+  "type": "object"
+}

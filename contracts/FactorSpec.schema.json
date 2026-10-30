@@ -1,0 +1,53 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "expected_direction": {
+      "enum": [
+        "positive",
+        "negative",
+        "undetermined"
+      ],
+      "title": "Expected Direction",
+      "type": "string"
+    },
+    "factor_id": {
+      "minLength": 1,
+      "title": "Factor Id",
+      "type": "string"
+    },
+    "formula": {
+      "minLength": 1,
+      "title": "Formula",
+      "type": "string"
+    },
+    "hypothesis": {
+      "minLength": 1,
+      "title": "Hypothesis",
+      "type": "string"
+    },
+    "lookback_sessions": {
+      "exclusiveMinimum": 0,
+      "title": "Lookback Sessions",
+      "type": "integer"
+    },
+    "required_fields": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Required Fields",
+      "type": "array"
+    }
+  },
+  "required": [
+    "factor_id",
+    "hypothesis",
+    "formula",
+    "required_fields",
+    "lookback_sessions",
+    "expected_direction"
+  ],
+  "title": "FactorSpec",
+  "type": "object"
+}

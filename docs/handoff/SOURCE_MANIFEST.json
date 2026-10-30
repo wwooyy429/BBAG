@@ -1,0 +1,44 @@
+{
+  "snapshot_id": "BBAG-20261031-HANDOFF-01",
+  "issued_on": "2026-10-31",
+  "snapshot_kind": "planning_documents",
+  "system_implementation_status": "not_implemented",
+  "system_tests_status": "not_run",
+  "sources": [
+    {
+      "source_path": "README.md",
+      "source_sha256": "6de9e5e1bd9ad2eabd4989598800ed4b0bd3c2f51d910ca1f663eaca586d2b96",
+      "snapshot_path": "references/README.md",
+      "snapshot_sha256": "cb94ce733767e82b8660baaf8789d206ea0a3c35a04ee63cfc26ac188c7831e8",
+      "transform": "Rebase README internal documentation links for the flat references directory"
+    },
+    {
+      "source_path": "docs/ROADMAP.md",
+      "source_sha256": "c2fbbaa009efcec2f5a8ff9a2be929327159e7ff58e88efe9c8c46c446c2af57",
+      "snapshot_path": "references/ROADMAP.md",
+      "snapshot_sha256": "c2fbbaa009efcec2f5a8ff9a2be929327159e7ff58e88efe9c8c46c446c2af57",
+      "transform": "None"
+    },
+    {
+      "source_path": "docs/ACCEPTANCE.md",
+      "source_sha256": "c53257c8b9c1f221cc961fdbb06ea513e7cd8f9be494411cc00d86c61ab432cf",
+      "snapshot_path": "references/ACCEPTANCE.md",
+      "snapshot_sha256": "c53257c8b9c1f221cc961fdbb06ea513e7cd8f9be494411cc00d86c61ab432cf",
+      "transform": "None"
+    },
+    {
+      "source_path": "docs/FLOW_ACCEPTANCE.md",
+      "source_sha256": "fb1c7581ab8ff3c68558dfb5a2ab04528d28c6c0ca4ba02b2b764bc5c649300d",
+      "snapshot_path": "references/FLOW_ACCEPTANCE.md",
+      "snapshot_sha256": "fb1c7581ab8ff3c68558dfb5a2ab04528d28c6c0ca4ba02b2b764bc5c649300d",
+      "transform": "None"
+    },
+    {
+      "source_path": "user_attachment/codex-clipboard-85937ca9-a10a-44c9-8115-d515582a1141.png",
+      "source_sha256": "24eacc462ad370234246f00a6c2351dbe76c49de96ace3704e4e25c610b1ef48",
+      "snapshot_path": "references/WORKFLOW_REFERENCE.png",
+      "snapshot_sha256": "24eacc462ad370234246f00a6c2351dbe76c49de96ace3704e4e25c610b1ef48",
+      "transform": "None"
+    }
+  ]
+}
