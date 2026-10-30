@@ -1,0 +1,49 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "max_candidates": {
+      "exclusiveMinimum": 0,
+      "title": "Max Candidates",
+      "type": "integer"
+    },
+    "max_model_calls": {
+      "maximum": 0,
+      "minimum": 0,
+      "title": "Max Model Calls",
+      "type": "integer"
+    },
+    "max_optimization_jobs": {
+      "maximum": 0,
+      "minimum": 0,
+      "title": "Max Optimization Jobs",
+      "type": "integer"
+    },
+    "max_platform_jobs": {
+      "maximum": 0,
+      "minimum": 0,
+      "title": "Max Platform Jobs",
+      "type": "integer"
+    },
+    "max_runtime_seconds": {
+      "exclusiveMinimum": 0,
+      "title": "Max Runtime Seconds",
+      "type": "integer"
+    },
+    "max_spend_usd": {
+      "maximum": 0,
+      "minimum": 0,
+      "title": "Max Spend Usd",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "max_candidates",
+    "max_model_calls",
+    "max_platform_jobs",
+    "max_optimization_jobs",
+    "max_runtime_seconds",
+    "max_spend_usd"
+  ],
+  "title": "BudgetSpec",
+  "type": "object"
+}

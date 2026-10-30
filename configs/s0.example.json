@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "protocol_id": "s0-synthetic-demonstration",
+  "title": "BBAG S0 合成配置与接口演示，非研究批准",
+  "stage": "S0",
+  "purpose": "ENGINEERING_TEST",
+  "status": "DRAFT",
+  "data": {
+    "data_id": "synthetic-daily-v1",
+    "source": "synthetic_fixture",
+    "market": "USA",
+    "frequency": "daily",
+    "timezone": "America/New_York",
+    "fields": ["open", "close", "volume", "dollar_volume"],
+    "normalization": "raw_with_corporate_actions",
+    "universe_rule": "固定合成证券集合，仅验证配置；真实历史成分与流动性规则待定"
+  },
+  "factor": {
+    "factor_id": "placeholder-short-term-reversal",
+    "hypothesis": "仅演示经济假设字段，短期价格冲击是否恢复尚未验证",
+    "formula": "neg(return(close, 5))",
+    "required_fields": ["close"],
+    "lookback_sessions": 6,
+    "expected_direction": "undetermined"
+  },
+  "label": {
+    "entry_rule": "next_session_open",
+    "exit_rule": "hold_h_sessions",
+    "horizon_sessions": 5,
+    "return_type": "excess_total_return",
+    "benchmark": "SYNTHETIC_BENCHMARK"
+  },
+  "execution": {
+    "signal_rule": "after_data_available",
+    "entry_rule": "next_session_open",
+    "exit_rule": "hold_h_sessions",
+    "rebalance_sessions": 5,
+    "max_position_weight": 0.02,
+    "gross_exposure_limit": 1.0,
+    "commission_bps": 1.0,
+    "slippage_bps": 5.0,
+    "allow_short": false
+  },
+  "evaluation": {
+    "metrics": ["coverage", "rank_ic", "turnover"],
+    "thresholds": {"coverage": 0.95, "rank_ic": 0.0, "turnover": 1.0},
+    "validation_method": "chronological_walk_forward",
+    "train_sessions": 756,
+    "validation_sessions": 126,
+    "final_results_policy": "isolated_with_derivatives"
+  },
+  "budget": {
+    "max_candidates": 1,
+    "max_model_calls": 0,
+    "max_platform_jobs": 0,
+    "max_optimization_jobs": 0,
+    "max_runtime_seconds": 60,
+    "max_spend_usd": 0
+  },
+  "data_split": {
+    "development": {"start": "2015-01-01", "end": "2020-12-31"},
+    "final_test": {"start": "2021-01-01", "end": "2022-12-31"}
+  },
+  "pending_decisions": [
+    "正式市场范围、数据权限、历史股票池及流动性条件待研究协议确认",
+    "演示日期、预测期、调仓、成本、风险与统计门槛均非正式研究取值",
+    "因子方向、基准、训练验证窗口及标签退出规则仍需独立评审",
+    "当前只有结构校验；未取真实数据、运行公式、回测或进行经济批准"
+  ]
+}

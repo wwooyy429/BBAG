@@ -1,0 +1,51 @@
+name: Stage 0 verification
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: ["codex/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  stage0:
+    name: S0 Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements.lock
+      - name: Install locked dependencies
+        run: |
+          python -m pip install -r requirements.lock
+          python -m pip install --no-deps --no-build-isolation -e .
+      - name: Verify stage zero contracts and CLI
+        run: |
+          python -m pytest --junitxml artifacts/verification/junit.xml
+          python -m bbag validate --config configs/s0.example.json
+          python -m bbag init-experiment --config configs/s0.example.json --output-dir artifacts/experiments --run-id ci-s0-demo
+      - name: Verify committed JSON schemas
+        run: |
+          python -m bbag schemas --output-dir contracts --check
+          git diff --exit-code -- contracts
+          test -z "$(git status --porcelain --untracked-files=all -- contracts)"
+      - name: Preserve verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: s0-verification-python-${{ matrix.python-version }}
+          path: artifacts/
+          if-no-files-found: warn

@@ -1,0 +1,61 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "data_id": {
+      "minLength": 1,
+      "title": "Data Id",
+      "type": "string"
+    },
+    "fields": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Fields",
+      "type": "array"
+    },
+    "frequency": {
+      "const": "daily",
+      "title": "Frequency",
+      "type": "string"
+    },
+    "market": {
+      "const": "USA",
+      "title": "Market",
+      "type": "string"
+    },
+    "normalization": {
+      "const": "raw_with_corporate_actions",
+      "title": "Normalization",
+      "type": "string"
+    },
+    "source": {
+      "const": "synthetic_fixture",
+      "title": "Source",
+      "type": "string"
+    },
+    "timezone": {
+      "minLength": 1,
+      "title": "Timezone",
+      "type": "string"
+    },
+    "universe_rule": {
+      "minLength": 1,
+      "title": "Universe Rule",
+      "type": "string"
+    }
+  },
+  "required": [
+    "data_id",
+    "source",
+    "market",
+    "frequency",
+    "timezone",
+    "fields",
+    "normalization",
+    "universe_rule"
+  ],
+  "title": "DataSpec",
+  "type": "object"
+}

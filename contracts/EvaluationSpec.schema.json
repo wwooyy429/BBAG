@@ -1,0 +1,67 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "final_results_policy": {
+      "const": "isolated_with_derivatives",
+      "title": "Final Results Policy",
+      "type": "string"
+    },
+    "metrics": {
+      "items": {
+        "enum": [
+          "rank_ic",
+          "ic",
+          "coverage",
+          "turnover",
+          "net_excess_return"
+        ],
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Metrics",
+      "type": "array"
+    },
+    "thresholds": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "minProperties": 1,
+      "propertyNames": {
+        "enum": [
+          "rank_ic",
+          "ic",
+          "coverage",
+          "turnover",
+          "net_excess_return"
+        ]
+      },
+      "title": "Thresholds",
+      "type": "object"
+    },
+    "train_sessions": {
+      "exclusiveMinimum": 0,
+      "title": "Train Sessions",
+      "type": "integer"
+    },
+    "validation_method": {
+      "const": "chronological_walk_forward",
+      "title": "Validation Method",
+      "type": "string"
+    },
+    "validation_sessions": {
+      "exclusiveMinimum": 0,
+      "title": "Validation Sessions",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "metrics",
+    "thresholds",
+    "validation_method",
+    "train_sessions",
+    "validation_sessions",
+    "final_results_policy"
+  ],
+  "title": "EvaluationSpec",
+  "type": "object"
+}

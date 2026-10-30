@@ -1,0 +1,63 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "allow_short": {
+      "title": "Allow Short",
+      "type": "boolean"
+    },
+    "commission_bps": {
+      "minimum": 0,
+      "title": "Commission Bps",
+      "type": "number"
+    },
+    "entry_rule": {
+      "const": "next_session_open",
+      "title": "Entry Rule",
+      "type": "string"
+    },
+    "exit_rule": {
+      "const": "hold_h_sessions",
+      "title": "Exit Rule",
+      "type": "string"
+    },
+    "gross_exposure_limit": {
+      "exclusiveMinimum": 0,
+      "title": "Gross Exposure Limit",
+      "type": "number"
+    },
+    "max_position_weight": {
+      "exclusiveMinimum": 0,
+      "maximum": 1,
+      "title": "Max Position Weight",
+      "type": "number"
+    },
+    "rebalance_sessions": {
+      "exclusiveMinimum": 0,
+      "title": "Rebalance Sessions",
+      "type": "integer"
+    },
+    "signal_rule": {
+      "const": "after_data_available",
+      "title": "Signal Rule",
+      "type": "string"
+    },
+    "slippage_bps": {
+      "minimum": 0,
+      "title": "Slippage Bps",
+      "type": "number"
+    }
+  },
+  "required": [
+    "signal_rule",
+    "entry_rule",
+    "exit_rule",
+    "rebalance_sessions",
+    "max_position_weight",
+    "gross_exposure_limit",
+    "commission_bps",
+    "slippage_bps",
+    "allow_short"
+  ],
+  "title": "ExecutionSpec",
+  "type": "object"
+}

@@ -1,0 +1,455 @@
+{
+  "$defs": {
+    "BudgetSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "max_candidates": {
+          "exclusiveMinimum": 0,
+          "title": "Max Candidates",
+          "type": "integer"
+        },
+        "max_model_calls": {
+          "maximum": 0,
+          "minimum": 0,
+          "title": "Max Model Calls",
+          "type": "integer"
+        },
+        "max_optimization_jobs": {
+          "maximum": 0,
+          "minimum": 0,
+          "title": "Max Optimization Jobs",
+          "type": "integer"
+        },
+        "max_platform_jobs": {
+          "maximum": 0,
+          "minimum": 0,
+          "title": "Max Platform Jobs",
+          "type": "integer"
+        },
+        "max_runtime_seconds": {
+          "exclusiveMinimum": 0,
+          "title": "Max Runtime Seconds",
+          "type": "integer"
+        },
+        "max_spend_usd": {
+          "maximum": 0,
+          "minimum": 0,
+          "title": "Max Spend Usd",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_candidates",
+        "max_model_calls",
+        "max_platform_jobs",
+        "max_optimization_jobs",
+        "max_runtime_seconds",
+        "max_spend_usd"
+      ],
+      "title": "BudgetSpec",
+      "type": "object"
+    },
+    "DataSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "data_id": {
+          "minLength": 1,
+          "title": "Data Id",
+          "type": "string"
+        },
+        "fields": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Fields",
+          "type": "array"
+        },
+        "frequency": {
+          "const": "daily",
+          "title": "Frequency",
+          "type": "string"
+        },
+        "market": {
+          "const": "USA",
+          "title": "Market",
+          "type": "string"
+        },
+        "normalization": {
+          "const": "raw_with_corporate_actions",
+          "title": "Normalization",
+          "type": "string"
+        },
+        "source": {
+          "const": "synthetic_fixture",
+          "title": "Source",
+          "type": "string"
+        },
+        "timezone": {
+          "minLength": 1,
+          "title": "Timezone",
+          "type": "string"
+        },
+        "universe_rule": {
+          "minLength": 1,
+          "title": "Universe Rule",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data_id",
+        "source",
+        "market",
+        "frequency",
+        "timezone",
+        "fields",
+        "normalization",
+        "universe_rule"
+      ],
+      "title": "DataSpec",
+      "type": "object"
+    },
+    "DataSplitSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "development": {
+          "$ref": "#/$defs/TimeRange"
+        },
+        "final_test": {
+          "$ref": "#/$defs/TimeRange"
+        }
+      },
+      "required": [
+        "development",
+        "final_test"
+      ],
+      "title": "DataSplitSpec",
+      "type": "object"
+    },
+    "EvaluationSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "final_results_policy": {
+          "const": "isolated_with_derivatives",
+          "title": "Final Results Policy",
+          "type": "string"
+        },
+        "metrics": {
+          "items": {
+            "enum": [
+              "rank_ic",
+              "ic",
+              "coverage",
+              "turnover",
+              "net_excess_return"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Metrics",
+          "type": "array"
+        },
+        "thresholds": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "minProperties": 1,
+          "propertyNames": {
+            "enum": [
+              "rank_ic",
+              "ic",
+              "coverage",
+              "turnover",
+              "net_excess_return"
+            ]
+          },
+          "title": "Thresholds",
+          "type": "object"
+        },
+        "train_sessions": {
+          "exclusiveMinimum": 0,
+          "title": "Train Sessions",
+          "type": "integer"
+        },
+        "validation_method": {
+          "const": "chronological_walk_forward",
+          "title": "Validation Method",
+          "type": "string"
+        },
+        "validation_sessions": {
+          "exclusiveMinimum": 0,
+          "title": "Validation Sessions",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "metrics",
+        "thresholds",
+        "validation_method",
+        "train_sessions",
+        "validation_sessions",
+        "final_results_policy"
+      ],
+      "title": "EvaluationSpec",
+      "type": "object"
+    },
+    "ExecutionSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "allow_short": {
+          "title": "Allow Short",
+          "type": "boolean"
+        },
+        "commission_bps": {
+          "minimum": 0,
+          "title": "Commission Bps",
+          "type": "number"
+        },
+        "entry_rule": {
+          "const": "next_session_open",
+          "title": "Entry Rule",
+          "type": "string"
+        },
+        "exit_rule": {
+          "const": "hold_h_sessions",
+          "title": "Exit Rule",
+          "type": "string"
+        },
+        "gross_exposure_limit": {
+          "exclusiveMinimum": 0,
+          "title": "Gross Exposure Limit",
+          "type": "number"
+        },
+        "max_position_weight": {
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "title": "Max Position Weight",
+          "type": "number"
+        },
+        "rebalance_sessions": {
+          "exclusiveMinimum": 0,
+          "title": "Rebalance Sessions",
+          "type": "integer"
+        },
+        "signal_rule": {
+          "const": "after_data_available",
+          "title": "Signal Rule",
+          "type": "string"
+        },
+        "slippage_bps": {
+          "minimum": 0,
+          "title": "Slippage Bps",
+          "type": "number"
+        }
+      },
+      "required": [
+        "signal_rule",
+        "entry_rule",
+        "exit_rule",
+        "rebalance_sessions",
+        "max_position_weight",
+        "gross_exposure_limit",
+        "commission_bps",
+        "slippage_bps",
+        "allow_short"
+      ],
+      "title": "ExecutionSpec",
+      "type": "object"
+    },
+    "FactorSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_direction": {
+          "enum": [
+            "positive",
+            "negative",
+            "undetermined"
+          ],
+          "title": "Expected Direction",
+          "type": "string"
+        },
+        "factor_id": {
+          "minLength": 1,
+          "title": "Factor Id",
+          "type": "string"
+        },
+        "formula": {
+          "minLength": 1,
+          "title": "Formula",
+          "type": "string"
+        },
+        "hypothesis": {
+          "minLength": 1,
+          "title": "Hypothesis",
+          "type": "string"
+        },
+        "lookback_sessions": {
+          "exclusiveMinimum": 0,
+          "title": "Lookback Sessions",
+          "type": "integer"
+        },
+        "required_fields": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Required Fields",
+          "type": "array"
+        }
+      },
+      "required": [
+        "factor_id",
+        "hypothesis",
+        "formula",
+        "required_fields",
+        "lookback_sessions",
+        "expected_direction"
+      ],
+      "title": "FactorSpec",
+      "type": "object"
+    },
+    "LabelSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "benchmark": {
+          "minLength": 1,
+          "title": "Benchmark",
+          "type": "string"
+        },
+        "entry_rule": {
+          "const": "next_session_open",
+          "title": "Entry Rule",
+          "type": "string"
+        },
+        "exit_rule": {
+          "const": "hold_h_sessions",
+          "title": "Exit Rule",
+          "type": "string"
+        },
+        "horizon_sessions": {
+          "exclusiveMinimum": 0,
+          "title": "Horizon Sessions",
+          "type": "integer"
+        },
+        "return_type": {
+          "const": "excess_total_return",
+          "title": "Return Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entry_rule",
+        "exit_rule",
+        "horizon_sessions",
+        "return_type",
+        "benchmark"
+      ],
+      "title": "LabelSpec",
+      "type": "object"
+    },
+    "TimeRange": {
+      "additionalProperties": false,
+      "description": "A closed date interval; both start and end are included.",
+      "properties": {
+        "end": {
+          "format": "date",
+          "title": "End",
+          "type": "string"
+        },
+        "start": {
+          "format": "date",
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "title": "TimeRange",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "budget": {
+      "$ref": "#/$defs/BudgetSpec"
+    },
+    "data": {
+      "$ref": "#/$defs/DataSpec"
+    },
+    "data_split": {
+      "$ref": "#/$defs/DataSplitSpec"
+    },
+    "evaluation": {
+      "$ref": "#/$defs/EvaluationSpec"
+    },
+    "execution": {
+      "$ref": "#/$defs/ExecutionSpec"
+    },
+    "factor": {
+      "$ref": "#/$defs/FactorSpec"
+    },
+    "label": {
+      "$ref": "#/$defs/LabelSpec"
+    },
+    "pending_decisions": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Pending Decisions",
+      "type": "array"
+    },
+    "protocol_id": {
+      "minLength": 1,
+      "title": "Protocol Id",
+      "type": "string"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "stage": {
+      "const": "S0",
+      "default": "S0",
+      "title": "Stage",
+      "type": "string"
+    },
+    "status": {
+      "const": "DRAFT",
+      "default": "DRAFT",
+      "title": "Status",
+      "type": "string"
+    },
+    "title": {
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": [
+    "protocol_id",
+    "title",
+    "data",
+    "factor",
+    "label",
+    "execution",
+    "evaluation",
+    "budget",
+    "data_split",
+    "pending_decisions"
+  ],
+  "title": "ResearchProtocol",
+  "type": "object"
+}

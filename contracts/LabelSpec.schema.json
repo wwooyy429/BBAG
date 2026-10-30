@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "benchmark": {
+      "minLength": 1,
+      "title": "Benchmark",
+      "type": "string"
+    },
+    "entry_rule": {
+      "const": "next_session_open",
+      "title": "Entry Rule",
+      "type": "string"
+    },
+    "exit_rule": {
+      "const": "hold_h_sessions",
+      "title": "Exit Rule",
+      "type": "string"
+    },
+    "horizon_sessions": {
+      "exclusiveMinimum": 0,
+      "title": "Horizon Sessions",
+      "type": "integer"
+    },
+    "return_type": {
+      "const": "excess_total_return",
+      "title": "Return Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "entry_rule",
+    "exit_rule",
+    "horizon_sessions",
+    "return_type",
+    "benchmark"
+  ],
+  "title": "LabelSpec",
+  "type": "object"
+}
