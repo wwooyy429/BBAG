@@ -1,0 +1,69 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "absolute_tolerance": {
+      "default": 1e-12,
+      "exclusiveMinimum": 0,
+      "maximum": 1e-06,
+      "title": "Absolute Tolerance",
+      "type": "number"
+    },
+    "division_by_zero": {
+      "const": "missing",
+      "default": "missing",
+      "title": "Division By Zero",
+      "type": "string"
+    },
+    "min_periods": {
+      "const": "full_window",
+      "default": "full_window",
+      "title": "Min Periods",
+      "type": "string"
+    },
+    "missing": {
+      "const": "propagate",
+      "default": "propagate",
+      "title": "Missing",
+      "type": "string"
+    },
+    "nonfinite_result": {
+      "const": "missing",
+      "default": "missing",
+      "title": "Nonfinite Result",
+      "type": "string"
+    },
+    "rank_scale": {
+      "const": "zero_to_one",
+      "default": "zero_to_one",
+      "title": "Rank Scale",
+      "type": "string"
+    },
+    "rank_ties": {
+      "const": "average",
+      "default": "average",
+      "title": "Rank Ties",
+      "type": "string"
+    },
+    "relative_tolerance": {
+      "default": 1e-12,
+      "exclusiveMinimum": 0,
+      "maximum": 1e-06,
+      "title": "Relative Tolerance",
+      "type": "number"
+    },
+    "singleton_rank": {
+      "const": 0.5,
+      "default": 0.5,
+      "title": "Singleton Rank",
+      "type": "number"
+    },
+    "std_ddof": {
+      "const": 0,
+      "default": 0,
+      "title": "Std Ddof",
+      "type": "integer"
+    }
+  },
+  "title": "NumericPolicy",
+  "type": "object"
+}

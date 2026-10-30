@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bbag"
-version = "0.1.0"
-description = "Stage-zero contracts and research protocol skeleton for BBAG"
+version = "0.2.0"
+description = "Offline S0 contracts and deterministic S1 factor engineering for BBAG"
 requires-python = ">=3.11"
 dependencies = ["pydantic>=2.12,<3", "tzdata>=2025.2"]
 

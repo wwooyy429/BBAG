@@ -1,0 +1,49 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "fields": {
+      "items": {
+        "pattern": "^[A-Za-z][A-Za-z0-9_]{0,63}$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Fields",
+      "type": "array"
+    },
+    "lookback_sessions": {
+      "exclusiveMinimum": 0,
+      "title": "Lookback Sessions",
+      "type": "integer"
+    },
+    "max_depth": {
+      "exclusiveMinimum": 0,
+      "title": "Max Depth",
+      "type": "integer"
+    },
+    "node_count": {
+      "exclusiveMinimum": 0,
+      "title": "Node Count",
+      "type": "integer"
+    },
+    "normalized_expression": {
+      "minLength": 1,
+      "title": "Normalized Expression",
+      "type": "string"
+    },
+    "parameter_count": {
+      "minimum": 0,
+      "title": "Parameter Count",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "normalized_expression",
+    "fields",
+    "lookback_sessions",
+    "node_count",
+    "max_depth",
+    "parameter_count"
+  ],
+  "title": "AuditSummary",
+  "type": "object"
+}

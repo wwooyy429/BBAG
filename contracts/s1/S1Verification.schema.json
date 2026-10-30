@@ -1,0 +1,200 @@
+{
+  "$defs": {
+    "S1CheckRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "command": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Command",
+          "type": "array"
+        },
+        "duration_seconds": {
+          "minimum": 0,
+          "title": "Duration Seconds",
+          "type": "number"
+        },
+        "exit_code": {
+          "title": "Exit Code",
+          "type": "integer"
+        },
+        "expected_exit_code": {
+          "title": "Expected Exit Code",
+          "type": "integer"
+        },
+        "name": {
+          "enum": [
+            "pip_check",
+            "pytest",
+            "audit",
+            "schemas_s0",
+            "schemas_s1",
+            "factors_batch",
+            "factors_incremental",
+            "labels",
+            "reference_check",
+            "pending_review_gate"
+          ],
+          "title": "Name",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "started_at_utc": {
+          "format": "date-time",
+          "title": "Started At Utc",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "command",
+        "exit_code",
+        "expected_exit_code",
+        "passed",
+        "started_at_utc",
+        "duration_seconds"
+      ],
+      "title": "S1CheckRecord",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "checks": {
+      "items": {
+        "$ref": "#/$defs/S1CheckRecord"
+      },
+      "maxItems": 10,
+      "minItems": 10,
+      "title": "Checks",
+      "type": "array"
+    },
+    "code_commit_end": {
+      "pattern": "^[0-9a-fA-F]{40}$",
+      "title": "Code Commit End",
+      "type": "string"
+    },
+    "dependency_lock_sha256": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Dependency Lock Sha256",
+      "type": "string"
+    },
+    "developer_checks_passed": {
+      "title": "Developer Checks Passed",
+      "type": "boolean"
+    },
+    "economic_evidence": {
+      "const": "NOT_APPLICABLE",
+      "default": "NOT_APPLICABLE",
+      "title": "Economic Evidence",
+      "type": "string"
+    },
+    "generated_at_utc": {
+      "format": "date-time",
+      "title": "Generated At Utc",
+      "type": "string"
+    },
+    "implementation_commit": {
+      "pattern": "^[0-9a-fA-F]{40}$",
+      "title": "Implementation Commit",
+      "type": "string"
+    },
+    "independent_review": {
+      "const": "PENDING",
+      "default": "PENDING",
+      "title": "Independent Review",
+      "type": "string"
+    },
+    "next_stage_authorized": {
+      "const": false,
+      "default": false,
+      "title": "Next Stage Authorized",
+      "type": "boolean"
+    },
+    "platform": {
+      "minLength": 1,
+      "title": "Platform",
+      "type": "string"
+    },
+    "platform_integration": {
+      "const": "NOT_APPLICABLE",
+      "default": "NOT_APPLICABLE",
+      "title": "Platform Integration",
+      "type": "string"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "python": {
+      "minLength": 1,
+      "title": "Python",
+      "type": "string"
+    },
+    "python_executable": {
+      "minLength": 1,
+      "title": "Python Executable",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "stage": {
+      "const": "S1",
+      "default": "S1",
+      "title": "Stage",
+      "type": "string"
+    },
+    "status": {
+      "const": "DRAFT",
+      "default": "DRAFT",
+      "title": "Status",
+      "type": "string"
+    },
+    "subprocess_output_encoding": {
+      "minLength": 1,
+      "title": "Subprocess Output Encoding",
+      "type": "string"
+    },
+    "working_tree_dirty": {
+      "title": "Working Tree Dirty",
+      "type": "boolean"
+    },
+    "working_tree_dirty_end": {
+      "title": "Working Tree Dirty End",
+      "type": "boolean"
+    },
+    "working_tree_dirty_start": {
+      "title": "Working Tree Dirty Start",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "implementation_commit",
+    "working_tree_dirty",
+    "working_tree_dirty_start",
+    "working_tree_dirty_end",
+    "code_commit_end",
+    "generated_at_utc",
+    "python",
+    "python_executable",
+    "platform",
+    "dependency_lock_sha256",
+    "subprocess_output_encoding",
+    "checks",
+    "developer_checks_passed"
+  ],
+  "title": "S1Verification",
+  "type": "object"
+}

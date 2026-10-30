@@ -1,0 +1,411 @@
+{
+  "schema_version": "1.0",
+  "purpose": "ENGINEERING_TEST",
+  "status": "DRAFT",
+  "reference_method": "Factor ranks hand-enumerated; price excess returns by independent integer rational cross products",
+  "absolute_tolerance": 1e-12,
+  "relative_tolerance": 1e-12,
+  "factor_rows": [
+    {
+      "session": "2024-01-02",
+      "asset": "A",
+      "value": null,
+      "signal_at": "2024-01-02T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-02",
+      "asset": "B",
+      "value": null,
+      "signal_at": "2024-01-02T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-02",
+      "asset": "C",
+      "value": null,
+      "signal_at": "2024-01-02T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-03",
+      "asset": "A",
+      "value": null,
+      "signal_at": "2024-01-03T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-03",
+      "asset": "B",
+      "value": null,
+      "signal_at": "2024-01-03T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-03",
+      "asset": "C",
+      "value": null,
+      "signal_at": "2024-01-03T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-04",
+      "asset": "A",
+      "value": 0,
+      "signal_at": "2024-01-04T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-04",
+      "asset": "B",
+      "value": 0.5,
+      "signal_at": "2024-01-04T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-04",
+      "asset": "C",
+      "value": 1,
+      "signal_at": "2024-01-04T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-05",
+      "asset": "A",
+      "value": 0.5,
+      "signal_at": "2024-01-05T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-05",
+      "asset": "B",
+      "value": 0,
+      "signal_at": "2024-01-05T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-05",
+      "asset": "C",
+      "value": 1,
+      "signal_at": "2024-01-05T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-08",
+      "asset": "A",
+      "value": 1,
+      "signal_at": "2024-01-08T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-08",
+      "asset": "B",
+      "value": 0.5,
+      "signal_at": "2024-01-08T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-08",
+      "asset": "C",
+      "value": 0,
+      "signal_at": "2024-01-08T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-09",
+      "asset": "A",
+      "value": 1,
+      "signal_at": "2024-01-09T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-09",
+      "asset": "B",
+      "value": 0.5,
+      "signal_at": "2024-01-09T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-09",
+      "asset": "C",
+      "value": 0,
+      "signal_at": "2024-01-09T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-10",
+      "asset": "A",
+      "value": 0.5,
+      "signal_at": "2024-01-10T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-10",
+      "asset": "B",
+      "value": 1,
+      "signal_at": "2024-01-10T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-10",
+      "asset": "C",
+      "value": 0,
+      "signal_at": "2024-01-10T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-11",
+      "asset": "A",
+      "value": 0,
+      "signal_at": "2024-01-11T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-11",
+      "asset": "B",
+      "value": 1,
+      "signal_at": "2024-01-11T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-11",
+      "asset": "C",
+      "value": null,
+      "signal_at": "2024-01-11T21:05:00+00:00"
+    }
+  ],
+  "label_rows": [
+    {
+      "session": "2024-01-02",
+      "asset": "A",
+      "status": "MATURED",
+      "numerator": 100,
+      "denominator": 5151,
+      "entry_at": "2024-01-03T14:30:00+00:00",
+      "exit_at": "2024-01-05T14:30:00+00:00",
+      "mature_at": "2024-01-05T21:01:00+00:00",
+      "signal_at": "2024-01-02T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-02",
+      "asset": "B",
+      "status": "MATURED",
+      "numerator": 51,
+      "denominator": 2525,
+      "entry_at": "2024-01-03T14:30:00+00:00",
+      "exit_at": "2024-01-05T14:30:00+00:00",
+      "mature_at": "2024-01-05T21:01:00+00:00",
+      "signal_at": "2024-01-02T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-02",
+      "asset": "C",
+      "status": "MATURED",
+      "numerator": -2,
+      "denominator": 101,
+      "entry_at": "2024-01-03T14:30:00+00:00",
+      "exit_at": "2024-01-05T14:30:00+00:00",
+      "mature_at": "2024-01-05T21:01:00+00:00",
+      "signal_at": "2024-01-02T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-03",
+      "asset": "A",
+      "status": "MATURED",
+      "numerator": 25,
+      "denominator": 1326,
+      "entry_at": "2024-01-04T14:30:00+00:00",
+      "exit_at": "2024-01-08T14:30:00+00:00",
+      "mature_at": "2024-01-08T21:01:00+00:00",
+      "signal_at": "2024-01-03T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-03",
+      "asset": "B",
+      "status": "MATURED",
+      "numerator": 1,
+      "denominator": 51,
+      "entry_at": "2024-01-04T14:30:00+00:00",
+      "exit_at": "2024-01-08T14:30:00+00:00",
+      "mature_at": "2024-01-08T21:01:00+00:00",
+      "signal_at": "2024-01-03T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-03",
+      "asset": "C",
+      "status": "MATURED",
+      "numerator": 3,
+      "denominator": 136,
+      "entry_at": "2024-01-04T14:30:00+00:00",
+      "exit_at": "2024-01-08T14:30:00+00:00",
+      "mature_at": "2024-01-08T21:01:00+00:00",
+      "signal_at": "2024-01-03T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-04",
+      "asset": "A",
+      "status": "MATURED",
+      "numerator": 100,
+      "denominator": 5459,
+      "entry_at": "2024-01-05T14:30:00+00:00",
+      "exit_at": "2024-01-09T14:30:00+00:00",
+      "mature_at": "2024-01-09T21:01:00+00:00",
+      "signal_at": "2024-01-04T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-04",
+      "asset": "B",
+      "status": "MATURED",
+      "numerator": 51,
+      "denominator": 2678,
+      "entry_at": "2024-01-05T14:30:00+00:00",
+      "exit_at": "2024-01-09T14:30:00+00:00",
+      "mature_at": "2024-01-09T21:01:00+00:00",
+      "signal_at": "2024-01-04T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-04",
+      "asset": "C",
+      "status": "MATURED",
+      "numerator": 108,
+      "denominator": 5047,
+      "entry_at": "2024-01-05T14:30:00+00:00",
+      "exit_at": "2024-01-09T14:30:00+00:00",
+      "mature_at": "2024-01-09T21:01:00+00:00",
+      "signal_at": "2024-01-04T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-05",
+      "asset": "A",
+      "status": "MATURED",
+      "numerator": 25,
+      "denominator": 1404,
+      "entry_at": "2024-01-08T14:30:00+00:00",
+      "exit_at": "2024-01-10T14:30:00+00:00",
+      "mature_at": "2024-01-10T21:01:00+00:00",
+      "signal_at": "2024-01-05T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-05",
+      "asset": "B",
+      "status": "MATURED",
+      "numerator": 51,
+      "denominator": 2756,
+      "entry_at": "2024-01-08T14:30:00+00:00",
+      "exit_at": "2024-01-10T14:30:00+00:00",
+      "mature_at": "2024-01-10T21:01:00+00:00",
+      "signal_at": "2024-01-05T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-05",
+      "asset": "C",
+      "status": "MATURED",
+      "numerator": 27,
+      "denominator": 1300,
+      "entry_at": "2024-01-08T14:30:00+00:00",
+      "exit_at": "2024-01-10T14:30:00+00:00",
+      "mature_at": "2024-01-10T21:01:00+00:00",
+      "signal_at": "2024-01-05T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-08",
+      "asset": "A",
+      "status": "MATURED",
+      "numerator": 4,
+      "denominator": 231,
+      "entry_at": "2024-01-09T14:30:00+00:00",
+      "exit_at": "2024-01-11T14:30:00+00:00",
+      "mature_at": "2024-01-11T21:01:00+00:00",
+      "signal_at": "2024-01-08T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-08",
+      "asset": "B",
+      "status": "MATURED",
+      "numerator": 17,
+      "denominator": 945,
+      "entry_at": "2024-01-09T14:30:00+00:00",
+      "exit_at": "2024-01-11T14:30:00+00:00",
+      "mature_at": "2024-01-11T21:01:00+00:00",
+      "signal_at": "2024-01-08T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-08",
+      "asset": "C",
+      "status": "MATURED",
+      "numerator": 12,
+      "denominator": 595,
+      "entry_at": "2024-01-09T14:30:00+00:00",
+      "exit_at": "2024-01-11T14:30:00+00:00",
+      "mature_at": "2024-01-11T21:01:00+00:00",
+      "signal_at": "2024-01-08T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-09",
+      "asset": "A",
+      "status": "INSUFFICIENT_FUTURE",
+      "value": null,
+      "signal_at": "2024-01-09T21:05:00+00:00",
+      "entry_at": "2024-01-10T14:30:00+00:00",
+      "exit_at": null,
+      "mature_at": null
+    },
+    {
+      "session": "2024-01-09",
+      "asset": "B",
+      "status": "INSUFFICIENT_FUTURE",
+      "value": null,
+      "signal_at": "2024-01-09T21:05:00+00:00",
+      "entry_at": "2024-01-10T14:30:00+00:00",
+      "exit_at": null,
+      "mature_at": null
+    },
+    {
+      "session": "2024-01-09",
+      "asset": "C",
+      "status": "INSUFFICIENT_FUTURE",
+      "value": null,
+      "signal_at": "2024-01-09T21:05:00+00:00",
+      "entry_at": "2024-01-10T14:30:00+00:00",
+      "exit_at": null,
+      "mature_at": null
+    },
+    {
+      "session": "2024-01-10",
+      "asset": "A",
+      "status": "INSUFFICIENT_FUTURE",
+      "value": null,
+      "signal_at": "2024-01-10T21:05:00+00:00",
+      "entry_at": "2024-01-11T14:30:00+00:00",
+      "exit_at": null,
+      "mature_at": null
+    },
+    {
+      "session": "2024-01-10",
+      "asset": "B",
+      "status": "INSUFFICIENT_FUTURE",
+      "value": null,
+      "signal_at": "2024-01-10T21:05:00+00:00",
+      "entry_at": "2024-01-11T14:30:00+00:00",
+      "exit_at": null,
+      "mature_at": null
+    },
+    {
+      "session": "2024-01-10",
+      "asset": "C",
+      "status": "INSUFFICIENT_FUTURE",
+      "value": null,
+      "signal_at": "2024-01-10T21:05:00+00:00",
+      "entry_at": "2024-01-11T14:30:00+00:00",
+      "exit_at": null,
+      "mature_at": null
+    },
+    {
+      "session": "2024-01-11",
+      "asset": "A",
+      "status": "INSUFFICIENT_FUTURE",
+      "value": null,
+      "signal_at": "2024-01-11T21:05:00+00:00",
+      "entry_at": null,
+      "exit_at": null,
+      "mature_at": null
+    },
+    {
+      "session": "2024-01-11",
+      "asset": "B",
+      "status": "INSUFFICIENT_FUTURE",
+      "value": null,
+      "signal_at": "2024-01-11T21:05:00+00:00",
+      "entry_at": null,
+      "exit_at": null,
+      "mature_at": null
+    },
+    {
+      "session": "2024-01-11",
+      "asset": "C",
+      "status": "INSUFFICIENT_FUTURE",
+      "value": null,
+      "signal_at": "2024-01-11T21:05:00+00:00",
+      "entry_at": null,
+      "exit_at": null,
+      "mature_at": null
+    }
+  ]
+}

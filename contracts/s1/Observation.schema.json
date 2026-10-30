@@ -1,0 +1,46 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "asset": {
+      "minLength": 1,
+      "title": "Asset",
+      "type": "string"
+    },
+    "available_at": {
+      "format": "date-time",
+      "title": "Available At",
+      "type": "string"
+    },
+    "session": {
+      "format": "date",
+      "title": "Session",
+      "type": "string"
+    },
+    "values": {
+      "maxProperties": 16,
+      "minProperties": 1,
+      "patternProperties": {
+        "^[A-Za-z][A-Za-z0-9_]{0,63}$": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "title": "Values",
+      "type": "object"
+    }
+  },
+  "required": [
+    "session",
+    "asset",
+    "available_at",
+    "values"
+  ],
+  "title": "Observation",
+  "type": "object"
+}

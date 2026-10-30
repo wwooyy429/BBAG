@@ -1,0 +1,49 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "max_depth": {
+      "default": 16,
+      "maximum": 32,
+      "minimum": 1,
+      "title": "Max Depth",
+      "type": "integer"
+    },
+    "max_lookback_sessions": {
+      "default": 256,
+      "maximum": 512,
+      "minimum": 1,
+      "title": "Max Lookback Sessions",
+      "type": "integer"
+    },
+    "max_nodes": {
+      "default": 128,
+      "maximum": 256,
+      "minimum": 1,
+      "title": "Max Nodes",
+      "type": "integer"
+    },
+    "max_parameters": {
+      "default": 16,
+      "maximum": 64,
+      "minimum": 0,
+      "title": "Max Parameters",
+      "type": "integer"
+    },
+    "max_window": {
+      "default": 64,
+      "maximum": 128,
+      "minimum": 1,
+      "title": "Max Window",
+      "type": "integer"
+    },
+    "max_work_units": {
+      "default": 1000000,
+      "maximum": 5000000,
+      "minimum": 1,
+      "title": "Max Work Units",
+      "type": "integer"
+    }
+  },
+  "title": "AuditLimits",
+  "type": "object"
+}

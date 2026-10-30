@@ -1,4 +1,4 @@
-"""S0-only configuration, schema, provenance and advisory review commands."""
+"""Offline S0/S1 engineering commands and advisory receipt consistency."""
 
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ def emit(value: dict[str, Any], *, error: bool = False) -> None:
 
 
 def parser() -> argparse.ArgumentParser:
-    result = argparse.ArgumentParser(prog="bbag", description="BBAG stage-zero offline engineering commands")
+    result = argparse.ArgumentParser(prog="bbag", description="BBAG offline engineering commands")
     commands = result.add_subparsers(dest="command", required=True)
     validate = commands.add_parser("validate", help="Validate a DRAFT engineering protocol")
     validate.add_argument("--config", required=True, type=Path)
@@ -33,9 +33,20 @@ def parser() -> argparse.ArgumentParser:
     schemas = commands.add_parser("schemas", help="Export or check versioned JSON schemas")
     schemas.add_argument("--output-dir", required=True, type=Path)
     schemas.add_argument("--check", action="store_true")
+    schemas.add_argument("--stage", choices=("S0", "S1"), default="S0")
     review = commands.add_parser("check-review", help="Check receipt consistency; never merge or advance a stage")
     review.add_argument("--receipt", required=True, type=Path)
     review.add_argument("--commit", required=True)
+    review.add_argument("--stage", choices=("S0", "S1"), default="S0")
+    audit = commands.add_parser("s1-audit", help="Audit a restricted synthetic factor expression")
+    audit.add_argument("--config", required=True, type=Path)
+    for name in ("s1-factors", "s1-labels"):
+        run = commands.add_parser(name, help="Write an immutable S1 engineering result")
+        run.add_argument("--config", required=True, type=Path)
+        run.add_argument("--output-dir", required=True, type=Path)
+        run.add_argument("--run-id", required=True)
+        if name == "s1-factors":
+            run.add_argument("--mode", choices=("batch", "incremental"), default="batch")
     return result
 
 
@@ -66,9 +77,13 @@ def initialize_command(config: Path, output_dir: Path, run_id: str) -> int:
     return 0
 
 
-def schemas_command(output_dir: Path, check: bool) -> int:
+def schemas_command(output_dir: Path, check: bool, stage: str = "S0") -> int:
+    models = CONTRACT_MODELS
+    if stage == "S1":
+        from .s1_contracts import S1_CONTRACT_MODELS
+        models = S1_CONTRACT_MODELS
     expected: dict[str, bytes] = {}
-    for name, model in sorted(CONTRACT_MODELS.items()):
+    for name, model in sorted(models.items()):
         expected[f"{name}.schema.json"] = json_bytes(model.model_json_schema()) + b"\n"
     if check:
         actual = {path.name for path in output_dir.glob("*.schema.json")}
@@ -85,7 +100,7 @@ def schemas_command(output_dir: Path, check: bool) -> int:
     return 0
 
 
-def review_command(receipt_path: Path, commit: str) -> int:
+def review_command(receipt_path: Path, commit: str, stage: str = "S0") -> int:
     if not SHA_PATTERN.fullmatch(commit):
         raise ValueError("commit must be a full lowercase 40-character Git SHA")
     base: dict[str, Any] = {
@@ -96,7 +111,11 @@ def review_command(receipt_path: Path, commit: str) -> int:
         emit({**base, "receipt_structurally_passed": False, "reason": "review_receipt_missing"})
         return 3
     # Parse strictly before JSON-mode contract validation (which accepts ISO timestamps).
-    receipt = ReviewReceipt.model_validate_json(json.dumps(read_json_object(receipt_path), allow_nan=False))
+    receipt_model = ReviewReceipt
+    if stage == "S1":
+        from .s1_contracts import S1ReviewReceipt
+        receipt_model = S1ReviewReceipt
+    receipt = receipt_model.model_validate_json(json.dumps(read_json_object(receipt_path), allow_nan=False))
     reasons = []
     if receipt.audited_commit != commit:
         reasons.append("review_commit_mismatch")
@@ -122,10 +141,20 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "init-experiment":
             return initialize_command(args.config, args.output_dir, args.run_id)
         if args.command == "schemas":
-            return schemas_command(args.output_dir, args.check)
+            return schemas_command(args.output_dir, args.check, args.stage)
         if args.command == "check-review":
-            return review_command(args.receipt, args.commit)
-        raise ValueError("unsupported S0 command")
+            return review_command(args.receipt, args.commit, args.stage)
+        if args.command.startswith("s1-"):
+            from . import s1_cli
+            if args.command == "s1-audit":
+                output = s1_cli.audit_command(args.config)
+            elif args.command == "s1-factors":
+                output = s1_cli.factor_command(args.config, args.output_dir, args.run_id, args.mode)
+            else:
+                output = s1_cli.label_command(args.config, args.output_dir, args.run_id)
+            emit(output)
+            return 0
+        raise ValueError("unsupported engineering command")
     except ValidationError as exc:
         errors = [{"path": list(item["loc"]), "message": item["msg"], "type": item["type"]}
                   for item in exc.errors(include_input=False, include_url=False)]

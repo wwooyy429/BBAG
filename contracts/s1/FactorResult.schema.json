@@ -1,0 +1,163 @@
+{
+  "$defs": {
+    "AuditSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "fields": {
+          "items": {
+            "pattern": "^[A-Za-z][A-Za-z0-9_]{0,63}$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Fields",
+          "type": "array"
+        },
+        "lookback_sessions": {
+          "exclusiveMinimum": 0,
+          "title": "Lookback Sessions",
+          "type": "integer"
+        },
+        "max_depth": {
+          "exclusiveMinimum": 0,
+          "title": "Max Depth",
+          "type": "integer"
+        },
+        "node_count": {
+          "exclusiveMinimum": 0,
+          "title": "Node Count",
+          "type": "integer"
+        },
+        "normalized_expression": {
+          "minLength": 1,
+          "title": "Normalized Expression",
+          "type": "string"
+        },
+        "parameter_count": {
+          "minimum": 0,
+          "title": "Parameter Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "normalized_expression",
+        "fields",
+        "lookback_sessions",
+        "node_count",
+        "max_depth",
+        "parameter_count"
+      ],
+      "title": "AuditSummary",
+      "type": "object"
+    },
+    "FactorValue": {
+      "additionalProperties": false,
+      "properties": {
+        "asset": {
+          "minLength": 1,
+          "title": "Asset",
+          "type": "string"
+        },
+        "session": {
+          "format": "date",
+          "title": "Session",
+          "type": "string"
+        },
+        "signal_at": {
+          "format": "date-time",
+          "title": "Signal At",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "session",
+        "asset",
+        "signal_at",
+        "value"
+      ],
+      "title": "FactorValue",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "audit": {
+      "$ref": "#/$defs/AuditSummary"
+    },
+    "data_id": {
+      "minLength": 1,
+      "title": "Data Id",
+      "type": "string"
+    },
+    "factor_id": {
+      "minLength": 1,
+      "title": "Factor Id",
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "batch",
+        "incremental"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "rows": {
+      "items": {
+        "$ref": "#/$defs/FactorValue"
+      },
+      "maxItems": 8192,
+      "title": "Rows",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "stage": {
+      "const": "S1",
+      "default": "S1",
+      "title": "Stage",
+      "type": "string"
+    },
+    "status": {
+      "const": "DRAFT",
+      "default": "DRAFT",
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "data_id",
+    "factor_id",
+    "as_of",
+    "mode",
+    "audit",
+    "rows"
+  ],
+  "title": "FactorResult",
+  "type": "object"
+}
