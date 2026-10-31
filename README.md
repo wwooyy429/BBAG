@@ -4,6 +4,8 @@ BBAG 的完整目标是由 GPT 提出经济假设，经 QuantConnect Research �
 
 本分支的交付状态以绑定 commit SHA 的开发报告和真实验证日志为准。负责人已核实并接受 `259962860d2301ead894c5d649a29eab1f8db1ac` 的 S0/S1 独立批准，授权合并为 `7aac4886b50493c09235c49b5de90643b7090e07` 并恢复 S2。S0-004、S0-N01、S1-001、S1-002 关闭记录保留；旧失败记录不改写。S2 正在集成该基线，范围及未完成项见 [恢复记录](docs/S2_RESUMPTION.md)。S2 新实现独立审核保持 PENDING，不自动合并或进入 S3。
 
+S2 首轮子里程碑 `93ca41169420da474f139bdcf89ae73e0eb73350` 的独立审核为 **CHANGES_REQUIRED / 工程 FAIL**，三个 P2 阻断为 S2-001 UNKNOWN 恢复、S2-002 已知检查结论保持、S2-003 固定结果完整复核。当前仅修复这三项并重新交审，见 [修复说明](docs/S2_AUDIT_REMEDIATION.md)；新 SHA 独立结论仍为 PENDING，旧 S0/S1 批准不覆盖 S2。
+
 S2 接口、白名单、许可与未验证边界见 [S2规范](docs/STAGE2.md)。本地使用合成数据；真实数据留在 QuantConnect Cloud，仅返回固定控制状态。原白名单及累计上限不变：2020-01-02 至 2020-01-10 的 SPY/AAPL，编译最多 2 次、Research 最多 3 次、零新增费用。已用编译 2/2、Research 2/3，剩余 0/1；不因本次集成或新台账重置。四次历史调用的实际账单未知，不冒称费用为零。本轮离线集成不新增平台调用。
 
 ## 本地运行
@@ -32,6 +34,7 @@ Linux 或 macOS 可用 `python3 -m venv .venv` 建立环境，并将后续解释
 - [S1 算子、时间、标签与交付规范](docs/STAGE1.md)
 - [S1 验收、锁修复与实际合并](docs/S1_ACCEPTANCE.md)
 - [S2 恢复、累计预算与证据边界](docs/S2_RESUMPTION.md)
+- [S2 独立审核三项阻断修复](docs/S2_AUDIT_REMEDIATION.md)
 - [S0 补充材料核对与修补](docs/S0_SUPPLEMENT_CHECK.md)
 - [研究协议与待确定参数](docs/RESEARCH_PROTOCOL.md)
 - [Git 与独立审核流程](docs/GIT_WORKFLOW.md)

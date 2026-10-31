@@ -775,6 +775,7 @@ class TaskLedger:
     def record_event(
         self, attempt_id: str, event_id: str, response: TaskResponse, *, raw_metadata: bytes | None = None
     ) -> TaskRecord:
+        """Fold ordinary metadata without treating an unidentified error as resolution."""
         try:
             response = TaskResponse.model_validate(response)
         except (ValidationError, ValueError, TypeError):
@@ -800,10 +801,19 @@ class TaskLedger:
                 if response.actual_cost_microusd not in {None, previous.actual_cost_microusd}:
                     raise TaskLedgerError("confirmed cost cannot change within an attempt")
                 updates["actual_cost_microusd"] = previous.actual_cost_microusd
-            candidate = TaskAttempt.model_validate(previous.model_copy(update=updates))
+            # Only an effective available/completed result establishes a verdict.
+            # An unconfirmed no-ID claim remains UNKNOWN and is not execution proof.
+            if previous.status in {"result_available", "completed"} and previous.check_passed is not None:
+                if response.check_passed is not None and response.check_passed != previous.check_passed:
+                    raise TaskLedgerError("known check verdict cannot change within an attempt")
+                updates["check_passed"] = previous.check_passed
+            # Inspect the merged typed IDs before folding status. The complete
+            # effective attempt is validated below, before any event is written.
+            candidate = previous.model_copy(update=updates)
             status = response.status
             if (spec.operation in _ASYNC_OPERATIONS and not self._has_execution_id(candidate)
-                    and status not in {"UNKNOWN", "error", "incomplete"}):
+                    and previous.sync_confirmation is None
+                    and status not in {"UNKNOWN", "incomplete"}):
                 status = "UNKNOWN"
             if (previous.status == "UNKNOWN" and status == "incomplete"
                     and not self._has_execution_id(candidate)):

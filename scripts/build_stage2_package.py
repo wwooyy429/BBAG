@@ -253,7 +253,11 @@ def validate_evidence(evidence: Path, commit: str, root: Path | None = None) -> 
             or result.universe.as_of != config.request.as_of or result.quality.as_of != config.request.as_of):
         raise ValueError("S2 result request/data/as_of differs from the fixed source config")
     validate_ledger(directory, config, result, commit)
-    if reference_check(root, evidence).get("reference_passed") is not True:
+    reference = reference_check(root, evidence)
+    if (reference.get("reference_passed") is not True or reference.get("provider") != "SYNTHETIC"
+            or reference.get("universe_rows") != len(result.universe.rows)
+            or reference.get("quality_rows") != len(result.quality.rows)
+            or reference.get("projected_s1_panel_sha256") != result.projected_s1_panel_sha256):
         raise ValueError("S2 fixed independent reference comparison failed")
     return verification.model_dump(mode="json"), receipt.model_dump(mode="json"), counts
 
@@ -267,6 +271,8 @@ def development_report(root: Path, evidence: Path, commit: str, verification: di
 准确实现 SHA：`{commit}`。源码提交后生成；独立审核保持 PENDING，S3 未获授权，不合并本次 S2。
 
 前置 S1 被审实现：`{S1_REVIEWED_SHA}`；负责人授权的 S1 合并结果：`{S1_MERGE_SHA}`。本轮将这项已审基础修复集成回 S2；其批准不能覆盖本次 S2，新版本仍须独立复审。
+
+S2 首轮提交 93ca41169420da474f139bdcf89ae73e0eb73350 的独立结论为 CHANGES_REQUIRED / 工程 FAIL，三个 P2 为 S2-001 UNKNOWN 恢复、S2-002 已知检查结论保持、S2-003 固定结果完整复核。本包交审的是这些修复的新准确 SHA，开发自测不产生独立关闭。原失败、平台 NOT_RUN、经济 NOT_APPLICABLE 和基础四项关闭记录保留，范围见 docs/S2_AUDIT_REMEDIATION.md。
 
 本包包含原始美股日频标准契约、显式交易日历、SID/更名/退市及 known_at 成员事件、原始公司行动元数据与单事件持仓权益、滞后流动性、缺失/陈旧/异常覆盖检查、synthetic-only S1 投影、运行时访问/派生隔离、云端控制回执桥接与持久任务/预算/未知状态控制。真实云端原始及可重建数据必须留在云内；本地 gateway 仅接受严格控制元数据。配置文件不授予运行时访问权，外部回执导入不认证来源。
 
@@ -329,6 +335,10 @@ def main() -> int:
 准确 SHA：`{commit}`；独立审核 PENDING。前置 S1 被审 `{S1_REVIEWED_SHA}`、合并 `{S1_MERGE_SHA}` 单独记录。
 
 核对清单、Git/source.zip、锁、配置/原始夹具/手工标准答案与十项实际检查；独立构造日期、类型、字段、extra/duplicate JSON、可用时点、未来扰动、SID 更名/退市、公司行动原始口径、历史成员、滞后流动性、质量、sealed/派生/缓存/batch/export 防绕过、策略伪造、云内数据边界、预算/未知任务/重复完成与恢复反例。检查 raw控制 metadata/SQLite/源 SHA/config/request 哈希，不能凭未认证导入确认平台通过。
+
+重点独立复测 docs/S2_AUDIT_REMEDIATION.md 的三个 P2：无 ID 超时后普通 error 导入不解除 UNKNOWN，重试和并发仍阻止；合法 ID/同步观察/未提交核查保持；已确认 result_available/completed 的 False/True 不被后事件反转，None 省略不擦除，未知首次补齐/补账单/省略 ID/幂等保持，矛盾拒绝时 DB 与 raw 目录不变。对完整 CLI 仅污染固定 result 并正确重算 run 摘要：session、signal_at、逐行质量/汇总和投影 hash 的错误均须 JSON 退出 2、在新交付 mkdir/source archive/ZIP 前停止，旧哨兵不变；正确输入跨 cwd 继续成功。原审核字面数学答案、原失败与旧 SHA 不改写。
+
+本轮修复和复审不增加平台调用，不消耗最后一次 Research、不上传触发编译；累计 compile 2/2、Research 2/3、账单未知保持。S2-N01 快照时钟观察及 S0-N02 历史 P3 继续非阻断待办，不假称已修复。S0-004、S0-N01、S1-001、S1-002 的历史关闭保持；当前三个 S2 P2 是否关闭由本 SHA 独立实测决定。
 
 逐项记录 EXECUTED/STATIC_ONLY/NOT_RUN、预期/实际、退出码及原始证据。真实平台验收仅依据实际授权范围内的真实任务，许可数据留云内，不能从本包合成验证推定 PASS。经济 NOT_APPLICABLE；保留 S6.4 与最终派生隔离。填写绑定本 SHA 的 S2 回执；不得合并、启动 S3 或自动改变权限。
 """, encoding="utf-8")
