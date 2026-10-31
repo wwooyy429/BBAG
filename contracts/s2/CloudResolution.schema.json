@@ -1,0 +1,412 @@
+{
+  "$defs": {
+    "CloudAliasBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "alias": {
+          "enum": [
+            "SPY",
+            "AAPL"
+          ],
+          "title": "Alias",
+          "type": "string"
+        },
+        "known_at": {
+          "format": "date-time",
+          "title": "Known At",
+          "type": "string"
+        },
+        "sid": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Sid",
+          "type": "string"
+        },
+        "valid_from": {
+          "format": "date",
+          "title": "Valid From",
+          "type": "string"
+        },
+        "valid_to": {
+          "format": "date",
+          "title": "Valid To",
+          "type": "string"
+        }
+      },
+      "required": [
+        "alias",
+        "sid",
+        "valid_from",
+        "valid_to",
+        "known_at"
+      ],
+      "title": "CloudAliasBinding",
+      "type": "object"
+    },
+    "CloudMetadataCoverage": {
+      "additionalProperties": false,
+      "properties": {
+        "corporate_actions": {
+          "enum": [
+            "NOT_PROVIDED",
+            "PROVIDED_EMPTY",
+            "PROVIDED_NONEMPTY"
+          ],
+          "title": "Corporate Actions",
+          "type": "string"
+        },
+        "disclosure_revision": {
+          "const": "UNVERIFIED",
+          "default": "UNVERIFIED",
+          "title": "Disclosure Revision",
+          "type": "string"
+        },
+        "identity_knowledge": {
+          "enum": [
+            "PROVIDER_DOCUMENTED",
+            "UNVERIFIED"
+          ],
+          "title": "Identity Knowledge",
+          "type": "string"
+        },
+        "independent_platform_review": {
+          "const": "PENDING",
+          "default": "PENDING",
+          "title": "Independent Platform Review",
+          "type": "string"
+        },
+        "membership": {
+          "enum": [
+            "NOT_PROVIDED",
+            "PROVIDED_EMPTY",
+            "PROVIDED_NONEMPTY"
+          ],
+          "title": "Membership",
+          "type": "string"
+        }
+      },
+      "required": [
+        "identity_knowledge",
+        "membership",
+        "corporate_actions"
+      ],
+      "title": "CloudMetadataCoverage",
+      "type": "object"
+    },
+    "CloudSourceBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "config_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Config Sha256",
+          "type": "string"
+        },
+        "owner_policy_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Owner Policy Sha256",
+          "type": "string"
+        },
+        "project_id": {
+          "exclusiveMinimum": 0,
+          "title": "Project Id",
+          "type": "integer"
+        },
+        "request_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Request Sha256",
+          "type": "string"
+        },
+        "source_commit": {
+          "pattern": "^[0-9a-fA-F]{40}$",
+          "title": "Source Commit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "source_commit",
+        "config_sha256",
+        "request_sha256",
+        "owner_policy_sha256"
+      ],
+      "title": "CloudSourceBinding",
+      "type": "object"
+    },
+    "CorporateAction": {
+      "additionalProperties": false,
+      "properties": {
+        "cash_per_share": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cash Per Share"
+        },
+        "effective_on": {
+          "format": "date",
+          "title": "Effective On",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "SPLIT",
+            "DIVIDEND"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "known_at": {
+          "format": "date-time",
+          "title": "Known At",
+          "type": "string"
+        },
+        "shares_after_per_before": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Shares After Per Before"
+        },
+        "sid": {
+          "minLength": 1,
+          "title": "Sid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sid",
+        "kind",
+        "effective_on",
+        "known_at"
+      ],
+      "title": "CorporateAction",
+      "type": "object"
+    },
+    "MembershipEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "effective_on": {
+          "format": "date",
+          "title": "Effective On",
+          "type": "string"
+        },
+        "known_at": {
+          "format": "date-time",
+          "title": "Known At",
+          "type": "string"
+        },
+        "member": {
+          "title": "Member",
+          "type": "boolean"
+        },
+        "sid": {
+          "minLength": 1,
+          "title": "Sid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sid",
+        "effective_on",
+        "member",
+        "known_at"
+      ],
+      "title": "MembershipEvent",
+      "type": "object"
+    },
+    "SecurityIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "delisted_on": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Delisted On"
+        },
+        "delisting_known_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Delisting Known At"
+        },
+        "known_at": {
+          "format": "date-time",
+          "title": "Known At",
+          "type": "string"
+        },
+        "listed_from": {
+          "format": "date",
+          "title": "Listed From",
+          "type": "string"
+        },
+        "sid": {
+          "minLength": 1,
+          "title": "Sid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sid",
+        "listed_from",
+        "known_at"
+      ],
+      "title": "SecurityIdentity",
+      "type": "object"
+    },
+    "TickerMapping": {
+      "additionalProperties": false,
+      "properties": {
+        "known_at": {
+          "format": "date-time",
+          "title": "Known At",
+          "type": "string"
+        },
+        "sid": {
+          "minLength": 1,
+          "title": "Sid",
+          "type": "string"
+        },
+        "ticker": {
+          "minLength": 1,
+          "title": "Ticker",
+          "type": "string"
+        },
+        "valid_from": {
+          "format": "date",
+          "title": "Valid From",
+          "type": "string"
+        },
+        "valid_to": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid To"
+        },
+        "valid_to_known_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid To Known At"
+        }
+      },
+      "required": [
+        "sid",
+        "ticker",
+        "valid_from",
+        "known_at"
+      ],
+      "title": "TickerMapping",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "aliases": {
+      "items": {
+        "$ref": "#/$defs/CloudAliasBinding"
+      },
+      "maxItems": 2,
+      "minItems": 1,
+      "title": "Aliases",
+      "type": "array"
+    },
+    "binding": {
+      "$ref": "#/$defs/CloudSourceBinding"
+    },
+    "corporate_actions": {
+      "items": {
+        "$ref": "#/$defs/CorporateAction"
+      },
+      "maxItems": 128,
+      "title": "Corporate Actions",
+      "type": "array"
+    },
+    "coverage": {
+      "$ref": "#/$defs/CloudMetadataCoverage"
+    },
+    "identities": {
+      "items": {
+        "$ref": "#/$defs/SecurityIdentity"
+      },
+      "maxItems": 2,
+      "minItems": 1,
+      "title": "Identities",
+      "type": "array"
+    },
+    "identity_data_version": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Identity Data Version",
+      "type": "string"
+    },
+    "membership": {
+      "items": {
+        "$ref": "#/$defs/MembershipEvent"
+      },
+      "maxItems": 128,
+      "title": "Membership",
+      "type": "array"
+    },
+    "tickers": {
+      "items": {
+        "$ref": "#/$defs/TickerMapping"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Tickers",
+      "type": "array"
+    }
+  },
+  "required": [
+    "binding",
+    "identity_data_version",
+    "aliases",
+    "identities",
+    "tickers",
+    "membership",
+    "corporate_actions",
+    "coverage"
+  ],
+  "title": "CloudResolution",
+  "type": "object"
+}

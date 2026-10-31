@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "stage": "S2",
+  "purpose": "ENGINEERING_TEST",
+  "status": "DRAFT",
+  "project_id": 38698074,
+  "source_commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "config_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "owner_policy_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "request": {
+    "provider": "QUANTCONNECT_CLOUD",
+    "start": "2020-01-02",
+    "end": "2020-01-10",
+    "assets": ["SPY", "AAPL"],
+    "fields": ["open", "high", "low", "close", "volume"],
+    "as_of": "2020-01-10T22:00:00Z",
+    "purpose": "ENGINEERING_TEST",
+    "classification": "DEVELOPMENT",
+    "derived_from": [],
+    "output_mode": "IN_CLOUD_DATA"
+  },
+  "max_history_rows": 32
+}

@@ -1,0 +1,94 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "alias_sid_binding": {
+      "const": "PASS",
+      "default": "PASS",
+      "title": "Alias Sid Binding",
+      "type": "string"
+    },
+    "cloud_cache_persistence": {
+      "const": "NOT_RUN",
+      "default": "NOT_RUN",
+      "title": "Cloud Cache Persistence",
+      "type": "string"
+    },
+    "corporate_action_records": {
+      "enum": [
+        "PASS",
+        "UNVERIFIED"
+      ],
+      "title": "Corporate Action Records",
+      "type": "string"
+    },
+    "declared_calendar_consistency": {
+      "const": "PASS",
+      "default": "PASS",
+      "title": "Declared Calendar Consistency",
+      "type": "string"
+    },
+    "declared_snapshot_clock": {
+      "const": "PASS",
+      "default": "PASS",
+      "title": "Declared Snapshot Clock",
+      "type": "string"
+    },
+    "membership_quality_coverage": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "UNVERIFIED"
+      ],
+      "title": "Membership Quality Coverage",
+      "type": "string"
+    },
+    "membership_records": {
+      "enum": [
+        "PASS",
+        "UNVERIFIED"
+      ],
+      "title": "Membership Records",
+      "type": "string"
+    },
+    "platform_recovery": {
+      "const": "NOT_RUN",
+      "default": "NOT_RUN",
+      "title": "Platform Recovery",
+      "type": "string"
+    },
+    "provider_disclosure_revision_truth": {
+      "const": "UNVERIFIED",
+      "default": "UNVERIFIED",
+      "title": "Provider Disclosure Revision Truth",
+      "type": "string"
+    },
+    "provider_identity_history_truth": {
+      "const": "UNVERIFIED",
+      "default": "UNVERIFIED",
+      "title": "Provider Identity History Truth",
+      "type": "string"
+    },
+    "raw_standardization": {
+      "const": "PASS",
+      "default": "PASS",
+      "title": "Raw Standardization",
+      "type": "string"
+    },
+    "requested_field_coverage": {
+      "enum": [
+        "PASS",
+        "FAIL"
+      ],
+      "title": "Requested Field Coverage",
+      "type": "string"
+    }
+  },
+  "required": [
+    "requested_field_coverage",
+    "membership_quality_coverage",
+    "membership_records",
+    "corporate_action_records"
+  ],
+  "title": "CloudStandardizationChecks",
+  "type": "object"
+}

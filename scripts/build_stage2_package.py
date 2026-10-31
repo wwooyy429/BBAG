@@ -269,6 +269,8 @@ def development_report(root: Path, evidence: Path, commit: str, verification: di
 
 准确实现 SHA：`{commit}`。源码提交后生成；独立审核保持 PENDING，S3 未获授权，不合并本次 S2。
 
+本轮以负责人已接受的 `e412c9d0a3ec9148bab7e1f60ce614d2fa1b1ad2` 为基线；该次局部工程复审已关闭 S2-004，旧失败保留。新增 Cloud-local RAW 标准化与原 alias→SID 映射、固定控制回执、完整历史锚定的预算续接 preview、按准确 Git blob 与静态闭包生成的上传/编译增量计划，详见 docs/S2_CLOUD_PREPARATION.md。新增实现只经离线合成测试，新 SHA 必须独立复审；无 QuantConnect 调用、无增量授权、无真实 grant/新账本/任务，保留最后一次 Research。真实 SDK 查询工厂、供应商知识证据、Cloud 缓存/恢复/性能仍未实现或未平台验证，不宣称整 S2 完成。
+
 前置 S1 被审实现：`{S1_REVIEWED_SHA}`；负责人授权的 S1 合并结果：`{S1_MERGE_SHA}`。本轮将这项已审基础修复集成回 S2；其批准不能覆盖本次 S2，新版本仍须独立复审。
 
 准确 5fe1b62c09216e17f001afde80fbcdfda7c51bdc 的独立本地工程复审已关闭 S2-001、S2-002（含多事件遗漏）、S2-003，负责人已接受并授权继续离线 S2；整阶段仍为 PENDING / IN_PROGRESS。后续 ecf424b06f5b7ef9290011a883e395de3bec7bd1 独立审核为 CHANGES_REQUIRED／工程 FAIL，新增 S2-004（P2）：预算摘要的 A 与实际解析／查询的 B 未绑定。当前修复直接严格解析已核 payload，并从已核数据库字节建立隔离的内存只读查询图像，不继承旧版本批准。93ca/ecf 原失败、中间失败和所有闭项证据保留，范围见 docs/S2_AUDIT_REMEDIATION.md、docs/S2_OFFLINE_CONTINUATION.md 及 docs/S2_004_BYTE_BINDING.md。
@@ -314,7 +316,8 @@ def main() -> int:
     required = ["requirements.lock", "configs/s2.example.json", "configs/s2.cloud-scope.json", "configs/s2.offline-campaign.json",
                 "tests/fixtures/s2_raw.json", "tests/fixtures/s2_expected.json", "scripts/check_stage2_results.py",
                 "scripts/verify_stage2.py", "scripts/build_stage2_package.py"]
-    required.extend(f"src/bbag/{name}.py" for name in ("s2_contracts", "s2_access", "s2_data", "s2_quantconnect", "s2_tasks", "s2_cli", "s2_snapshots", "s2_diagnostics", "s2_readiness"))
+    required.extend(f"src/bbag/{name}.py" for name in ("s2_contracts", "s2_access", "s2_data", "s2_quantconnect", "s2_tasks", "s2_cli", "s2_snapshots", "s2_diagnostics", "s2_readiness", "s2_cloud_data", "s2_cloud_check", "s2_continuation", "s2_upload"))
+    required.extend(("scripts/plan_stage2_upload.py", "scripts/plan_stage2_continuation.py", "scripts/s2_plan_source.py"))
     git(root, "ls-files", "--error-unmatch", "--", *required)
     verification, receipt, counts = validate_evidence(evidence, commit, root)
     paths = git(root, "ls-tree", "-r", "--name-only", commit).splitlines()
@@ -332,6 +335,8 @@ def main() -> int:
     (output / "GPT_WORK_AUDIT_REQUEST.md").write_text(f"""# BBAG S2 独立审核请求
 
 准确 SHA：`{commit}`；独立审核 PENDING。前置 S1 被审 `{S1_REVIEWED_SHA}`、合并 `{S1_MERGE_SHA}` 单独记录。
+
+本次优先按 docs/S2_CLOUD_PREPARATION.md 审核新增离线实现：原alias授权先于resolver/fetcher/SDK factory；不得自造SID owner policy；跨alias/SID/项目/源/config/request/policy、知识/有效时段、非RAW/填充/非有限/错会话及对象污染均拒绝。缺身份知识不得补造，空成员/行动/行情与BAR_END_PROXY不得当作真实PIT或历史覆盖PASS；控制输出不得含数据/SID/hash/行数/自由异常。复算完整2库4attempt预算锚与外部later完整清单、Δ0和未受信JSON增量均不增可用量、始终保留Research1及dispatch=False，ABA安全不回归。准确上传manifest须每项Gitblob/原bytes/hash/依赖闭包/拓扑一致，hiddenflags拒绝，逐写编译m+e正确且当前授权增量0。真实平台接线/缓存/恢复等缺口如实NOT_RUN，不能把mock或提案当成授权。e412的批准只覆盖基线。
 
 核对清单、Git/source.zip、锁、配置/原始夹具/手工标准答案与十项实际检查；独立构造日期、类型、字段、extra/duplicate JSON、可用时点、未来扰动、SID 更名/退市、公司行动原始口径、历史成员、滞后流动性、质量、sealed/派生/缓存/batch/export 防绕过、策略伪造、云内数据边界、预算/未知任务/重复完成与恢复反例。检查 raw控制 metadata/SQLite/源 SHA/config/request 哈希，不能凭未认证导入确认平台通过。
 

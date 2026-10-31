@@ -1,0 +1,33 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "dependencies": {
+      "items": {
+        "maxLength": 200,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 64,
+      "title": "Dependencies",
+      "type": "array"
+    },
+    "remote_path": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Remote Path",
+      "type": "string"
+    },
+    "source_path": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Source Path",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_path",
+    "remote_path"
+  ],
+  "title": "UploadSourceSpec",
+  "type": "object"
+}

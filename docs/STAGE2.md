@@ -1,6 +1,6 @@
 # S2 数据边界、云端检查与持久任务
 
-云端部署时将仓库 [cloud/main.py](../cloud/main.py) 映射为项目main.py，将src/bbag/*.py映射为bbag/*.py，保留cloud/s2_probe.py路径。入口只承载已授权日期，不添加证券或交易规则；实际数据检查从Research调用探针。上传文件须与准确提交逐字节核对，部署入口也属于固定源码，不能只在外部临时生成。
+云端部署时将仓库 [cloud/main.py](../cloud/main.py) 映射为项目 main.py，自有 Python 模块保持 bbag 包路径。上传仅使用 [离线计划器](../scripts/plan_stage2_upload.py) 按准确提交核定的入口依赖闭包，不使用 src/bbag/*.py 通配上传。历史 cloud/s2_probe.py 是旧七项检查入口；本轮新增 bbag.s2_cloud_check 是标准化控制入口，详见 [新离线边界](S2_CLOUD_PREPARATION.md)。当前禁止实际上传与平台调用。每次文件写入的自动编译须逐项计入增量，不能把整批上传算作一次编译。
 
 ## 状态与前置
 

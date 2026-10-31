@@ -1,0 +1,43 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "alias": {
+      "enum": [
+        "SPY",
+        "AAPL"
+      ],
+      "title": "Alias",
+      "type": "string"
+    },
+    "known_at": {
+      "format": "date-time",
+      "title": "Known At",
+      "type": "string"
+    },
+    "sid": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Sid",
+      "type": "string"
+    },
+    "valid_from": {
+      "format": "date",
+      "title": "Valid From",
+      "type": "string"
+    },
+    "valid_to": {
+      "format": "date",
+      "title": "Valid To",
+      "type": "string"
+    }
+  },
+  "required": [
+    "alias",
+    "sid",
+    "valid_from",
+    "valid_to",
+    "known_at"
+  ],
+  "title": "CloudAliasBinding",
+  "type": "object"
+}

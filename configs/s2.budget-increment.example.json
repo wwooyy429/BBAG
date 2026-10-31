@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "stage": "S2",
+  "purpose": "ENGINEERING_TEST",
+  "status": "DRAFT",
+  "baseline_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "source_commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "config_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "approval_reference": "SYNTHETIC_EXAMPLE_NOT_OWNER_AUTHORIZATION",
+  "compile_increment": 0,
+  "research_increment": 0,
+  "max_new_cost_microusd": 0,
+  "scope": "EXISTING_WHITELIST_ONLY"
+}

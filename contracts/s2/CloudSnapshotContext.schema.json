@@ -1,0 +1,241 @@
+{
+  "$defs": {
+    "CalendarSession": {
+      "additionalProperties": false,
+      "description": "An explicit supplied exchange session; no inferred weekday filling.",
+      "properties": {
+        "close_at": {
+          "format": "date-time",
+          "title": "Close At",
+          "type": "string"
+        },
+        "open_at": {
+          "format": "date-time",
+          "title": "Open At",
+          "type": "string"
+        },
+        "session": {
+          "format": "date",
+          "title": "Session",
+          "type": "string"
+        },
+        "signal_at": {
+          "format": "date-time",
+          "title": "Signal At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "session",
+        "open_at",
+        "close_at",
+        "signal_at"
+      ],
+      "title": "CalendarSession",
+      "type": "object"
+    },
+    "CloudSourceBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "config_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Config Sha256",
+          "type": "string"
+        },
+        "owner_policy_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Owner Policy Sha256",
+          "type": "string"
+        },
+        "project_id": {
+          "exclusiveMinimum": 0,
+          "title": "Project Id",
+          "type": "integer"
+        },
+        "request_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Request Sha256",
+          "type": "string"
+        },
+        "source_commit": {
+          "pattern": "^[0-9a-fA-F]{40}$",
+          "title": "Source Commit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "source_commit",
+        "config_sha256",
+        "request_sha256",
+        "owner_policy_sha256"
+      ],
+      "title": "CloudSourceBinding",
+      "type": "object"
+    },
+    "DailyBar": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "close": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Close"
+        },
+        "high": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "High"
+        },
+        "low": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Low"
+        },
+        "open": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Open"
+        },
+        "session": {
+          "format": "date",
+          "title": "Session",
+          "type": "string"
+        },
+        "sid": {
+          "minLength": 1,
+          "title": "Sid",
+          "type": "string"
+        },
+        "volume": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Volume"
+        }
+      },
+      "required": [
+        "sid",
+        "session",
+        "available_at"
+      ],
+      "title": "DailyBar",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "availability": {
+      "items": {
+        "$ref": "#/$defs/DailyBar"
+      },
+      "maxItems": 128,
+      "title": "Availability",
+      "type": "array"
+    },
+    "availability_basis": {
+      "enum": [
+        "PROVIDER_DOCUMENTED",
+        "BAR_END_PROXY"
+      ],
+      "title": "Availability Basis",
+      "type": "string"
+    },
+    "binding": {
+      "$ref": "#/$defs/CloudSourceBinding"
+    },
+    "calendar_id": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Calendar Id",
+      "type": "string"
+    },
+    "calendar_version": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Calendar Version",
+      "type": "string"
+    },
+    "normalization": {
+      "const": "raw",
+      "default": "raw",
+      "title": "Normalization",
+      "type": "string"
+    },
+    "provider_data_version": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Provider Data Version",
+      "type": "string"
+    },
+    "retrieved_at": {
+      "format": "date-time",
+      "title": "Retrieved At",
+      "type": "string"
+    },
+    "sessions": {
+      "items": {
+        "$ref": "#/$defs/CalendarSession"
+      },
+      "maxItems": 16,
+      "minItems": 1,
+      "title": "Sessions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "binding",
+    "provider_data_version",
+    "calendar_id",
+    "calendar_version",
+    "retrieved_at",
+    "sessions",
+    "availability_basis",
+    "availability"
+  ],
+  "title": "CloudSnapshotContext",
+  "type": "object"
+}
