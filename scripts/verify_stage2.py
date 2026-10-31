@@ -31,10 +31,10 @@ def source_snapshot(root: Path) -> tuple[str, bool]:
 
 
 def require_tracked_inputs(root: Path) -> None:
-    required = ["requirements.lock", "configs/s2.example.json", "configs/s2.cloud-scope.json",
+    required = ["requirements.lock", "configs/s2.example.json", "configs/s2.cloud-scope.json", "configs/s2.offline-campaign.json",
                 "tests/fixtures/s2_raw.json", "tests/fixtures/s2_expected.json", "scripts/check_stage2_results.py",
                 "scripts/verify_stage2.py", "scripts/build_stage2_package.py"]
-    required.extend(f"src/bbag/{name}.py" for name in ("s2_contracts", "s2_access", "s2_data", "s2_quantconnect", "s2_tasks", "s2_cli"))
+    required.extend(f"src/bbag/{name}.py" for name in ("s2_contracts", "s2_access", "s2_data", "s2_quantconnect", "s2_tasks", "s2_cli", "s2_snapshots", "s2_diagnostics", "s2_readiness"))
     git(root, "ls-files", "--error-unmatch", "--", *required)
 
 

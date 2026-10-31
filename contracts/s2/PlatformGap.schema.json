@@ -1,0 +1,47 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "condition": {
+      "enum": [
+        "RAW_TO_STANDARD_TRACE",
+        "HISTORICAL_UNIVERSE",
+        "IDENTITY_EVENTS",
+        "NONEMPTY_CORPORATE_ACTIONS",
+        "CALENDAR_QUALITY_COVERAGE",
+        "DISCLOSURE_REVISION_PIT",
+        "PROVIDER_RECOVERY",
+        "RESOURCE_CAPABILITY",
+        "DEPLOYED_SOURCE_IDENTITY",
+        "ALIAS_SID_BINDING"
+      ],
+      "title": "Condition",
+      "type": "string"
+    },
+    "current_scope_coverage": {
+      "enum": [
+        "PARTIAL",
+        "NOT_COVERED"
+      ],
+      "title": "Current Scope Coverage",
+      "type": "string"
+    },
+    "description": {
+      "minLength": 1,
+      "title": "Description",
+      "type": "string"
+    },
+    "execution": {
+      "const": "NOT_RUN",
+      "default": "NOT_RUN",
+      "title": "Execution",
+      "type": "string"
+    }
+  },
+  "required": [
+    "condition",
+    "description",
+    "current_scope_coverage"
+  ],
+  "title": "PlatformGap",
+  "type": "object"
+}

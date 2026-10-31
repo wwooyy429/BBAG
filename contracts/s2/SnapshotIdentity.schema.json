@@ -1,0 +1,67 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "calendar_id": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Calendar Id",
+      "type": "string"
+    },
+    "calendar_version": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Calendar Version",
+      "type": "string"
+    },
+    "code_commit": {
+      "pattern": "^[0-9a-f]{40}$",
+      "title": "Code Commit",
+      "type": "string"
+    },
+    "data_id": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Data Id",
+      "type": "string"
+    },
+    "policy_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Policy Sha256",
+      "type": "string"
+    },
+    "provider": {
+      "const": "SYNTHETIC",
+      "default": "SYNTHETIC",
+      "title": "Provider",
+      "type": "string"
+    },
+    "provider_data_version": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Provider Data Version",
+      "type": "string"
+    },
+    "request_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Request Sha256",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "data_id",
+    "provider_data_version",
+    "calendar_id",
+    "calendar_version",
+    "request_sha256",
+    "policy_sha256",
+    "code_commit"
+  ],
+  "title": "SnapshotIdentity",
+  "type": "object"
+}

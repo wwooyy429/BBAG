@@ -46,7 +46,7 @@ def payload(path):
 
 
 def copy_reference_source(target):
-    for name in ("requirements.lock", "configs/s2.example.json", "configs/s2.cloud-scope.json", "tests/fixtures/s2_raw.json", "tests/fixtures/s2_expected.json", "scripts/check_stage2_results.py"):
+    for name in ("requirements.lock", "configs/s2.example.json", "configs/s2.cloud-scope.json", "configs/s2.offline-campaign.json", "tests/fixtures/s2_raw.json", "tests/fixtures/s2_expected.json", "scripts/check_stage2_results.py"):
         destination = target / name
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(ROOT / name, destination)

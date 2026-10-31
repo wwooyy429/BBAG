@@ -1,0 +1,685 @@
+{
+  "$defs": {
+    "AttemptProvenance": {
+      "additionalProperties": false,
+      "properties": {
+        "actual_cost_microusd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Actual Cost Microusd"
+        },
+        "check_passed": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Check Passed"
+        },
+        "config_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Config Sha256",
+          "type": "string"
+        },
+        "configuration_id": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Configuration Id",
+          "type": "string"
+        },
+        "database_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Database Sha256",
+          "type": "string"
+        },
+        "local_attempt_id": {
+          "minLength": 1,
+          "title": "Local Attempt Id",
+          "type": "string"
+        },
+        "operation": {
+          "enum": [
+            "compile",
+            "research_check"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "project_id": {
+          "exclusiveMinimum": 0,
+          "title": "Project Id",
+          "type": "integer"
+        },
+        "request_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Request Sha256",
+          "type": "string"
+        },
+        "reserved_cost_microusd": {
+          "minimum": 0,
+          "title": "Reserved Cost Microusd",
+          "type": "integer"
+        },
+        "source_commit": {
+          "pattern": "^[0-9a-fA-F]{40}$",
+          "title": "Source Commit",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "completed",
+            "error",
+            "incomplete"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "task_id": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Task Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "database_sha256",
+        "task_id",
+        "configuration_id",
+        "local_attempt_id",
+        "source_commit",
+        "config_sha256",
+        "request_sha256",
+        "project_id",
+        "operation",
+        "status",
+        "actual_cost_microusd",
+        "reserved_cost_microusd",
+        "check_passed"
+      ],
+      "title": "AttemptProvenance",
+      "type": "object"
+    },
+    "CampaignCaps": {
+      "additionalProperties": false,
+      "properties": {
+        "approval_reference": {
+          "minLength": 1,
+          "title": "Approval Reference",
+          "type": "string"
+        },
+        "assets": {
+          "items": {
+            "enum": [
+              "SPY",
+              "AAPL"
+            ],
+            "type": "string"
+          },
+          "maxItems": 2,
+          "minItems": 1,
+          "title": "Assets",
+          "type": "array"
+        },
+        "compile_attempt_limit": {
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Compile Attempt Limit",
+          "type": "integer"
+        },
+        "end": {
+          "format": "date",
+          "title": "End",
+          "type": "string"
+        },
+        "expected_ledgers": {
+          "items": {
+            "$ref": "#/$defs/ExpectedLedger"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Expected Ledgers",
+          "type": "array"
+        },
+        "max_new_cost_microusd": {
+          "const": 0,
+          "title": "Max New Cost Microusd",
+          "type": "integer"
+        },
+        "project_id": {
+          "exclusiveMinimum": 0,
+          "title": "Project Id",
+          "type": "integer"
+        },
+        "purpose": {
+          "const": "ENGINEERING_TEST",
+          "default": "ENGINEERING_TEST",
+          "title": "Purpose",
+          "type": "string"
+        },
+        "research_attempt_limit": {
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Research Attempt Limit",
+          "type": "integer"
+        },
+        "response_class": {
+          "enum": [
+            "CONTROL_ONLY",
+            "SYNTHETIC_TEST"
+          ],
+          "title": "Response Class",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "stage": {
+          "const": "S2",
+          "default": "S2",
+          "title": "Stage",
+          "type": "string"
+        },
+        "start": {
+          "format": "date",
+          "title": "Start",
+          "type": "string"
+        },
+        "status": {
+          "const": "DRAFT",
+          "default": "DRAFT",
+          "title": "Status",
+          "type": "string"
+        },
+        "timezone": {
+          "const": "America/New_York",
+          "default": "America/New_York",
+          "title": "Timezone",
+          "type": "string"
+        }
+      },
+      "required": [
+        "expected_ledgers",
+        "compile_attempt_limit",
+        "research_attempt_limit",
+        "max_new_cost_microusd",
+        "project_id",
+        "response_class",
+        "start",
+        "end",
+        "assets",
+        "approval_reference"
+      ],
+      "title": "CampaignCaps",
+      "type": "object"
+    },
+    "ExpectedLedger": {
+      "additionalProperties": false,
+      "properties": {
+        "database": {
+          "minLength": 1,
+          "title": "Database",
+          "type": "string"
+        },
+        "expected_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Expected Sha256",
+          "type": "string"
+        },
+        "metadata_directory": {
+          "minLength": 1,
+          "title": "Metadata Directory",
+          "type": "string"
+        }
+      },
+      "required": [
+        "database",
+        "metadata_directory",
+        "expected_sha256"
+      ],
+      "title": "ExpectedLedger",
+      "type": "object"
+    },
+    "LedgerInspection": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_count": {
+          "exclusiveMinimum": 0,
+          "title": "Attempt Count",
+          "type": "integer"
+        },
+        "database": {
+          "minLength": 1,
+          "title": "Database",
+          "type": "string"
+        },
+        "database_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Database Sha256",
+          "type": "string"
+        },
+        "immutable_metadata_sha256": {
+          "additionalProperties": {
+            "pattern": "^[0-9a-fA-F]{64}$",
+            "type": "string"
+          },
+          "propertyNames": {
+            "minLength": 1
+          },
+          "title": "Immutable Metadata Sha256",
+          "type": "object"
+        },
+        "metadata_directory": {
+          "minLength": 1,
+          "title": "Metadata Directory",
+          "type": "string"
+        },
+        "persisted_budget": {
+          "$ref": "#/$defs/TaskBudget"
+        },
+        "task_count": {
+          "exclusiveMinimum": 0,
+          "title": "Task Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "database",
+        "metadata_directory",
+        "database_sha256",
+        "immutable_metadata_sha256",
+        "task_count",
+        "attempt_count",
+        "persisted_budget"
+      ],
+      "title": "LedgerInspection",
+      "type": "object"
+    },
+    "PlatformGap": {
+      "additionalProperties": false,
+      "properties": {
+        "condition": {
+          "enum": [
+            "RAW_TO_STANDARD_TRACE",
+            "HISTORICAL_UNIVERSE",
+            "IDENTITY_EVENTS",
+            "NONEMPTY_CORPORATE_ACTIONS",
+            "CALENDAR_QUALITY_COVERAGE",
+            "DISCLOSURE_REVISION_PIT",
+            "PROVIDER_RECOVERY",
+            "RESOURCE_CAPABILITY",
+            "DEPLOYED_SOURCE_IDENTITY",
+            "ALIAS_SID_BINDING"
+          ],
+          "title": "Condition",
+          "type": "string"
+        },
+        "current_scope_coverage": {
+          "enum": [
+            "PARTIAL",
+            "NOT_COVERED"
+          ],
+          "title": "Current Scope Coverage",
+          "type": "string"
+        },
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "execution": {
+          "const": "NOT_RUN",
+          "default": "NOT_RUN",
+          "title": "Execution",
+          "type": "string"
+        }
+      },
+      "required": [
+        "condition",
+        "description",
+        "current_scope_coverage"
+      ],
+      "title": "PlatformGap",
+      "type": "object"
+    },
+    "TaskBudget": {
+      "additionalProperties": false,
+      "properties": {
+        "max_attempts": {
+          "default": 0,
+          "maximum": 100000,
+          "minimum": 0,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "max_concurrent_attempts": {
+          "default": 1,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Max Concurrent Attempts",
+          "type": "integer"
+        },
+        "max_configurations": {
+          "default": 1,
+          "maximum": 100000,
+          "minimum": 0,
+          "title": "Max Configurations",
+          "type": "integer"
+        },
+        "max_cost_microusd": {
+          "default": 0,
+          "maximum": 1000000000000000,
+          "minimum": 0,
+          "title": "Max Cost Microusd",
+          "type": "integer"
+        },
+        "operation_limits": {
+          "additionalProperties": {
+            "maximum": 100000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "propertyNames": {
+            "enum": [
+              "compile",
+              "research_check",
+              "data_query",
+              "project_read",
+              "file_read",
+              "research_read"
+            ]
+          },
+          "title": "Operation Limits",
+          "type": "object"
+        },
+        "purpose": {
+          "const": "ENGINEERING_TEST",
+          "default": "ENGINEERING_TEST",
+          "title": "Purpose",
+          "type": "string"
+        },
+        "response_class": {
+          "default": "CONTROL_ONLY",
+          "enum": [
+            "CONTROL_ONLY",
+            "SYNTHETIC_TEST"
+          ],
+          "title": "Response Class",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "stage": {
+          "const": "S2",
+          "default": "S2",
+          "title": "Stage",
+          "type": "string"
+        },
+        "status": {
+          "const": "DRAFT",
+          "default": "DRAFT",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "title": "TaskBudget",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "actual_billing_total_known": {
+      "title": "Actual Billing Total Known",
+      "type": "boolean"
+    },
+    "actual_billing_total_microusd": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Actual Billing Total Microusd"
+    },
+    "attempts": {
+      "items": {
+        "$ref": "#/$defs/AttemptProvenance"
+      },
+      "minItems": 1,
+      "title": "Attempts",
+      "type": "array"
+    },
+    "billing_unknown_attempt_count": {
+      "minimum": 0,
+      "title": "Billing Unknown Attempt Count",
+      "type": "integer"
+    },
+    "caps": {
+      "$ref": "#/$defs/CampaignCaps"
+    },
+    "config_sha256_count": {
+      "exclusiveMinimum": 0,
+      "title": "Config Sha256 Count",
+      "type": "integer"
+    },
+    "configuration_count": {
+      "exclusiveMinimum": 0,
+      "title": "Configuration Count",
+      "type": "integer"
+    },
+    "dispatch_allowed": {
+      "const": false,
+      "default": false,
+      "title": "Dispatch Allowed",
+      "type": "boolean"
+    },
+    "economic_evidence": {
+      "const": "NOT_APPLICABLE",
+      "default": "NOT_APPLICABLE",
+      "title": "Economic Evidence",
+      "type": "string"
+    },
+    "independent_review": {
+      "const": "PENDING",
+      "default": "PENDING",
+      "title": "Independent Review",
+      "type": "string"
+    },
+    "input_limits_not_authenticated": {
+      "const": true,
+      "default": true,
+      "title": "Input Limits Not Authenticated",
+      "type": "boolean"
+    },
+    "known_cost_microusd": {
+      "minimum": 0,
+      "title": "Known Cost Microusd",
+      "type": "integer"
+    },
+    "ledgers": {
+      "items": {
+        "$ref": "#/$defs/LedgerInspection"
+      },
+      "minItems": 1,
+      "title": "Ledgers",
+      "type": "array"
+    },
+    "merged_into_main": {
+      "const": false,
+      "default": false,
+      "title": "Merged Into Main",
+      "type": "boolean"
+    },
+    "new_runtime_ledger_created": {
+      "const": false,
+      "default": false,
+      "title": "New Runtime Ledger Created",
+      "type": "boolean"
+    },
+    "new_task_reserved": {
+      "const": false,
+      "default": false,
+      "title": "New Task Reserved",
+      "type": "boolean"
+    },
+    "next_stage_authorized": {
+      "const": false,
+      "default": false,
+      "title": "Next Stage Authorized",
+      "type": "boolean"
+    },
+    "phase": {
+      "const": "IN_PROGRESS",
+      "default": "IN_PROGRESS",
+      "title": "Phase",
+      "type": "string"
+    },
+    "platform_gaps": {
+      "items": {
+        "$ref": "#/$defs/PlatformGap"
+      },
+      "minItems": 1,
+      "title": "Platform Gaps",
+      "type": "array"
+    },
+    "platform_integration": {
+      "const": "NOT_RUN",
+      "default": "NOT_RUN",
+      "title": "Platform Integration",
+      "type": "string"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "remaining_attempts": {
+      "additionalProperties": {
+        "minimum": 0,
+        "type": "integer"
+      },
+      "propertyNames": {
+        "enum": [
+          "compile",
+          "research_check"
+        ]
+      },
+      "title": "Remaining Attempts",
+      "type": "object"
+    },
+    "request_count": {
+      "exclusiveMinimum": 0,
+      "title": "Request Count",
+      "type": "integer"
+    },
+    "request_sha256_count": {
+      "exclusiveMinimum": 0,
+      "title": "Request Sha256 Count",
+      "type": "integer"
+    },
+    "reserved_unknown_cost_microusd": {
+      "minimum": 0,
+      "title": "Reserved Unknown Cost Microusd",
+      "type": "integer"
+    },
+    "runtime_grant_enrolled": {
+      "const": false,
+      "default": false,
+      "title": "Runtime Grant Enrolled",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scope_data_boundaries_not_verified_by_task_hashes": {
+      "const": true,
+      "default": true,
+      "title": "Scope Data Boundaries Not Verified By Task Hashes",
+      "type": "boolean"
+    },
+    "scope_not_runtime_grant": {
+      "const": true,
+      "default": true,
+      "title": "Scope Not Runtime Grant",
+      "type": "boolean"
+    },
+    "source_count": {
+      "exclusiveMinimum": 0,
+      "title": "Source Count",
+      "type": "integer"
+    },
+    "stage": {
+      "const": "S2",
+      "default": "S2",
+      "title": "Stage",
+      "type": "string"
+    },
+    "status": {
+      "const": "OFFLINE_PREVIEW_ONLY",
+      "default": "OFFLINE_PREVIEW_ONLY",
+      "title": "Status",
+      "type": "string"
+    },
+    "used_attempts": {
+      "additionalProperties": {
+        "minimum": 0,
+        "type": "integer"
+      },
+      "propertyNames": {
+        "enum": [
+          "compile",
+          "research_check"
+        ]
+      },
+      "title": "Used Attempts",
+      "type": "object"
+    },
+    "zero_reservation_proves_zero_bill": {
+      "const": false,
+      "default": false,
+      "title": "Zero Reservation Proves Zero Bill",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "caps",
+    "ledgers",
+    "attempts",
+    "configuration_count",
+    "source_count",
+    "config_sha256_count",
+    "request_sha256_count",
+    "request_count",
+    "used_attempts",
+    "remaining_attempts",
+    "known_cost_microusd",
+    "reserved_unknown_cost_microusd",
+    "billing_unknown_attempt_count",
+    "actual_billing_total_microusd",
+    "actual_billing_total_known",
+    "platform_gaps"
+  ],
+  "title": "CampaignReadiness",
+  "type": "object"
+}

@@ -154,6 +154,15 @@ class StandardDataBundle(StrictContract):
             raise ValueError("provenance must bind the exact original request and provider")
         if self.provenance.classification != self.request.classification or self.provenance.derived_from != self.request.derived_from:
             raise ValueError("request and provenance classification/ancestry must match")
+        snapshot_cutoff = utc(self.request.as_of)
+        if utc(self.provenance.retrieved_at) < snapshot_cutoff:
+            raise ValueError("snapshot retrieval cannot precede the original request as_of")
+        knowledge_times = [item.known_at for collection in (self.identities, self.tickers, self.membership, self.corporate_actions)
+                           for item in collection]
+        knowledge_times.extend(item.delisting_known_at for item in self.identities if item.delisting_known_at is not None)
+        knowledge_times.extend(item.valid_to_known_at for item in self.tickers if item.valid_to_known_at is not None)
+        if any(utc(value) > snapshot_cutoff for value in knowledge_times):
+            raise ValueError("snapshot metadata knowledge cannot follow the original request as_of")
         days = [item.session for item in self.sessions]
         if days != sorted(set(days)):
             raise ValueError("calendar sessions must be unique and ordered")
@@ -223,9 +232,25 @@ def _checked(bundle: StandardDataBundle, request: DataRequest, guard: AccessGuar
             or not set(checked_request.assets).issubset(original.assets)
             or not set(checked_request.fields).issubset(original.fields)):
         raise ValueError("selection must be a subset of the original data request")
+    if utc(checked_request.as_of) > utc(original.as_of):
+        raise ValueError("selection as_of must not exceed the original snapshot as_of")
     if checked_bundle.timezone != guard.policy.timezone:
         raise ValueError("bundle and access policy must use the same market timezone")
     return checked_bundle, checked_request
+
+
+def validate_snapshot_selection(
+    bundle: StandardDataBundle, request: DataRequest, guard: AccessGuard, *,
+    operation: Literal["query", "quality", "cache_read", "cache_write"] = "query",
+) -> tuple[StandardDataBundle, DataRequest]:
+    """Authorize and revalidate an in-memory snapshot and its bounded selection.
+
+    A caller performing I/O must also authorize the request before reading the
+    payload. This function performs no transport, cache read or write itself.
+    """
+    if type(operation) is not str or operation not in {"query", "quality", "cache_read", "cache_write"}:
+        raise ValueError("unknown snapshot selection operation")
+    return _checked(bundle, request, guard, operation)
 
 
 def _sessions(bundle: StandardDataBundle, request: DataRequest) -> list[CalendarSession]:

@@ -271,9 +271,9 @@ def development_report(root: Path, evidence: Path, commit: str, verification: di
 
 前置 S1 被审实现：`{S1_REVIEWED_SHA}`；负责人授权的 S1 合并结果：`{S1_MERGE_SHA}`。本轮将这项已审基础修复集成回 S2；其批准不能覆盖本次 S2，新版本仍须独立复审。
 
-S2 首轮提交 93ca41169420da474f139bdcf89ae73e0eb73350 的独立结论为 CHANGES_REQUIRED / 工程 FAIL，三个 P2 为 S2-001 UNKNOWN 恢复、S2-002 已知检查结论保持、S2-003 固定结果完整复核。本包交审的是这些修复的新准确 SHA，开发自测不产生独立关闭。原失败、平台 NOT_RUN、经济 NOT_APPLICABLE 和基础四项关闭记录保留，范围见 docs/S2_AUDIT_REMEDIATION.md。
+准确 5fe1b62c09216e17f001afde80fbcdfda7c51bdc 的独立本地工程复审已关闭 S2-001、S2-002（含多事件遗漏）、S2-003，负责人已接受并授权继续离线 S2；整阶段仍为 PENDING / IN_PROGRESS。本包是冻结快照时钟、合成分批/缓存、身份及静态持仓权益诊断、累计预算只读计划的新源码，不继承 5fe 的批准。93ca 原失败、中间失败和所有闭项证据保留，范围见 docs/S2_AUDIT_REMEDIATION.md 及 docs/S2_OFFLINE_CONTINUATION.md。
 
-本包包含原始美股日频标准契约、显式交易日历、SID/更名/退市及 known_at 成员事件、原始公司行动元数据与单事件持仓权益、滞后流动性、缺失/陈旧/异常覆盖检查、synthetic-only S1 投影、运行时访问/派生隔离、云端控制回执桥接与持久任务/预算/未知状态控制。真实云端原始及可重建数据必须留在云内；本地 gateway 仅接受严格控制元数据。配置文件不授予运行时访问权，外部回执导入不认证来源。
+本包保留原始美股日频标准契约、交易日历、SID/更名/退市、时点成员、滞后流动性、质量、synthetic-only S1 投影及已审任务状态修复。新增本地数据缓存只接受合成输入，身份解释和权益链不是因子评估或总收益回测；readiness 只读固定历史账本链，不创建新库恢复额度。真实云端原始及可重建数据必须留在云内；本地 gateway 仅接受严格控制元数据。配置和只读计划不授予运行时权限，外部回执导入不认证来源。
 
 Python：`{verification['python']}`；平台：`{verification['platform']}`。JUnit：{json.dumps(counts, ensure_ascii=False)}；跳过项以原始明细为准。依赖锁：`{verification['dependency_lock_sha256']}`。开始/结束源码均为本 SHA 且干净。
 
@@ -311,10 +311,10 @@ def main() -> int:
     evidence, base = args.evidence_dir.resolve(), args.output_dir.resolve()
     output, archive_path = base / commit, base / f"BBAG_S2_GPT_Work_{commit[:12]}.zip"
     validate_package_paths(evidence, output, archive_path)
-    required = ["requirements.lock", "configs/s2.example.json", "configs/s2.cloud-scope.json",
+    required = ["requirements.lock", "configs/s2.example.json", "configs/s2.cloud-scope.json", "configs/s2.offline-campaign.json",
                 "tests/fixtures/s2_raw.json", "tests/fixtures/s2_expected.json", "scripts/check_stage2_results.py",
                 "scripts/verify_stage2.py", "scripts/build_stage2_package.py"]
-    required.extend(f"src/bbag/{name}.py" for name in ("s2_contracts", "s2_access", "s2_data", "s2_quantconnect", "s2_tasks", "s2_cli"))
+    required.extend(f"src/bbag/{name}.py" for name in ("s2_contracts", "s2_access", "s2_data", "s2_quantconnect", "s2_tasks", "s2_cli", "s2_snapshots", "s2_diagnostics", "s2_readiness"))
     git(root, "ls-files", "--error-unmatch", "--", *required)
     verification, receipt, counts = validate_evidence(evidence, commit, root)
     paths = git(root, "ls-tree", "-r", "--name-only", commit).splitlines()
@@ -335,9 +335,11 @@ def main() -> int:
 
 核对清单、Git/source.zip、锁、配置/原始夹具/手工标准答案与十项实际检查；独立构造日期、类型、字段、extra/duplicate JSON、可用时点、未来扰动、SID 更名/退市、公司行动原始口径、历史成员、滞后流动性、质量、sealed/派生/缓存/batch/export 防绕过、策略伪造、云内数据边界、预算/未知任务/重复完成与恢复反例。检查 raw控制 metadata/SQLite/源 SHA/config/request 哈希，不能凭未认证导入确认平台通过。
 
-重点独立复测 docs/S2_AUDIT_REMEDIATION.md 的三个 P2：无 ID 超时后普通 error 导入不解除 UNKNOWN，重试和并发仍阻止；合法 ID/同步观察/未提交核查保持；已确认 result_available/completed 的 False/True 不被后事件反转，None 省略不擦除，未知首次补齐/补账单/省略 ID/幂等保持，矛盾拒绝时 DB 与 raw 目录不变。对完整 CLI 仅污染固定 result 并正确重算 run 摘要：session、signal_at、逐行质量/汇总和投影 hash 的错误均须 JSON 退出 2、在新交付 mkdir/source archive/ZIP 前停止，旧哨兵不变；正确输入跨 cwd 继续成功。原审核字面数学答案、原失败与旧 SHA 不改写。
+重点按 docs/S2_OFFLINE_CONTINUATION.md 独立复算冻结快照时钟、6类知识截止、选择不得推进、整批首IO前门禁、精确身份缓存命中/冲突/篡改/重解析/路径边界、历史身份解释、质量自一致、静态权益链及同日歧义拒绝。检查只读累计预算计划的固定完整链、重复/遗漏/修改/未知活动拒绝，四笔账单仍未知，不把旧局部budget上限相加成新总额；不认证输入配置，也不授权dispatch。保持真实Cloud拒本地缓存、数据不进入控制输出、S1来源不冒充。
 
-本轮修复和复审不增加平台调用，不消耗最后一次 Research、不上传触发编译；累计 compile 2/2、Research 2/3、账单未知保持。S2-N01 快照时钟观察及 S0-N02 历史 P3 继续非阻断待办，不假称已修复。S0-004、S0-N01、S1-001、S1-002 的历史关闭保持；当前三个 S2 P2 是否关闭由本 SHA 独立实测决定。
+原5fe三个P2关闭记录保留，需按新SHA复测不回归：无ID普通超时错误仍UNKNOWN；已知真假verdict跨error/incomplete多事件省略仍保留；固定会话/时刻/质量/投影污染即便重算外hash也JSON退出2、写前拒绝且哨兵原字节不变。正确锁跨伪CWD正例和两隐藏标记四格必须真实执行。原审核数学答案、原失败与旧SHA不改写。
+
+本轮离线续建和复审不增加平台调用，不消耗最后一次 Research、不上传触发编译；累计 compile 2/2、Research 2/3、未知账单保持。S2-N01 的时钟契约已实现，是否足以关闭由本次独立复核决定，不据此声称实际供应商披露/修订通过；S0-N02 继续历史 P3 待办。S0-004、S0-N01、S1-001、S1-002 历史关闭不变。平台验收缺口按续建文档逐项保持 NOT_RUN，不能凭旧七标志或静态Cloud源码复用批准整个新S2。
 
 逐项记录 EXECUTED/STATIC_ONLY/NOT_RUN、预期/实际、退出码及原始证据。真实平台验收仅依据实际授权范围内的真实任务，许可数据留云内，不能从本包合成验证推定 PASS。经济 NOT_APPLICABLE；保留 S6.4 与最终派生隔离。填写绑定本 SHA 的 S2 回执；不得合并、启动 S3 或自动改变权限。
 """, encoding="utf-8")

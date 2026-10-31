@@ -1,4 +1,4 @@
-"""Offline S0/S1 engineering commands and advisory receipt consistency."""
+"""Offline S0/S1/S2 engineering commands and advisory receipt consistency."""
 
 from __future__ import annotations
 
@@ -56,6 +56,12 @@ def parser() -> argparse.ArgumentParser:
     s2_plan = commands.add_parser("s2-cloud-plan", help="Prepare a cloud-only control plan; perform no remote calls")
     s2_plan.add_argument("--config", required=True, type=Path)
     s2_plan.add_argument("--project-id", required=True, type=int)
+    s2_offline = commands.add_parser("s2-offline-check", help="Check fixed synthetic snapshots, batching and diagnostics; no remote IO")
+    s2_offline.add_argument("--config", required=True, type=Path)
+    s2_offline.add_argument("--cache-dir", required=True, type=Path)
+    s2_campaign = commands.add_parser("s2-campaign-plan", help="Inspect the complete anchored history read-only; never dispatch")
+    s2_campaign.add_argument("--config", required=True, type=Path)
+    s2_campaign.add_argument("--history-root", type=Path)
     return result
 
 
@@ -165,6 +171,10 @@ def main(argv: list[str] | None = None) -> int:
                 output = s2_cli.validate_command(args.config)
             elif args.command == "s2-cloud-plan":
                 output = s2_cli.plan_command(args.config, args.project_id)
+            elif args.command == "s2-offline-check":
+                output = s2_cli.offline_command(args.config, args.cache_dir)
+            elif args.command == "s2-campaign-plan":
+                output = s2_cli.campaign_command(args.config, args.history_root)
             else:
                 output = s2_cli.synthetic_command(args.config, args.output_dir, args.run_id)
             emit(output)

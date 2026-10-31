@@ -15,6 +15,9 @@ from .s2_data import (LiquidityRule, QualityReport, QualityRule, StandardDataBun
                       UniverseResult, S2_DATA_CONTRACTS, canonical_request_sha256)
 from .s2_quantconnect import S2_QC_CONTRACTS
 from .s2_tasks import S2_TASK_CONTRACTS, TaskBudget, TaskRecord, TaskUsage
+from .s2_diagnostics import S2_DIAGNOSTIC_CONTRACTS
+from .s2_readiness import S2_READINESS_CONTRACTS
+from .s2_snapshots import S2_SNAPSHOT_CONTRACTS
 
 
 class S2Config(StrictContract):
@@ -171,6 +174,7 @@ class S2Verification(StrictContract):
 
 
 S2_CONTRACT_MODELS = {**S2_ACCESS_CONTRACTS, **S2_DATA_CONTRACTS, **S2_QC_CONTRACTS, **S2_TASK_CONTRACTS,
+    **S2_DIAGNOSTIC_CONTRACTS, **S2_READINESS_CONTRACTS, **S2_SNAPSHOT_CONTRACTS,
     **{model.__name__: model for model in (S2Config, S2SyntheticResult, S2RunManifest, S2ReviewReceipt,
                                          S2CheckRecord, S2Verification)}}
 
