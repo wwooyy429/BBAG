@@ -1,6 +1,6 @@
 # BBAG Git 与独立审核流程
 
-仓库为 [wwooyy429 BBAG](https://github.com/wwooyy429/BBAG)。main 保存负责人批准的基线。S0 的 f46fad2ff4b3ec9659001659fa44201e10951fd5 已获准合并为 b2555efe7201c473bdb66c7dd1c14552ad130ac5，见 [S0验收记录](S0_ACCEPTANCE.md)。S1 在 `codex/stage-1-factor-engine` 开发，未经本阶段独立复审和新授权不合并，也不进入 S2。
+仓库为 [wwooyy429 BBAG](https://github.com/wwooyy429/BBAG)。S0、S1 的历史授权与实际合并保留，当前 main 为 `41789706f710e131d4a654e349798ddb15ea70f5`。后续联合复审发现 S0-004，当前分支 `codex/s0-lock-hash-remediation` 只修复该基础缺陷并重新交审 S0/S1，见 [修复与复审说明](S0_LOCK_HASH_REMEDIATION.md)。本轮没有 main 合并、回退或 S2 推进授权。
 
 ## 每次开发的固定顺序
 
@@ -11,7 +11,7 @@
 5. 按该 SHA 生成开发报告和 GPT Work 审核请求，导出准确提交源码并核对文件哈希。
 6. 将报告和审核材料置于 Git 忽略的 `deliverables/`；以草稿 PR 交付，注明实现 SHA 和审核尚待完成。
 7. GPT Work 对固定 SHA 独立复验。缺陷交回 Codex，在开发分支修复、提交新 SHA、生成新报告和审核包。
-8. 核实独立审核结论确实绑定当前 PR head SHA，阻断项均已解决，再评估合并资格。当前授权为 S1，S1合并和下一阶段需另行授权。
+8. 核实独立审核结论确实绑定当前 PR head SHA，阻断项均已解决，再评估合并资格。本轮新修复的合并及阶段推进需负责人另行授权。
 
 不删除失败运行、旧报告、旧结论和复验记录，不把开发自测或协作代理检查写为独立 GPT Work 验收通过。
 
@@ -44,7 +44,7 @@ python scripts/verify_stage0.py --output-dir artifacts/verification/<完整实�
 python scripts/build_review_package.py --commit <完整实现SHA> --evidence-dir artifacts/verification/<完整实现SHA>
 ```
 
-打包器要求当前 HEAD 与实现 SHA 相同、工作区干净、开发验证来自该 SHA 且独立审核仍为 PENDING。源码从 Git 提交导出；未知来源、过期证据或未完成开发检查均不能冒充可交审的固定版本。
+打包器要求当前 HEAD 与实现 SHA 相同、工作区干净、开发验证来自该 SHA 且独立审核仍为 PENDING。S0 锁哈希须为小写 64 位十六进制 SHA-256，并与源码根目录及准确提交的 requirements.lock 字节一致；错误、缺失及非法格式在创建交付目录和 ZIP 前退出 2。源码从 Git 提交导出；未知来源、过期证据或未完成开发检查均不能冒充可交审的固定版本。
 
 证据树应由普通文件和目录组成，子符号链接、junction、循环及根外路径在读取契约和创建交付前拒绝；需要引用的材料先复制为证据根内的普通文件。普通同步云文件不会仅因 Cloud reparse 标记被当作链接。实际每 SHA 输出目录与最终 ZIP 不得与证据树重叠，安全的共同父目录允许。已有输出目录、ZIP 或悬空目标链接会在创建新输出前拒绝；ZIP 使用排他创建，保留旧材料。
 
@@ -71,7 +71,7 @@ git config core.hooksPath .githooks
 
 钩子阻止直接推送 main 或 master，鼓励通过经过审核的 PR 更新基线。钩子只在已配置的本地仓库生效，不能阻止绕过钩子或从其他客户端改远程；草稿 PR 也不等于服务器端分支保护。
 
-服务器端规则应单独核实。若尚未启用或当前工具无管理权限，在开发报告中明确保留此限制，不宣称仓库已实现服务器强制审核。无论服务器配置如何，Codex 仍须遵守本次不合并S1、不进入S2的用户要求。
+服务器端规则应单独核实。若尚未启用或当前工具无管理权限，在开发报告中明确保留此限制，不宣称仓库已实现服务器强制审核。无论服务器配置如何，本轮仍不得合并修复、回退 main 或推进 S2。
 
 S1使用scripts/verify_stage1.py和scripts/build_stage1_package.py，输出按deliverables/stages/S1/<准确SHA>组织；S0脚本不能冒充S1证据。S1回执为独立契约，不能用S0已通过回执批准S1。
 

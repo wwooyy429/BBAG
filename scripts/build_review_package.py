@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -42,6 +43,12 @@ def validate_evidence(evidence: Path, commit: str) -> tuple[dict, dict, dict[str
     verification = read_object(evidence / "verification.json")
     if verification.get("implementation_commit") != commit or verification.get("working_tree_dirty") is not False:
         raise ValueError("Verification evidence is not from this clean implementation commit")
+    lock_hash = verification.get("dependency_lock_sha256")
+    if type(lock_hash) is not str or re.fullmatch(r"[0-9a-f]{64}", lock_hash) is None:
+        raise ValueError("Verification dependency lock hash must be a lowercase SHA-256 string")
+    root = Path(__file__).resolve().parents[1]
+    if lock_hash != digest(root / "requirements.lock"):
+        raise ValueError("Verification dependency lock hash does not match the committed source")
     verification_status = {
         "stage": "S0", "independent_review": "PENDING",
         "platform_integration": "NOT_APPLICABLE", "economic_evidence": "NOT_APPLICABLE",
@@ -137,6 +144,9 @@ def main() -> int:
         raise ValueError("Check out the reviewed commit before packaging it")
     if git(root, "status", "--porcelain"):
         raise ValueError("Committed source must be clean before packaging")
+    committed_lock = subprocess.check_output(["git", "show", f"{commit}:requirements.lock"], cwd=root)
+    if digest(root / "requirements.lock") != hashlib.sha256(committed_lock).hexdigest():
+        raise ValueError("Working dependency lock does not match the exact committed source")
     evidence = args.evidence_dir.resolve()
     output_base = args.output_dir.resolve()
     output = output_base / commit
@@ -154,7 +164,11 @@ def main() -> int:
         f"| {item['name']} | {item['exit_code']} | {item['expected_exit_code']} | {'PASS' if item['passed'] else 'FAIL'} |"
         for item in verification["checks"]
     )
-    remediation = root / "docs/S0_SUPPLEMENT_CHECK.md"
+    histories = [name for name in ("prior_review", "prior_audit") if (evidence / name).is_dir()]
+    history = ("本包实际包含历史输入目录：" + "、".join(f"`evidence/{name}/`" for name in histories)
+               + "。旧结论只覆盖各自准确版本，不构成本次新 SHA 的批准。"
+               if histories else "本包未包含可选历史审核目录，不声称附有原审核文件；历史版本与最新联合复审状态按下文记录。")
+    remediation = root / "docs/S0_LOCK_HASH_REMEDIATION.md"
     remediation_details = remediation.read_text(encoding="utf-8") if remediation.is_file() else ""
     remediation_report = evidence / "remediation/S0_FIX_REPORT.md"
     remediation_results = remediation_report.read_text(encoding="utf-8") if remediation_report.is_file() else "补充复验报告未提供，不能宣称已执行额外检查。"
@@ -162,17 +176,16 @@ def main() -> int:
 
 实现 commit SHA：`{commit}`
 
-本报告在提交后生成，审核对象为 source.zip 中该 SHA 的完整源码。开发分支为 `{git(root, 'branch', '--show-current')}`，独立 GPT Work 审核保持 PENDING；未合并 main，未进入 S1。
+本报告在提交后生成，审核对象为 source.zip 中该 SHA 的完整源码。开发分支为 `{git(root, 'branch', '--show-current')}`，本次新 SHA 独立审核保持 PENDING。本轮范围为 S0-004 基础修复；完整源码包含已合并的 S1 基线，S1 受影响验证使用单独的 S1 包，不以本包冒充。
 
 ## 本轮 S0 修复
 
-本轮基线：`2eccc6418674314c2463a34783b8dd9fa1ad2971`。按负责人补充材料核查 S0，修复四项状态与交付边界遗漏。此前 `b2d502048dfed1f8765514a018bc91560d87ec22` 的 CHANGES_REQUIRED 及原始失败记录继续保留；两版旧材料均不构成本实现的独立验收。
+本轮基线：`41789706f710e131d4a654e349798ddb15ea70f5`。负责人提供的 `dual_reaudit_S0_S1_20261031_1339` 将 S0 `f46fad2ff4b3ec9659001659fa44201e10951fd5` 与 S1 `c56db883cd7841c94517ee9817d7ad551e811dc2` 的联合结论更新为 CHANGES_REQUIRED / 工程 FAIL，新增 S0-004（P2）。S1 功能专项通过，原 S1-001 保持关闭；旧批准、失败及实际合并事实保留，新修复不继承旧 SHA 的批准。
 
-- S0-SUP-001：S0 结构批准要求平台 NOT_APPLICABLE，拒绝矛盾的批准状态。
-- S0-SUP-002：打包前拒绝证据子链接、junction、根外路径及特殊文件，普通云占位符不因 reparse 标记被误拒。
-- S0-SUP-003：在创建输出前拒绝证据与实际交付路径重叠，防止复制回输入。
-- S0-SUP-004：前置检查已有 SHA 目录和 ZIP，ZIP 使用排他创建，避免覆盖或在已知冲突后留下就绪形态的部分交付。
-- 前轮严格 JSON、JUnit 明细、完整契约与规范字节/哈希/SHA 校验保留；DRAFT 参数继续待负责人确认。
+- S0-004：要求证据依赖锁字段为规范小写 64 位十六进制 SHA-256，且等于源码根目录 requirements.lock 的摘要；完整 CLI 另与准确提交中的锁字节核对。错误、缺失、非法格式及隐藏的本地锁差异在创建输出、archive 和 ZIP 前退出 2。
+- 正确锁跨工作目录打包、既有输出不变及 S1 原有锁拒绝对照均有回归入口。
+- S0-N01：历史证据目录按实际存在情况说明，纠正已过期的阶段和合并措辞。S0-N02 的 Windows 设备别名建议保留待办，本轮不修改路径契约。
+- 前轮严格 JSON、JUnit 明细、完整契约、规范字节/哈希/SHA、证据树与输出路径边界检查保留；锁版本、公式、标签、标准答案和研究参数不变。
 
 ## 保留的 S0 基础能力
 
@@ -194,9 +207,11 @@ def main() -> int:
 
 pending_review_gate 的预期退出码为 3，表示未取得独立批准时保持阻止。原始命令、输出、JUnit、实验清单和待审核请求均在 evidence 中。
 
-`evidence/prior_audit/` 保留负责人提供的旧审核及失败记录；原报告注明独立 Codex 会话、未认证 GPT Work 身份。`evidence/remediation/` 保存本轮缺陷对照、原测试适配差异、开发者复跑及 CI 状态（存在时以实际文件为准）。开发者重跑原审核测试不产生独立验收结论。PR 为 https://github.com/wwooyy429/BBAG/pull/1 ，保持草稿。
+{history}
 
-配置/契约版本 1.0，样例保持 ENGINEERING_TEST/DRAFT；依赖锁随 source.zip 交付，数据为合成样例，模型与平台版本不适用。S0 外部模型、平台任务和费用消耗为零；GitHub CI 仅属于开发验证。测试耗时及实际环境见 verification.json，内存、存储、并发、延迟门槛尚待项目负责人确认，未根据本轮观测倒填。
+补充实测只以实际附带文件为准，不声明未随包交付的目录或远端状态。开发者重跑原审核测试不产生独立验收结论。原报告声明独立 Codex 会话、未认证 GPT Work 身份，负责人已接受该审核来源；本轮仍须取得绑定新 SHA 的独立结论。
+
+配置/契约版本 1.0，样例保持 ENGINEERING_TEST/DRAFT；依赖锁随 source.zip 交付，SHA-256 为 `{verification['dependency_lock_sha256']}`。本次 S0/S1 修复与验证使用合成输入，无外部模型或量化平台任务，相关新增费用为零；既有 S2 草稿及证据属于独立历史范围，本轮未推进。GitHub CI 仅属于开发验证。测试耗时及实际环境见 verification.json，资源门槛仍按研究协议中的未决事项处理。
 
 F01—F08 完整业务路径均为 NOT_RUN（依赖 S1—S7）；本轮仅实际执行适用的 S0 契约、CLI、来源与证据接纳回归。平台与经济结论均为 NOT_APPLICABLE，经济评估执行有效性不适用。
 
@@ -206,7 +221,7 @@ F01—F08 完整业务路径均为 NOT_RUN（依赖 S1—S7）；本轮仅实际
 
 ## 尚未实现或验证
 
-S1 因子算子、时序运行审计及因子有效性评估尚未实现。没有 GPT API、QuantConnect 研究/回测/优化、模拟或真实资金部署；平台集成和经济证据在 S0 不适用。配置的日期边界校验不替代后续平台访问控制。2026-10-31 仓库初始化核实时服务器分支保护未启用；打包器不重新查询远端，当前保护状态须另行核实。当前采用开发分支、草稿 PR、本地 hook 和人工治理，hook 不构成服务器硬门禁。
+S1 确定性计算、公式审计和独立未来标签已存在于基线；本包的六项 S0 检查不能单独代表 S1 专项交付已验收。真实平台、经济研究和完整业务路径不在本轮 S0/S1 基础修复验收范围。配置的日期边界校验不替代后续平台访问控制。打包器不重新查询远端，服务器保护与 PR 状态须依据实际快照核实；本地 hook 不构成服务器硬门禁。本轮不合并或回退 main，不推进 S2。
 
 当前状态为 READY_FOR_REVIEW。开发自测与 CI 不能代替独立 GPT Work 对此 SHA 的审核。任何受影响源码、契约或配置变化都需要新提交、新证据和新审核包。
 
@@ -228,17 +243,18 @@ S1 因子算子、时序运行审计及因子有效性评估尚未实现。没�
 3. 独立构造缺字段、未知字段、负数、布尔冒充数字、非有限值、重叠日期、越界查询、时间规则冲突及非法阶段/用途反例。
 4. 核对生成的 JSON Schema、协议哈希、实验清单和 Git 源码状态；尝试覆盖或逃逸实验输出目录。
 5. 检查审核缺失、PENDING、陈旧 SHA、需要修改时保持阻止；结构合格回执仍不认证审核者或执行合并。
-6. 确认 S0 未实现 S1 逻辑、未调用平台或模型服务，DRAFT 配置未被当作研究批准。
-7. 检查分支和报告治理：main 只含初始化标记，当前实现等待此 SHA 的独立审核。
-8. 对照 evidence/prior_audit 的 S0-001—S0-003 原反例逐项独立复测；检查完整 JSON 入口、嵌套 JUnit 明细及协议/实验/回执契约，失败不得生成包。自行增加反例，不以开发者原测试复跑代替独立判断。
+6. 区分本次 S0 修复范围与 source.zip 中已合并的 S1 基线；本轮未调用平台或模型服务，DRAFT 配置未被当作研究批准。S1 受影响专项另使用同 SHA 的 S1 交审包。
+7. 检查分支和报告治理：历史合并已存在，最新联合结论为 CHANGES_REQUIRED，本次新 SHA 等待独立复审；不得继承旧版批准。
+8. 对照历史审核材料（如随包提供）的 S0-001—S0-003 原反例逐项独立复测；检查完整 JSON 入口、嵌套 JUnit 明细及协议/实验/回执契约，失败不得生成包。自行增加反例，不以开发者原测试复跑代替独立判断。
 9. 核对 evidence/remediation（如有）的原件哈希、适配差异、原始失败与新结果，以及新源码与 PR 的准确 SHA；旧版工程 FAIL 不自动覆盖修复效果，新版也不得自填 ACCEPTED。
 10. 对照 docs/S0_SUPPLEMENT_CHECK.md 复测 S0 回执平台状态、证据 symlink/junction 与越界、输入输出重叠、已有 ZIP 冲突；所有拒绝均须发生在新交付目录和源码 archive 创建前。普通目录、合法兄弟路径及云占位符正例须保留。
+11. 对照 docs/S0_LOCK_HASH_REMEDIATION.md 独立复测 S0-004：正确锁正例；错误摘要、缺字段、非法格式、另一个合法摘要及非法 JSON 类型；跨调用目录及 Git 隐藏差异。检查退出 2、无新交付且旧输出不变，并保留 S1 原有锁拒绝对照。
 
 ## 结论要求
 
 当前独立审核状态 PENDING，工程验收待你执行后判定；平台集成和经济证据在 S0 为 NOT_APPLICABLE。每项标记 EXECUTED、STATIC_ONLY 或 NOT_RUN，保留命令、输入、实际结果和缺陷复现。
 
-审核完成后生成独立报告及绑定 `{commit}` 的 review_receipt.json。请勿直接改写此包的原始开发证据。未通过时交回缺陷清单，继续禁止合并 main 和进入 S1。通过也不在本任务中自动合并或开展阶段 1。
+审核完成后生成独立报告及绑定 `{commit}` 的 review_receipt.json。请勿直接改写此包的原始开发证据。未通过时交回缺陷清单，当前联合验收仍受阻。本任务不执行 main 合并、回退或 S2 推进；通过也须由负责人另行授权后续动作。
 """
     (output / "GPT_WORK_AUDIT_REQUEST.md").write_text(audit, encoding="utf-8")
     reproduce = f"""# 复现 S0

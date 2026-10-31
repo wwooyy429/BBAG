@@ -1,8 +1,8 @@
 # BBAG 量化因子研究系统
 
-BBAG 的完整目标是由 GPT 提出经济假设，经 QuantConnect Research 和 LEAN 验证，再由独立评估程序及审核者复验。S0 已经负责人验收并合并，当前范围为 **S1 确定性因子计算与公式审计**，使用合成输入与独立未来价格标签；平台接入、模型调用、研究评估、回测及部署属于后续阶段。
+BBAG 的完整目标是由 GPT 提出经济假设，经 QuantConnect Research 和 LEAN 验证，再由独立评估程序及审核者复验。S0、S1 曾经负责人验收并授权合并；后续联合复审发现 S0 依赖锁证据接纳缺陷，当前分支范围为 **S0-004 修复及 S0/S1 重新交审**。
 
-本分支的交付状态以绑定 commit SHA 的开发报告和真实验证日志为准。原 S1 提交 `f5c07d2b878c3b7e9f122bcf064ef45589d9aaa7` 独立审核为 **CHANGES_REQUIRED / 工程 FAIL**，报价字段与开盘事件不一致的 S1-001 修复见 [修复说明](docs/S1_REMEDIATION.md)。新修复 SHA 须另行独立复审，结论保持 **PENDING**；开发自测和协作代理检查不能替代该审核。S1 未独立通过并获负责人授权前不合并 main，不进入 S2。
+联合复审 `dual_reaudit_S0_S1_20261031_1339` 更新为 **CHANGES_REQUIRED / 工程 FAIL**，唯一新增阻断为 S0-004（P2）。S1 功能专项通过，原 S1-001 保持关闭；旧批准、失败及合并记录保留。修复范围与重新交审要求见 [S0 锁哈希修复说明](docs/S0_LOCK_HASH_REMEDIATION.md)。新 SHA 的独立审核保持 **PENDING**；开发自测和协作代理检查不能替代该审核。本轮不合并、不回退 main，不推进已保留的 S2 草稿。
 
 ## 本地运行
 
@@ -29,6 +29,7 @@ Linux 或 macOS 可用 `python3 -m venv .venv` 建立环境，并将后续解释
 - [S0 验收及实际合并记录](docs/S0_ACCEPTANCE.md)
 - [S1 算子、时间、标签与交付规范](docs/STAGE1.md)
 - [S0 补充材料核对与修补](docs/S0_SUPPLEMENT_CHECK.md)
+- [S0-004 锁哈希修复与联合复审](docs/S0_LOCK_HASH_REMEDIATION.md)
 - [研究协议与待确定参数](docs/RESEARCH_PROTOCOL.md)
 - [Git 与独立审核流程](docs/GIT_WORKFLOW.md)
 - [标准接口说明](contracts/README.md)
@@ -58,7 +59,7 @@ Linux 或 macOS 可用 `python3 -m venv .venv` 建立环境，并将后续解释
 
 ## 当前状态
 
-S0 被审 SHA 为 f46fad2ff4b3ec9659001659fa44201e10951fd5，合并结果为 b2555efe7201c473bdb66c7dd1c14552ad130ac5。S1 在独立开发分支交审，不继承 S0 批准。F01—F08 描述完整系统路径，当前仅验证适用的工程、计算与因果边界，不能将完整路径记为已执行。
+S0 历史被审 SHA 为 `f46fad2ff4b3ec9659001659fa44201e10951fd5`，合并结果为 `b2555efe7201c473bdb66c7dd1c14552ad130ac5`。S1 历史被审 SHA 为 `c56db883cd7841c94517ee9817d7ad551e811dc2`，合并结果及本轮修复基线为 `41789706f710e131d4a654e349798ddb15ea70f5`。最新联合复审阻断当前验收资格，不改写这些历史事实。F01—F08 描述完整系统路径，不能将局部工程测试记为完整路径已执行。
 
 每次开发完成后，先提交实现，再按该 SHA 在 `deliverables/` 生成开发报告、审核任务和固定源码包。输出材料不进入实现提交，避免报告包含自身 commit SHA 的循环。审核包须以本次源码和规范为准；`docs/handoff/` 保留的是历史规划交接材料，不能作为当前实现的审核证据。
 

@@ -2,10 +2,10 @@
 
 ## Current authorization
 
-- The user accepted S0 and explicitly authorized its merge and S1 on 2026-10-31. Reviewed S0 SHA: f46fad2ff4b3ec9659001659fa44201e10951fd5; merge-result SHA: b2555efe7201c473bdb66c7dd1c14552ad130ac5. The independent review source was verified as a separate Codex audit chat; its report disclaims authenticated GPT Work identity, and the project owner accepted it.
-- Implement S1 only: deterministic factor operators, restricted expression audit, separate forward labels, synthetic typed examples, verification and a commit-bound review package. Do not implement alpha evaluation, QuantConnect integrations, GPT calls, backtests, optimization or deployment, or begin S2.
-- Independent S1 review of f5c07d2b878c3b7e9f122bcf064ef45589d9aaa7 returned CHANGES_REQUIRED / engineering FAIL with blocking S1-001 (label quote field versus open execution event). Preserve that result; repair on this development branch and submit a new SHA for independent re-review. S0 acceptance is unchanged.
-- Work on a development branch. Do not push implementation directly to main, merge S1 or enable auto-merge until independent review of its exact SHA passes and the user explicitly authorizes that action.
+- Historical owner-authorized merges are preserved: S0 f46fad2ff4b3ec9659001659fa44201e10951fd5 merged as b2555efe7201c473bdb66c7dd1c14552ad130ac5; S1 c56db883cd7841c94517ee9817d7ad551e811dc2 merged as 41789706f710e131d4a654e349798ddb15ea70f5. The owner accepted the independent Codex review source, whose report disclaims authenticated GPT Work identity.
+- The later joint re-review dual_reaudit_S0_S1_20261031_1339 supersedes current joint acceptance with CHANGES_REQUIRED / engineering FAIL: S0-004 (P2), an unchecked dependency-lock evidence hash. S1 functional checks passed and S1-001 remains closed; historical reports and merge facts must not be rewritten.
+- Current scope is the S0-004 repair on codex/s0-lock-hash-remediation, its regression tests, accurate report wording, and fresh SHA-bound S0/S1 verification and review packages. Do not change formulas, labels, reference answers or research parameters to fit tests. Preserve the separate S2 development branch and evidence without advancing S2 or issuing platform tasks during this repair.
+- Work on a development branch. Do not push implementation directly to main, merge this repair, roll back main or enable auto-merge. The new exact implementation SHA requires independent re-review and owner authorization before merge or stage advancement.
 - Developer self-tests and collaborator checks are not the independent GPT Work acceptance decision. Keep external review PENDING until genuine evidence is supplied.
 
 ## Engineering requirements
