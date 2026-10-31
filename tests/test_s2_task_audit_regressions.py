@@ -227,6 +227,41 @@ def test_lost_poll_preserves_available_known_result_and_cannot_enable_verdict_wa
     assert snapshot(ledger, task) == before
 
 
+@pytest.mark.parametrize("terminal", ["error", "incomplete"])
+@pytest.mark.parametrize("known", [False, True])
+@pytest.mark.parametrize("first_bill", [None, 7])
+def test_known_verdict_survives_terminal_transition_repeated_omission_and_first_bill(tmp_path, terminal, known, first_bill):
+    ledger, task, budget, attempt = available_result(tmp_path, "id-available", known)
+    def terminal_message(cost=None):
+        return message(task, status=terminal, success=False if terminal == "error" else None,
+            error_category="PROVIDER_ERROR" if terminal == "error" else "NONE", actual_cost_microusd=cost)
+    first = ledger.record_event(attempt.local_attempt_id, "first-terminal-omits-verdict", terminal_message())
+    assert first.status == terminal and first.attempts[-1].check_passed is known
+    assert first.attempts[-1].platform_task_id == "SYNTHETIC_JOB"
+    again = reopened(ledger, budget)
+    second = again.record_event(attempt.local_attempt_id, "second-terminal-omits-verdict", terminal_message(first_bill))
+    assert second.attempts[-1].check_passed is known
+    third = again.record_event(attempt.local_attempt_id, "third-terminal-omits-verdict", terminal_message())
+    assert third.attempts[-1].check_passed is known
+    assert third.attempts[-1].actual_cost_microusd == first_bill
+    persisted = reopened(ledger, budget)
+    current = persisted.get(task.correlation_id).attempts[-1]
+    assert current.check_passed is known and current.actual_cost_microusd == first_bill
+    assert persisted.usage().attempt_count == 1 and persisted.usage().active_attempt_count == 0
+    assert persisted.usage().known_cost_microusd == (first_bill or 0)
+    assert persisted.usage().unknown_cost_attempt_count == int(first_bill is None)
+    # An incompatible later completion cannot change the terminal execution or
+    # its established result; rejection must leave persisted bytes untouched.
+    before = snapshot(persisted, task)
+    with pytest.raises(TaskLedgerError, match="verdict|terminal"):
+        persisted.record_event(attempt.local_attempt_id, "cannot-promote-to-opposite-verdict", message(task, check_passed=not known))
+    assert snapshot(persisted, task) == before
+    if first_bill is not None:
+        with pytest.raises(TaskLedgerError, match="confirmed cost"):
+            persisted.record_event(attempt.local_attempt_id, "cannot-rewrite-terminal-bill", terminal_message(first_bill + 1))
+        assert snapshot(persisted, task) == before
+
+
 @pytest.mark.parametrize("operation", ASYNC)
 def test_unconfirmed_no_id_result_claim_cannot_lend_error_import_execution_proof(tmp_path, operation):
     ledger, task, _ = setup(tmp_path, operation)

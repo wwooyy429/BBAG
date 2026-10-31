@@ -801,9 +801,9 @@ class TaskLedger:
                 if response.actual_cost_microusd not in {None, previous.actual_cost_microusd}:
                     raise TaskLedgerError("confirmed cost cannot change within an attempt")
                 updates["actual_cost_microusd"] = previous.actual_cost_microusd
-            # Only an effective available/completed result establishes a verdict.
+            # An established verdict survives later error/incomplete metadata.
             # An unconfirmed no-ID claim remains UNKNOWN and is not execution proof.
-            if previous.status in {"result_available", "completed"} and previous.check_passed is not None:
+            if previous.check_passed is not None and previous.status != "UNKNOWN":
                 if response.check_passed is not None and response.check_passed != previous.check_passed:
                     raise TaskLedgerError("known check verdict cannot change within an attempt")
                 updates["check_passed"] = previous.check_passed
