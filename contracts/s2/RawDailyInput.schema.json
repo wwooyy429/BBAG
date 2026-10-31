@@ -1,0 +1,399 @@
+{
+  "$defs": {
+    "CalendarSession": {
+      "additionalProperties": false,
+      "description": "An explicit supplied exchange session; no inferred weekday filling.",
+      "properties": {
+        "close_at": {
+          "format": "date-time",
+          "title": "Close At",
+          "type": "string"
+        },
+        "open_at": {
+          "format": "date-time",
+          "title": "Open At",
+          "type": "string"
+        },
+        "session": {
+          "format": "date",
+          "title": "Session",
+          "type": "string"
+        },
+        "signal_at": {
+          "format": "date-time",
+          "title": "Signal At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "session",
+        "open_at",
+        "close_at",
+        "signal_at"
+      ],
+      "title": "CalendarSession",
+      "type": "object"
+    },
+    "CorporateAction": {
+      "additionalProperties": false,
+      "properties": {
+        "cash_per_share": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cash Per Share"
+        },
+        "effective_on": {
+          "format": "date",
+          "title": "Effective On",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "SPLIT",
+            "DIVIDEND"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "known_at": {
+          "format": "date-time",
+          "title": "Known At",
+          "type": "string"
+        },
+        "shares_after_per_before": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Shares After Per Before"
+        },
+        "sid": {
+          "minLength": 1,
+          "title": "Sid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sid",
+        "kind",
+        "effective_on",
+        "known_at"
+      ],
+      "title": "CorporateAction",
+      "type": "object"
+    },
+    "DailyBar": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "close": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Close"
+        },
+        "high": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "High"
+        },
+        "low": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Low"
+        },
+        "open": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Open"
+        },
+        "session": {
+          "format": "date",
+          "title": "Session",
+          "type": "string"
+        },
+        "sid": {
+          "minLength": 1,
+          "title": "Sid",
+          "type": "string"
+        },
+        "volume": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Volume"
+        }
+      },
+      "required": [
+        "sid",
+        "session",
+        "available_at"
+      ],
+      "title": "DailyBar",
+      "type": "object"
+    },
+    "MembershipEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "effective_on": {
+          "format": "date",
+          "title": "Effective On",
+          "type": "string"
+        },
+        "known_at": {
+          "format": "date-time",
+          "title": "Known At",
+          "type": "string"
+        },
+        "member": {
+          "title": "Member",
+          "type": "boolean"
+        },
+        "sid": {
+          "minLength": 1,
+          "title": "Sid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sid",
+        "effective_on",
+        "member",
+        "known_at"
+      ],
+      "title": "MembershipEvent",
+      "type": "object"
+    },
+    "SecurityIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "delisted_on": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Delisted On"
+        },
+        "delisting_known_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Delisting Known At"
+        },
+        "known_at": {
+          "format": "date-time",
+          "title": "Known At",
+          "type": "string"
+        },
+        "listed_from": {
+          "format": "date",
+          "title": "Listed From",
+          "type": "string"
+        },
+        "sid": {
+          "minLength": 1,
+          "title": "Sid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sid",
+        "listed_from",
+        "known_at"
+      ],
+      "title": "SecurityIdentity",
+      "type": "object"
+    },
+    "TickerMapping": {
+      "additionalProperties": false,
+      "properties": {
+        "known_at": {
+          "format": "date-time",
+          "title": "Known At",
+          "type": "string"
+        },
+        "sid": {
+          "minLength": 1,
+          "title": "Sid",
+          "type": "string"
+        },
+        "ticker": {
+          "minLength": 1,
+          "title": "Ticker",
+          "type": "string"
+        },
+        "valid_from": {
+          "format": "date",
+          "title": "Valid From",
+          "type": "string"
+        },
+        "valid_to": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid To"
+        },
+        "valid_to_known_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid To Known At"
+        }
+      },
+      "required": [
+        "sid",
+        "ticker",
+        "valid_from",
+        "known_at"
+      ],
+      "title": "TickerMapping",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Exact raw adapter envelope; numeric values are copied without adjustment.",
+  "properties": {
+    "bars": {
+      "items": {
+        "$ref": "#/$defs/DailyBar"
+      },
+      "maxItems": 8192,
+      "title": "Bars",
+      "type": "array"
+    },
+    "corporate_actions": {
+      "items": {
+        "$ref": "#/$defs/CorporateAction"
+      },
+      "maxItems": 1024,
+      "title": "Corporate Actions",
+      "type": "array"
+    },
+    "identities": {
+      "items": {
+        "$ref": "#/$defs/SecurityIdentity"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Identities",
+      "type": "array"
+    },
+    "membership": {
+      "items": {
+        "$ref": "#/$defs/MembershipEvent"
+      },
+      "maxItems": 1024,
+      "title": "Membership",
+      "type": "array"
+    },
+    "sessions": {
+      "items": {
+        "$ref": "#/$defs/CalendarSession"
+      },
+      "maxItems": 256,
+      "minItems": 1,
+      "title": "Sessions",
+      "type": "array"
+    },
+    "tickers": {
+      "items": {
+        "$ref": "#/$defs/TickerMapping"
+      },
+      "maxItems": 256,
+      "minItems": 1,
+      "title": "Tickers",
+      "type": "array"
+    }
+  },
+  "required": [
+    "sessions",
+    "identities",
+    "tickers",
+    "bars"
+  ],
+  "title": "RawDailyInput",
+  "type": "object"
+}

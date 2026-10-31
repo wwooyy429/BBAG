@@ -155,7 +155,7 @@ def validate_evidence(evidence: Path, commit: str, root: Path | None = None) -> 
 def development_report(root: Path, evidence: Path, commit: str, verification: dict, counts: dict) -> str:
     histories = [name for name in ("prior_review", "prior_audit") if (evidence / name).is_dir()]
     history = ("本包实际包含历史输入目录：" + "、".join(f"`evidence/{name}/`" for name in histories)
-               + "。其结论只覆盖各自准确版本，不构成 S1 批准。"
+               + "。其结论只覆盖各自准确版本，不构成本次新 SHA 的批准。"
                if histories else "本包未包含可选历史审核目录；前置 S0 版本与合并结果按下列准确 SHA 记录，不声称附有原审核文件。")
     additions = evidence / "DELIVERY_NOTES.md"
     extra = additions.read_text(encoding="utf-8") if additions.is_file() else "未提供补充执行记录，不宣称执行额外检查。"
@@ -167,9 +167,9 @@ def development_report(root: Path, evidence: Path, commit: str, verification: di
 
 ## 授权与基线
 
-历史上负责人验收 S0 后明确授权合并并开始 S1。S0 首次被审实现：`{S0_REVIEWED_SHA}`；首次 S0 合并结果：`{S0_MERGE_SHA}`。S1 后续 c56db883cd7841c94517ee9817d7ad551e811dc2 获负责人授权合并为 41789706f710e131d4a654e349798ddb15ea70f5。当前修复基线为未合并的 0889d277bfdda4894d7e359157d092a4f07639f5；最新独立复审已批准该 SHA 的 S0 范围并关闭 S0-004、S0-N01，S1 因新增 S1-002（P2）仍为 CHANGES_REQUIRED。S1-001 保持关闭，历史批准不能覆盖本次新 SHA。当前源码分支：`{git(root, 'branch', '--show-current')}`。具体范围见 docs/S1_COMMITTED_LOCK_REMEDIATION.md。
+历史 S0 首次被审实现为 `{S0_REVIEWED_SHA}`，首次合并结果为 `{S0_MERGE_SHA}`；S1 的 c56db883cd7841c94517ee9817d7ad551e811dc2 经负责人授权合并为 41789706f710e131d4a654e349798ddb15ea70f5。负责人随后核实并接受准确 259962860d2301ead894c5d649a29eab1f8db1ac 的独立 Codex S0/S1 APPROVED 复审，S0-004、S0-N01、S1-001、S1-002 关闭记录保留；PR #5 获授权合并为 7aac4886b50493c09235c49b5de90643b7090e07，并授权集成及恢复 S2。当前源码分支：`{git(root, 'branch', '--show-current')}`。具体范围、累计预算与旧证据来源见 docs/S2_RESUMPTION.md。
 
-本轮仅修复 S1-002：在准确 HEAD 与 clean 检查后、创建任何交付前，比较准确提交中的 requirements.lock Git blob 与源码根目录磁盘锁摘要，保留原有证据锁校验。隐藏标记不能使不一致的提交/磁盘/证据锁生成交审包；失败退出 2、旧输出保留。以下 S1 计算能力属于保留基线，不是本轮新增公式或标签逻辑。
+本包记录上述准确提交的 S1 确定性计算与交付边界基础回归；完整源码还包含 S2，实现与新独立审核按单独的 S2 包保持 PENDING。本 S1 请求仍未填写当前 SHA 的独立批准。保留准确提交/磁盘/证据锁比对，隐藏标记导致的不一致在创建输出前拒绝；本包通过不代表完整 S2 平台执行或批准。
 
 ## 实际交付范围
 
@@ -185,7 +185,7 @@ Python：`{verification['python']}`；平台：`{verification['platform']}`。JU
 |---|---|---|---|
 {table}
 
-`pending_review_gate` 预期退出 3，表示 S1 尚无独立批准。所有 stdout/stderr 原字节、命令、时刻、耗时、JUnit、三个 run 的规范配置/结果/manifest 均在 evidence。打包时另实际校验固定提交样例、完整契约、原始哈希、真实 JUnit 明细、两个因子结果及独立手算/有理数参考。
+`pending_review_gate` 预期退出 3，表示本次准确 SHA 的审核请求仍未填写批准；历史 25996286 的结论不改写该请求。所有 stdout/stderr 原字节、命令、时刻、耗时、JUnit、三个 run 的规范配置/结果/manifest 均在 evidence。打包时另实际校验固定提交样例、完整契约、原始哈希、真实 JUnit 明细、两个因子结果及独立手算/有理数参考。
 
 {history}
 
@@ -193,11 +193,11 @@ Python：`{verification['python']}`；平台：`{verification['platform']}`。JU
 
 {extra}
 
-S1 无 GPT API、QuantConnect、真实数据、Research 经济评估、LEAN 回测、优化或部署；外部模型/量化平台调用及费用为零。平台集成和经济结论均为 NOT_APPLICABLE，经济评估执行有效性不适用。合成价格收益标签不冒充含公司行动的真实总收益。正式市场、数据权限、研究参数、资源门槛及统计准入仍待负责人确认；工程容差不构成经济批准。
+本包采集的 S1 验证是离线合成计算与基础回归，不能据此新增外部模型、平台执行或实际账单记录。平台集成和经济结论在本 S1 范围均为 NOT_APPLICABLE，经济评估执行有效性不适用。源码中的 S2 工程接口、原白名单、累计额度、旧平台返回及未验证项见独立 S2 材料；旧返回保持原 SHA，实际未知账单不改记为零。合成价格收益标签不冒充含公司行动的真实总收益，工程容差不构成经济批准；正式研究参数、资源门槛及统计准入按各阶段未决事项处理。
 
 F01—F08 完整业务路径 NOT_RUN（依赖后续阶段）；本轮仅验证适用的 S1 局部计算、时间因果、错误与交付边界。S6.4 最终配置复验、最终测试及派生隔离、固定与滚动模型规则保留，不能用最终测试补做开发复验。
 
-本地 hook 和草稿 PR 不等于服务器保护；远端状态仅依据实际附带快照，不从本地配置推断。历史合并事实保留，本轮交付不执行新合并或回退、不启用自动合并、不开始 S2 新任务；既有 S2 草稿与证据独立保留。后续必须取得准确新 SHA 的独立复审结论与负责人新授权。代码改变需要新提交、新证据及受影响项目复验。
+本地 hook 和草稿 PR 不等于服务器保护；远端状态依据实际附带快照记录。负责人已授权恢复 S2；本 S1 打包动作不触发平台调用、不重置原累计额度，也不自动合并 S2 或进入 S3。当前 S2 完整源码仍需准确新 SHA 的独立审核，代码改变需要新提交、新证据及受影响项目复验。
 """
 
 
@@ -235,7 +235,7 @@ def main() -> int:
     (output / "DEVELOPMENT_REPORT.md").write_text(development_report(root, evidence, commit, verification, counts), encoding="utf-8")
     audit = f"""# BBAG S1 独立审核请求
 
-准确 S1 SHA：`{commit}`。当前范围为 S1-002 提交锁比对修复及保留回归，独立审核 PENDING。S0 首次被审 `{S0_REVIEWED_SHA}`、合并 `{S0_MERGE_SHA}` 属历史前置；最新 S0 批准绑定 0889d277bfdda4894d7e359157d092a4f07639f5，不自动批准本次新 SHA。S0-004 与 S0-N01 已关闭，S1-001 保持关闭。
+准确 S1 SHA：`{commit}`。当前范围为同 SHA 的 S1 基础回归，独立审核请求 PENDING。S0 首次被审 `{S0_REVIEWED_SHA}`、合并 `{S0_MERGE_SHA}` 属历史前置；259962860d2301ead894c5d649a29eab1f8db1ac 的 S0/S1 独立 APPROVED 与授权合并 7aac4886b50493c09235c49b5de90643b7090e07、恢复 S2 的事实保留。四项关闭记录不重开，当前完整 S2 源码按单独材料独立审核，本请求不继承历史批准。
 
 核对 manifest、source.zip 与 Git 提交、锁依赖、样例及原始证据，按 REPRODUCE.md 在独立副本复验。自行构造语法/字段/类型/窗口/复杂度/参数/回看、缺失/常数/不足窗口/除零/非有限、重复 JSON、日期/可用时点和来源/输出边界反例；使用独立手算或参考值，不只重复生产函数。
 
@@ -243,9 +243,9 @@ def main() -> int:
 
 核查 S1 专用回执及验证契约、十项检查、真实 JUnit、规范配置/结果字节、哈希、准确 SHA 与 clean 快照、固定提交的手算/有理数标准答案。检查 evidence 链接、越界/重叠、已有输出防覆盖及可选历史目录的说明准确。
 
-独立复测 S1-002：在临时准确 checkout 对锁使用 assume-unchanged、skip-worktree 隐藏修改，仅令证据锁摘要匹配磁盘而不匹配 Git blob；两类均须退出 2、无新目录/archive/ZIP、旧输出不变。正确锁跨调用目录正例须保留，回读 source.zip/证据/准确提交三方锁字节。缺锁或读取失败保持可读 JSON 错误；原 S0/S1 错误、缺失、非法格式锁反例继续拒绝。
+保留已关闭 S1-002 的独立回归：在临时准确 checkout 对锁使用 assume-unchanged、skip-worktree 隐藏修改，仅令证据锁摘要匹配磁盘而不匹配 Git blob；两类均须退出 2、无新目录/archive/ZIP、旧输出不变。正确锁跨调用目录正例须保留，回读 source.zip/证据/准确提交三方锁字节。缺锁或读取失败保持可读 JSON 错误；原 S0/S1 错误、缺失、非法格式锁反例继续拒绝。
 
-逐项记录 EXECUTED/STATIC_ONLY/NOT_RUN、输入/预期/实际/退出码和原始证据。工程结论由你实测判定，不预设通过；平台和经济 NOT_APPLICABLE。保留 S6.4、最终派生隔离与固定/滚动模型规则；不调用模型或量化平台，不运行完整 F01—F08，不合并、不开始 S2。
+逐项记录 EXECUTED/STATIC_ONLY/NOT_RUN、输入/预期/实际/退出码和原始证据。工程结论由你实测判定，不预设通过；平台和经济在本 S1 范围 NOT_APPLICABLE。保留 S6.4、最终派生隔离与固定/滚动模型规则；本基础审核不调用模型或量化平台，不运行完整 F01—F08，也不执行合并或阶段推进。
 
 在审核副本新增测试和报告，生产修复交回 Codex。生成绑定 `{commit}` 的 S1 review_receipt.json；一致性检查不认证身份，也不自动授予 Git 或阶段权限。
 """
@@ -267,7 +267,7 @@ def main() -> int:
 工程：INCOMPLETE（待审核）；平台：NOT_APPLICABLE；经济：NOT_APPLICABLE；经济评估执行有效性：不适用。
 审核决定、阻断项、未验证项、来源确认、允许动作及依据：全部待填写。
 
-S1 通过也不自动合并或开始 S2；S6.4 复验、最终测试隔离与固定/滚动模型规则仍适用。
+本模板不自动合并或授权阶段推进；S6.4 复验、最终测试隔离与固定/滚动模型规则仍适用。
 """
     (output / "AUDIT_RESULT_TEMPLATE.md").write_text(template, encoding="utf-8")
     reproduce = f"""# 复现准确 S1 提交

@@ -1,4 +1,4 @@
-name: Offline S0 and S1 verification
+name: Offline S0 S1 and S2 verification
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   stage0:
-    name: S0/S1 Python ${{ matrix.python-version }}
+    name: S0/S1/S2 Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -33,18 +33,18 @@ jobs:
         run: |
           python -m pip install -r requirements.lock
           python -m pip install --no-deps --no-build-isolation -e .
-      - name: Verify exact source, both stages, causal factors and mature labels
+      - name: Verify exact source, regressions, S2 data access and task controls
         run: |
-          python scripts/verify_stage1.py --output-dir artifacts/s1-ci
-      - name: Verify committed schemas and S1 package
+          python scripts/verify_stage2.py --output-dir artifacts/s2-ci
+      - name: Verify committed schemas and S2 package
         run: |
           git diff --exit-code -- contracts
           test -z "$(git status --porcelain --untracked-files=all -- contracts)"
-          python scripts/build_stage1_package.py --commit "$(git rev-parse HEAD)" --evidence-dir artifacts/s1-ci --output-dir artifacts/s1-package
+          python scripts/build_stage2_package.py --commit "$(git rev-parse HEAD)" --evidence-dir artifacts/s2-ci --output-dir artifacts/s2-package
       - name: Preserve verification evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: s1-verification-python-${{ matrix.python-version }}
+          name: s2-verification-python-${{ matrix.python-version }}
           path: artifacts/
           if-no-files-found: warn

@@ -1,0 +1,27 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "maximum_absolute_raw_close_change": {
+      "default": 0.5,
+      "exclusiveMinimum": 0,
+      "maximum": 1000,
+      "title": "Maximum Absolute Raw Close Change",
+      "type": "number"
+    },
+    "raw_change_is_economic_signal": {
+      "const": false,
+      "default": false,
+      "title": "Raw Change Is Economic Signal",
+      "type": "boolean"
+    },
+    "stale_after_sessions": {
+      "default": 1,
+      "maximum": 256,
+      "minimum": 0,
+      "title": "Stale After Sessions",
+      "type": "integer"
+    }
+  },
+  "title": "QualityRule",
+  "type": "object"
+}

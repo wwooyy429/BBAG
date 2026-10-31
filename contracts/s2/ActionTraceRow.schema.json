@@ -1,0 +1,54 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "cash_distribution": {
+      "minimum": 0,
+      "title": "Cash Distribution",
+      "type": "number"
+    },
+    "cumulative_cash": {
+      "minimum": 0,
+      "title": "Cumulative Cash",
+      "type": "number"
+    },
+    "effective_on": {
+      "format": "date",
+      "title": "Effective On",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "SPLIT",
+        "DIVIDEND"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "known_at": {
+      "format": "date-time",
+      "title": "Known At",
+      "type": "string"
+    },
+    "shares_after": {
+      "minimum": 0,
+      "title": "Shares After",
+      "type": "number"
+    },
+    "shares_before": {
+      "minimum": 0,
+      "title": "Shares Before",
+      "type": "number"
+    }
+  },
+  "required": [
+    "effective_on",
+    "known_at",
+    "kind",
+    "shares_before",
+    "shares_after",
+    "cash_distribution",
+    "cumulative_cash"
+  ],
+  "title": "ActionTraceRow",
+  "type": "object"
+}

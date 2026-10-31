@@ -1,0 +1,100 @@
+{
+  "additionalProperties": false,
+  "description": "Trusted application's assertion about a fresh synchronous tool return.\n\nThis is deliberately an explicit API separate from importing a provider\nstatus claim. It authenticates neither the caller nor the platform. The\napplication must actually observe the reserved invocation returning before\nconstructing this record; arbitrary JSON is not proof of that observation.\nIts digest covers only allowlisted TaskResponse metadata, never market data.",
+  "properties": {
+    "completion_observed": {
+      "const": true,
+      "default": true,
+      "title": "Completion Observed",
+      "type": "boolean"
+    },
+    "config_sha256": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Config Sha256",
+      "type": "string"
+    },
+    "evidence_authentication": {
+      "const": "NOT_AUTHENTICATED",
+      "default": "NOT_AUTHENTICATED",
+      "title": "Evidence Authentication",
+      "type": "string"
+    },
+    "local_attempt_id": {
+      "pattern": "^local_[0-9a-f]{32}$",
+      "title": "Local Attempt Id",
+      "type": "string"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "operation": {
+      "enum": [
+        "compile",
+        "research_check"
+      ],
+      "title": "Operation",
+      "type": "string"
+    },
+    "project_id": {
+      "exclusiveMinimum": 0,
+      "title": "Project Id",
+      "type": "integer"
+    },
+    "provider_task_id_availability": {
+      "const": "NOT_RETURNED",
+      "default": "NOT_RETURNED",
+      "title": "Provider Task Id Availability",
+      "type": "string"
+    },
+    "request_sha256": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Request Sha256",
+      "type": "string"
+    },
+    "response_class": {
+      "default": "CONTROL_ONLY",
+      "enum": [
+        "CONTROL_ONLY",
+        "SYNTHETIC_TEST"
+      ],
+      "title": "Response Class",
+      "type": "string"
+    },
+    "response_kind": {
+      "const": "SYNCHRONOUS_TOOL_RETURN",
+      "default": "SYNCHRONOUS_TOOL_RETURN",
+      "title": "Response Kind",
+      "type": "string"
+    },
+    "response_metadata_sha256": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Response Metadata Sha256",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_commit": {
+      "pattern": "^[0-9a-fA-F]{40}$",
+      "title": "Source Commit",
+      "type": "string"
+    }
+  },
+  "required": [
+    "local_attempt_id",
+    "observed_at",
+    "operation",
+    "source_commit",
+    "config_sha256",
+    "request_sha256",
+    "project_id",
+    "response_metadata_sha256"
+  ],
+  "title": "SynchronousCompletionRecord",
+  "type": "object"
+}

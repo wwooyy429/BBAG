@@ -1,0 +1,152 @@
+{
+  "$defs": {
+    "ActionTraceRow": {
+      "additionalProperties": false,
+      "properties": {
+        "cash_distribution": {
+          "minimum": 0,
+          "title": "Cash Distribution",
+          "type": "number"
+        },
+        "cumulative_cash": {
+          "minimum": 0,
+          "title": "Cumulative Cash",
+          "type": "number"
+        },
+        "effective_on": {
+          "format": "date",
+          "title": "Effective On",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "SPLIT",
+            "DIVIDEND"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "known_at": {
+          "format": "date-time",
+          "title": "Known At",
+          "type": "string"
+        },
+        "shares_after": {
+          "minimum": 0,
+          "title": "Shares After",
+          "type": "number"
+        },
+        "shares_before": {
+          "minimum": 0,
+          "title": "Shares Before",
+          "type": "number"
+        }
+      },
+      "required": [
+        "effective_on",
+        "known_at",
+        "kind",
+        "shares_before",
+        "shares_after",
+        "cash_distribution",
+        "cumulative_cash"
+      ],
+      "title": "ActionTraceRow",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "cash_distribution": {
+      "minimum": 0,
+      "title": "Cash Distribution",
+      "type": "number"
+    },
+    "data_id": {
+      "minLength": 1,
+      "title": "Data Id",
+      "type": "string"
+    },
+    "end": {
+      "format": "date",
+      "title": "End",
+      "type": "string"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "same_day_order": {
+      "const": "reject_without_intraday_sequence",
+      "default": "reject_without_intraday_sequence",
+      "title": "Same Day Order",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "semantics": {
+      "const": "static_holding_entitlements_only",
+      "default": "static_holding_entitlements_only",
+      "title": "Semantics",
+      "type": "string"
+    },
+    "shares_after": {
+      "minimum": 0,
+      "title": "Shares After",
+      "type": "number"
+    },
+    "shares_before": {
+      "minimum": 0,
+      "title": "Shares Before",
+      "type": "number"
+    },
+    "sid": {
+      "minLength": 1,
+      "title": "Sid",
+      "type": "string"
+    },
+    "start": {
+      "format": "date",
+      "title": "Start",
+      "type": "string"
+    },
+    "status": {
+      "const": "DRAFT",
+      "default": "DRAFT",
+      "title": "Status",
+      "type": "string"
+    },
+    "steps": {
+      "items": {
+        "$ref": "#/$defs/ActionTraceRow"
+      },
+      "maxItems": 1024,
+      "title": "Steps",
+      "type": "array"
+    }
+  },
+  "required": [
+    "data_id",
+    "sid",
+    "start",
+    "end",
+    "as_of",
+    "shares_before",
+    "shares_after",
+    "cash_distribution",
+    "steps"
+  ],
+  "title": "ActionChainResult",
+  "type": "object"
+}

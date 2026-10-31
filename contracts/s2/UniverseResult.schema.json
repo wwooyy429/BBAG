@@ -1,0 +1,81 @@
+{
+  "$defs": {
+    "UniverseRow": {
+      "additionalProperties": false,
+      "properties": {
+        "assets": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Assets",
+          "type": "array"
+        },
+        "session": {
+          "format": "date",
+          "title": "Session",
+          "type": "string"
+        },
+        "signal_at": {
+          "format": "date-time",
+          "title": "Signal At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "session",
+        "signal_at",
+        "assets"
+      ],
+      "title": "UniverseRow",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "data_id": {
+      "minLength": 1,
+      "title": "Data Id",
+      "type": "string"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "rows": {
+      "items": {
+        "$ref": "#/$defs/UniverseRow"
+      },
+      "maxItems": 256,
+      "title": "Rows",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "const": "DRAFT",
+      "default": "DRAFT",
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "data_id",
+    "as_of",
+    "rows"
+  ],
+  "title": "UniverseResult",
+  "type": "object"
+}

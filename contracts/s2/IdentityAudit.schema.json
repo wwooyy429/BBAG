@@ -1,0 +1,141 @@
+{
+  "$defs": {
+    "IdentityAuditRow": {
+      "additionalProperties": false,
+      "properties": {
+        "eligible": {
+          "title": "Eligible",
+          "type": "boolean"
+        },
+        "membership_effective_on": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Membership Effective On"
+        },
+        "membership_known_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Membership Known At"
+        },
+        "reason": {
+          "enum": [
+            "ELIGIBLE",
+            "IDENTITY_NOT_KNOWN",
+            "NOT_YET_LISTED",
+            "DELISTED",
+            "NO_KNOWN_MEMBERSHIP",
+            "NOT_MEMBER",
+            "NO_KNOWN_TICKER"
+          ],
+          "title": "Reason",
+          "type": "string"
+        },
+        "session": {
+          "format": "date",
+          "title": "Session",
+          "type": "string"
+        },
+        "sid": {
+          "minLength": 1,
+          "title": "Sid",
+          "type": "string"
+        },
+        "signal_at": {
+          "format": "date-time",
+          "title": "Signal At",
+          "type": "string"
+        },
+        "ticker": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ticker"
+        }
+      },
+      "required": [
+        "session",
+        "signal_at",
+        "sid",
+        "eligible",
+        "reason"
+      ],
+      "title": "IdentityAuditRow",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "data_id": {
+      "minLength": 1,
+      "title": "Data Id",
+      "type": "string"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "rows": {
+      "items": {
+        "$ref": "#/$defs/IdentityAuditRow"
+      },
+      "maxItems": 8192,
+      "title": "Rows",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "selection": {
+      "const": "membership_before_optional_liquidity",
+      "default": "membership_before_optional_liquidity",
+      "title": "Selection",
+      "type": "string"
+    },
+    "status": {
+      "const": "DRAFT",
+      "default": "DRAFT",
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "data_id",
+    "as_of",
+    "rows"
+  ],
+  "title": "IdentityAudit",
+  "type": "object"
+}

@@ -168,24 +168,24 @@ def main() -> int:
     history = ("本包实际包含历史输入目录：" + "、".join(f"`evidence/{name}/`" for name in histories)
                + "。旧结论只覆盖各自准确版本，不构成本次新 SHA 的批准。"
                if histories else "本包未包含可选历史审核目录，不声称附有原审核文件；历史版本与最新联合复审状态按下文记录。")
-    remediation = root / "docs/S1_COMMITTED_LOCK_REMEDIATION.md"
+    remediation = root / "docs/S2_RESUMPTION.md"
     remediation_details = remediation.read_text(encoding="utf-8") if remediation.is_file() else ""
-    remediation_report = evidence / "remediation/S1_FIX_REPORT.md"
+    remediation_report = evidence / "DELIVERY_NOTES.md"
     remediation_results = remediation_report.read_text(encoding="utf-8") if remediation_report.is_file() else "补充复验报告未提供，不能宣称已执行额外检查。"
     development = f"""# BBAG S0 开发报告
 
 实现 commit SHA：`{commit}`
 
-本报告在提交后生成，审核对象为 source.zip 中该 SHA 的完整源码。开发分支为 `{git(root, 'branch', '--show-current')}`，本次新 SHA 独立审核保持 PENDING。本轮实现范围为 S1-002 提交锁比对修复；本包记录同 SHA 的 S0 回归，S1 专项使用单独的 S1 包，不以本包冒充。
+本报告在提交后生成，source.zip 包含上述准确提交的完整源码。开发分支为 `{git(root, 'branch', '--show-current')}`。本包范围为同 SHA 的 S0 基础回归，新审核请求保持 PENDING；源码树包含的 S1、S2 能力分别按各阶段材料核验，本包不代表完整 S2 工程或平台验收。
 
 ## 本轮范围与已关闭记录
 
-本轮基线：`0889d277bfdda4894d7e359157d092a4f07639f5`，未合并 main。负责人提供的 `reaudit_joint_0889d277bfdd_20261031_1522` 批准该 SHA 的 S0 范围并关闭 S0-004、S0-N01；S1 因唯一新增 S1-002（P2）为 CHANGES_REQUIRED / 工程 FAIL。S1-001 保持关闭，S0-N02 为非阻断待办。旧批准、失败及实际合并事实保留，新 SHA 不自动继承旧批准。
+负责人已核实并接受准确 `259962860d2301ead894c5d649a29eab1f8db1ac` 的独立 Codex S0/S1 APPROVED 复审，并另行授权合并 main、集成及恢复 S2。PR #5 实际合并为 `7aac4886b50493c09235c49b5de90643b7090e07`。S0-004、S0-N01、S1-001、S1-002 关闭记录及所有旧失败材料保留；S0-N02 仍为非阻断待办。历史批准覆盖其准确版本，当前完整 S2 源码与新 S2 交审仍独立 PENDING。恢复范围和来源见 docs/S2_RESUMPTION.md。
 
-- S1-002：S1 在准确 HEAD 与 clean 检查后，补充 Git 提交锁与磁盘锁摘要比对，保留证据与磁盘锁检查，失败在 mkdir/archive/ZIP 前退出 2。
-- S0 已批准的接纳逻辑原样保留；S0-004 与 S0-N01 不重开，当前报告仅更新最新审核与本轮范围。
-- 新增 S1 隐藏 Git 标记、正确锁跨工作目录及已有输出保持回归；S0/S1 原坏锁拒绝继续验证。S0-N02 的 Windows 设备别名建议保留待办，本轮不修改路径契约。
-- 前轮严格 JSON、JUnit 明细、完整契约、规范字节/哈希/SHA、证据树与输出路径边界检查保留；锁版本、公式、标签、标准答案和研究参数不变。
+- 保留已审的准确提交锁、磁盘锁与证据锁校验；隐藏 Git 标记不能使不一致的锁生成交审包，拒绝发生在 mkdir/archive/ZIP 前。
+- 同 SHA 基础回归继续检查严格 JSON、JUnit 明细、完整契约、规范字节/哈希/SHA、证据树、输出路径及已有交付不可覆盖。
+- 当前结果只以本包实际采集与附带记录为准，不能将历史锁修复、旧 S2 平台返回或既有关闭记录重新标成新 SHA 的平台执行。
+- S0-N02 的路径元数据建议继续作为非阻断待办；S2 的实现范围、原白名单、累计预算和未验证项由各自规范与证据记录。
 
 ## 保留的 S0 基础能力
 
@@ -205,13 +205,13 @@ def main() -> int:
 |---|---|---|---|
 {checks_table}
 
-pending_review_gate 的预期退出码为 3，表示未取得独立批准时保持阻止。原始命令、输出、JUnit、实验清单和待审核请求均在 evidence 中。
+pending_review_gate 的预期退出码为 3，表示本次准确 SHA 的请求仍未填写独立批准；历史 25996286 的批准不改写该请求。原始命令、输出、JUnit、实验清单和待审核请求均在 evidence 中。
 
 {history}
 
 补充实测只以实际附带文件为准，不声明未随包交付的目录或远端状态。开发者重跑原审核测试不产生独立验收结论。原报告声明独立 Codex 会话、未认证 GPT Work 身份，负责人已接受该审核来源；本轮仍须取得绑定新 SHA 的独立结论。
 
-配置/契约版本 1.0，样例保持 ENGINEERING_TEST/DRAFT；依赖锁随 source.zip 交付，SHA-256 为 `{verification['dependency_lock_sha256']}`。本次 S0/S1 修复与验证使用合成输入，无外部模型或量化平台任务，相关新增费用为零；既有 S2 草稿及证据属于独立历史范围，本轮未推进。GitHub CI 仅属于开发验证。测试耗时及实际环境见 verification.json，资源门槛仍按研究协议中的未决事项处理。
+配置/契约版本 1.0，样例保持 ENGINEERING_TEST/DRAFT；依赖锁随 source.zip 交付，SHA-256 为 `{verification['dependency_lock_sha256']}`。本包采集的是离线基础工程检查，不能据此登记新的外部模型、平台任务或实际账单。S2 历史任务、未知费用、原白名单及累计额度保留原来源，恢复和新平台证据另见 S2 材料。GitHub CI 仅属于开发验证。测试耗时及实际环境见 verification.json，资源门槛按研究协议中的未决事项处理。
 
 F01—F08 完整业务路径均为 NOT_RUN（依赖 S1—S7）；本轮仅实际执行适用的 S0 契约、CLI、来源与证据接纳回归。平台与经济结论均为 NOT_APPLICABLE，经济评估执行有效性不适用。
 
@@ -221,11 +221,11 @@ F01—F08 完整业务路径均为 NOT_RUN（依赖 S1—S7）；本轮仅实际
 
 ## 尚未实现或验证
 
-S1 确定性计算、公式审计和独立未来标签已存在于基线；本包的六项 S0 检查不能单独代表 S1 专项交付已验收。真实平台、经济研究和完整业务路径不在本轮 S0/S1 基础修复验收范围。配置的日期边界校验不替代后续平台访问控制。打包器不重新查询远端，服务器保护与 PR 状态须依据实际快照核实；本地 hook 不构成服务器硬门禁。本轮不合并或回退 main，不推进 S2。
+S1 确定性计算、公式审计和独立未来标签已存在于源码中；本包六项 S0 检查的通过范围是基础回归。完整 S2 的真实标准数据链路、历史股票池、身份与公司行动、平台恢复及经济研究需依据单独证据核验。配置的日期边界校验不替代运行时访问控制。打包器不查询远端、不执行 Git 合并或平台任务；服务器保护与 PR 状态依据实际快照记录，本地 hook 不构成服务器硬门禁。
 
 当前状态为 READY_FOR_REVIEW。开发自测与 CI 不能代替独立 GPT Work 对此 SHA 的审核。任何受影响源码、契约或配置变化都需要新提交、新证据和新审核包。
 
-## 修复约束与旧审核适用范围
+## 恢复范围与旧审核适用范围
 
 {remediation_details}
 """
@@ -243,19 +243,19 @@ S1 确定性计算、公式审计和独立未来标签已存在于基线；本�
 3. 独立构造缺字段、未知字段、负数、布尔冒充数字、非有限值、重叠日期、越界查询、时间规则冲突及非法阶段/用途反例。
 4. 核对生成的 JSON Schema、协议哈希、实验清单和 Git 源码状态；尝试覆盖或逃逸实验输出目录。
 5. 检查审核缺失、PENDING、陈旧 SHA、需要修改时保持阻止；结构合格回执仍不认证审核者或执行合并。
-6. 区分本次 S0 修复范围与 source.zip 中已合并的 S1 基线；本轮未调用平台或模型服务，DRAFT 配置未被当作研究批准。S1 受影响专项另使用同 SHA 的 S1 交审包。
-7. 检查分支和报告治理：历史合并已存在，最新联合结论为 CHANGES_REQUIRED，本次新 SHA 等待独立复审；不得继承旧版批准。
+6. 区分同 SHA 的 S0 基础回归与完整源码中的 S1、S2 范围；本包离线检查不登记新的平台或模型执行，DRAFT 配置不构成研究批准。其它阶段使用各自交审包。
+7. 核对 25996286 独立批准、7aac4886 授权合并及恢复 S2 的历史事实；当前准确 SHA 的未填请求仍保持 PENDING，不将历史批准自动扩展为新 S2 验收。
 8. 对照历史审核材料（如随包提供）的 S0-001—S0-003 原反例逐项独立复测；检查完整 JSON 入口、嵌套 JUnit 明细及协议/实验/回执契约，失败不得生成包。自行增加反例，不以开发者原测试复跑代替独立判断。
 9. 核对 evidence/remediation（如有）的原件哈希、适配差异、原始失败与新结果，以及新源码与 PR 的准确 SHA；旧版工程 FAIL 不自动覆盖修复效果，新版也不得自填 ACCEPTED。
 10. 对照 docs/S0_SUPPLEMENT_CHECK.md 复测 S0 回执平台状态、证据 symlink/junction 与越界、输入输出重叠、已有 ZIP 冲突；所有拒绝均须发生在新交付目录和源码 archive 创建前。普通目录、合法兄弟路径及云占位符正例须保留。
 11. 对照 docs/S0_LOCK_HASH_REMEDIATION.md 独立复测 S0-004：正确锁正例；错误摘要、缺字段、非法格式、另一个合法摘要及非法 JSON 类型；跨调用目录及 Git 隐藏差异。检查退出 2、无新交付且旧输出不变，并保留 S1 原有锁拒绝对照。
-12. S0-004 已在 0889d277 独立关闭，第 11 项是保留回归。当前唯一新修复 S1-002 的两种隐藏 Git 标记、准确提交/磁盘/证据锁比对及正确锁正例，使用同 SHA 的 S1 包和 docs/S1_COMMITTED_LOCK_REMEDIATION.md 独立复审，不重复计为新的 S0 缺陷。
+12. S0-004、S0-N01、S1-001、S1-002 已在其准确版本独立关闭，第 11 项与 S1 隐藏 Git 标记检查属于保留回归。同 SHA 的 S1 基础结果和 S2 完整结果分别核验；恢复授权及旧任务来源见 docs/S2_RESUMPTION.md。
 
 ## 结论要求
 
 当前独立审核状态 PENDING，工程验收待你执行后判定；平台集成和经济证据在 S0 为 NOT_APPLICABLE。每项标记 EXECUTED、STATIC_ONLY 或 NOT_RUN，保留命令、输入、实际结果和缺陷复现。
 
-审核完成后生成独立报告及绑定 `{commit}` 的 review_receipt.json。请勿直接改写此包的原始开发证据。未通过时交回缺陷清单，当前联合验收仍受阻。本任务不执行 main 合并、回退或 S2 推进；通过也须由负责人另行授权后续动作。
+审核完成后生成独立报告及绑定 `{commit}` 的 review_receipt.json。请勿直接改写此包的原始开发证据。未通过时交回缺陷清单；本审核任务不执行 Git 合并、平台调用或阶段推进，允许动作按准确审核结论与负责人授权分别判定。
 """
     (output / "GPT_WORK_AUDIT_REQUEST.md").write_text(audit, encoding="utf-8")
     reproduce = f"""# 复现 S0

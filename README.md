@@ -1,8 +1,12 @@
 # BBAG 量化因子研究系统
 
-BBAG 的完整目标是由 GPT 提出经济假设，经 QuantConnect Research 和 LEAN 验证，再由独立评估程序及审核者复验。S0、S1 的历史授权合并保留；最新复审已关闭 S0-004 并批准准确提交 0889d277 的 S0 范围，当前分支范围为 **S1-002 提交锁比对修复及 S0/S1 受影响复验**。
+BBAG 的完整目标是由 GPT 提出经济假设，经 QuantConnect Research 和 LEAN 验证，再由独立评估程序及审核者复验。S0、S1 已经负责人验收并合并，当前授权范围为 **S2 平台适配与时点数据**；模型调用、alpha研究评估、策略回测、优化及部署属于后续阶段。
 
-复审 `reaudit_joint_0889d277bfdd_20261031_1522` 绑定 `0889d277bfdda4894d7e359157d092a4f07639f5`：**S0 APPROVED / 工程 PASS**，S0-004 与 S0-N01 关闭；**S1 CHANGES_REQUIRED / 工程 FAIL**，新增唯一阻断 S1-002（P2）。S1-001 保持关闭；旧批准、失败及合并记录保留。当前修复范围见 [S1 提交锁修复说明](docs/S1_COMMITTED_LOCK_REMEDIATION.md)。新 SHA 的独立审核保持 **PENDING**；开发自测和协作代理检查不能替代该审核。本轮不合并、不回退 main，不推进已保留的 S2 草稿。
+本分支的交付状态以绑定 commit SHA 的开发报告和真实验证日志为准。负责人已核实并接受 `259962860d2301ead894c5d649a29eab1f8db1ac` 的 S0/S1 独立批准，授权合并为 `7aac4886b50493c09235c49b5de90643b7090e07` 并恢复 S2。S0-004、S0-N01、S1-001、S1-002 关闭记录保留；旧失败记录不改写。S2 正在集成该基线，范围及未完成项见 [恢复记录](docs/S2_RESUMPTION.md)。S2 新实现独立审核保持 PENDING，不自动合并或进入 S3。
+
+负责人已接受准确 `5fe1b62c09216e17f001afde80fbcdfda7c51bdc` 的独立本地工程 PASS，S2-001、S2-002（含多事件遗漏）、S2-003 均关闭。原 `93ca4116…` 失败及所有历史证据保留，见 [修复说明](docs/S2_AUDIT_REMEDIATION.md)。后续 `ecf424b06f5b7ef9290011a883e395de3bec7bd1` 的独立审核为 CHANGES_REQUIRED／工程 FAIL：新增 S2-004，预算检查核摘要与实际解析／查询字节未绑定。当前修复直接解析已核 JSON 字节，并从已核数据库字节建立隔离查询快照，见 [S2-004 修复边界](docs/S2_004_BYTE_BINDING.md)。原 S2-N01 仅声明时钟契约关闭；修复的新 SHA 仍需独立复审，整 S2 平台与真实数据退出条件未齐，不合并、不进入 S3。
+
+S2 接口、白名单、许可与未验证边界见 [S2规范](docs/STAGE2.md)。本地使用合成数据；真实数据留在 QuantConnect Cloud，仅返回固定控制状态。原白名单及累计上限不变：2020-01-02 至 2020-01-10 的 SPY/AAPL，编译最多 2 次、Research 最多 3 次、零新增费用。已用编译 2/2、Research 2/3，剩余 0/1；不因本次集成或新台账重置。四次历史调用的实际账单未知，不冒称费用为零。本轮离线集成不新增平台调用。
 
 ## 本地运行
 
@@ -28,9 +32,12 @@ Linux 或 macOS 可用 `python3 -m venv .venv` 建立环境，并将后续解释
 - [阶段 0 任务与验收](docs/STAGE0.md)
 - [S0 验收及实际合并记录](docs/S0_ACCEPTANCE.md)
 - [S1 算子、时间、标签与交付规范](docs/STAGE1.md)
+- [S1 验收、锁修复与实际合并](docs/S1_ACCEPTANCE.md)
+- [S2 恢复、累计预算与证据边界](docs/S2_RESUMPTION.md)
+- [S2 独立审核三项阻断修复](docs/S2_AUDIT_REMEDIATION.md)
+- [S2-004 预算核验的捕获字节绑定](docs/S2_004_BYTE_BINDING.md)
+- [S2 离线续建、使用入口与平台验收缺口](docs/S2_OFFLINE_CONTINUATION.md)
 - [S0 补充材料核对与修补](docs/S0_SUPPLEMENT_CHECK.md)
-- [S0-004 锁哈希修复与联合复审](docs/S0_LOCK_HASH_REMEDIATION.md)
-- [S1-002 准确提交锁比对修复](docs/S1_COMMITTED_LOCK_REMEDIATION.md)
 - [研究协议与待确定参数](docs/RESEARCH_PROTOCOL.md)
 - [Git 与独立审核流程](docs/GIT_WORKFLOW.md)
 - [标准接口说明](contracts/README.md)
@@ -60,7 +67,7 @@ Linux 或 macOS 可用 `python3 -m venv .venv` 建立环境，并将后续解释
 
 ## 当前状态
 
-S0 历史被审 SHA 为 `f46fad2ff4b3ec9659001659fa44201e10951fd5`，合并结果为 `b2555efe7201c473bdb66c7dd1c14552ad130ac5`。S1 历史被审 SHA 为 `c56db883cd7841c94517ee9817d7ad551e811dc2`，合并结果为 `41789706f710e131d4a654e349798ddb15ea70f5`。本轮修复基线为已复审的开发提交 `0889d277bfdda4894d7e359157d092a4f07639f5`，该提交未合并 main；其 S0 批准不覆盖 S1-002。F01—F08 描述完整系统路径，不能将局部工程测试记为完整路径已执行。
+最新已审基础提交为 `259962860d2301ead894c5d649a29eab1f8db1ac`，实际 main 合并结果为 `7aac4886b50493c09235c49b5de90643b7090e07`，两者源码树相同。S2 在开发分支恢复，当前首轮子里程碑仍为 IN_PROGRESS；旧 Cloud 检查绑定原 `2b4e1285`，不换写为新 SHA 平台执行。F01—F08 完整业务路径未执行，不能由局部工程检查代替。
 
 每次开发完成后，先提交实现，再按该 SHA 在 `deliverables/` 生成开发报告、审核任务和固定源码包。输出材料不进入实现提交，避免报告包含自身 commit SHA 的循环。审核包须以本次源码和规范为准；`docs/handoff/` 保留的是历史规划交接材料，不能作为当前实现的审核证据。
 

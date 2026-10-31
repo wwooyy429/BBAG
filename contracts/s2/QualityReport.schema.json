@@ -1,0 +1,142 @@
+{
+  "$defs": {
+    "QualityRow": {
+      "additionalProperties": false,
+      "properties": {
+        "available": {
+          "title": "Available",
+          "type": "boolean"
+        },
+        "known_action_on_session": {
+          "title": "Known Action On Session",
+          "type": "boolean"
+        },
+        "missing_fields": {
+          "items": {
+            "enum": [
+              "open",
+              "high",
+              "low",
+              "close",
+              "volume"
+            ],
+            "type": "string"
+          },
+          "maxItems": 5,
+          "title": "Missing Fields",
+          "type": "array"
+        },
+        "present": {
+          "title": "Present",
+          "type": "boolean"
+        },
+        "raw_close_jump": {
+          "title": "Raw Close Jump",
+          "type": "boolean"
+        },
+        "session": {
+          "format": "date",
+          "title": "Session",
+          "type": "string"
+        },
+        "sid": {
+          "minLength": 1,
+          "title": "Sid",
+          "type": "string"
+        },
+        "stale": {
+          "title": "Stale",
+          "type": "boolean"
+        },
+        "zero_volume": {
+          "title": "Zero Volume",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "session",
+        "sid",
+        "present",
+        "available",
+        "missing_fields",
+        "stale",
+        "zero_volume",
+        "raw_close_jump",
+        "known_action_on_session"
+      ],
+      "title": "QualityRow",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "available_bars": {
+      "minimum": 0,
+      "title": "Available Bars",
+      "type": "integer"
+    },
+    "complete_bars": {
+      "minimum": 0,
+      "title": "Complete Bars",
+      "type": "integer"
+    },
+    "coverage": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Coverage",
+      "type": "number"
+    },
+    "data_id": {
+      "minLength": 1,
+      "title": "Data Id",
+      "type": "string"
+    },
+    "expected_bars": {
+      "minimum": 0,
+      "title": "Expected Bars",
+      "type": "integer"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "rows": {
+      "items": {
+        "$ref": "#/$defs/QualityRow"
+      },
+      "maxItems": 8192,
+      "title": "Rows",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "const": "DRAFT",
+      "default": "DRAFT",
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "data_id",
+    "as_of",
+    "expected_bars",
+    "available_bars",
+    "complete_bars",
+    "coverage",
+    "rows"
+  ],
+  "title": "QualityReport",
+  "type": "object"
+}

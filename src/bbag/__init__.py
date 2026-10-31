@@ -1,3 +1,3 @@
-"""BBAG stage-zero engineering contracts. No trading functions are provided."""
+"""BBAG contracts, deterministic factors and guarded data/platform engineering."""
 
-__version__ = "0.1.0"
+__version__ = "0.3.0"
