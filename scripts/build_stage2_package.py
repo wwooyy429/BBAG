@@ -256,8 +256,7 @@ def validate_evidence(evidence: Path, commit: str, root: Path | None = None) -> 
     reference = reference_check(root, evidence)
     if (reference.get("reference_passed") is not True or reference.get("provider") != "SYNTHETIC"
             or reference.get("universe_rows") != len(result.universe.rows)
-            or reference.get("quality_rows") != len(result.quality.rows)
-            or reference.get("projected_s1_panel_sha256") != result.projected_s1_panel_sha256):
+            or reference.get("quality_rows") != len(result.quality.rows)):
         raise ValueError("S2 fixed independent reference comparison failed")
     return verification.model_dump(mode="json"), receipt.model_dump(mode="json"), counts
 

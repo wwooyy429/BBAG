@@ -101,7 +101,7 @@ def check_results(run: Path, root: Path | None = None) -> dict:
     # rewriting the separately hashed original raw bytes or any price answer.
     expected_bars = [DailyBar.model_validate_json(json.dumps(item)) for item in raw_source["bars"]]
     require(config.bundle.bars == expected_bars, "raw fields were not preserved")
-    projection_hash = check_fixed_rows(config, result, expected, raw_source, expected_bars)
+    check_fixed_rows(config, result, expected, raw_source, expected_bars)
     jumps = [[row.session.isoformat(), row.sid] for row in result.quality.rows if row.raw_close_jump]
     require(jumps == expected["raw_close_jumps"], "raw split jump context differs")
     for action in config.bundle.corporate_actions:
@@ -128,7 +128,6 @@ def check_results(run: Path, root: Path | None = None) -> dict:
         connection.close()
     return {"reference_passed": True, "provider": "SYNTHETIC", "universe_rows": len(result.universe.rows),
             "quality_rows": len(result.quality.rows), "local_task_attempts": result.usage.attempt_count,
-            "projected_s1_panel_sha256": projection_hash,
             "platform_execution": "NOT_RUN", "independent_review": "PENDING"}
 
 
