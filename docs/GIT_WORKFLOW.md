@@ -1,6 +1,6 @@
 # BBAG Git 与独立审核流程
 
-仓库为 [wwooyy429 BBAG](https://github.com/wwooyy429/BBAG)。main 保存负责人批准的基线。S0验收见 [S0记录](S0_ACCEPTANCE.md)，S1的c56db883cd7841c94517ee9817d7ad551e811dc2已按授权合并为41789706f710e131d4a654e349798ddb15ea70f5，见 [S1记录](S1_ACCEPTANCE.md)。当前S2在 `codex/stage-2-data-platform` 开发，未经本阶段独立复审和新授权不合并，也不进入S3。
+仓库为 [wwooyy429 BBAG](https://github.com/wwooyy429/BBAG)。负责人接受准确 `259962860d2301ead894c5d649a29eab1f8db1ac` 的 S0/S1 独立复审并授权合并与 S2 恢复；PR #5 按 expected_head_sha 以 merge 方式合并为 `7aac4886b50493c09235c49b5de90643b7090e07`，源码树与被审提交相同。旧验收及实际合并见 [S0记录](S0_ACCEPTANCE.md)、[S1记录](S1_ACCEPTANCE.md)。S2 在 `codex/stage-2-data-platform` 集成该基础，累计预算与旧证据按 [恢复记录](S2_RESUMPTION.md) 延续。未经 S2 独立复审和新授权不合并，也不进入 S3。
 
 ## 每次开发的固定顺序
 
