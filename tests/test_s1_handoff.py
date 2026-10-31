@@ -299,7 +299,10 @@ def test_report_only_claims_actual_optional_history(evidence_control: tuple[Path
     (evidence / "prior_audit").mkdir()
     present = PACKAGER.development_report(ROOT, evidence, FIXTURE_SHA, verification, counts)
     assert "本包实际包含历史输入目录：`evidence/prior_audit/`" in present
-    assert "独立审核保持 PENDING" in present and "不开始 S2" in present
+    assert "独立审核保持 PENDING" in present
+    assert "负责人已授权恢复 S2" in present
+    assert "不重置原累计额度" in present
+    assert "不自动合并 S2 或进入 S3" in present
 
 
 def test_collector_has_exact_s1_commands_and_fixed_expected_exits(tmp_path: Path) -> None:
