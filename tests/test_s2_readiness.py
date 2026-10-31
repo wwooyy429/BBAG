@@ -321,10 +321,12 @@ def test_paths_outside_the_explicit_root_are_rejected_before_sqlite(tmp_path, ca
 
 
 def test_concurrent_change_to_already_read_predecessor_invalidates_the_whole_chain(tmp_path, campaign, monkeypatch):
+    import bbag.s2_readiness as readiness
     caps = campaign[2]
     first = tmp_path/caps.expected_ledgers[0].database
-    second_uri = (tmp_path/caps.expected_ledgers[1].database).as_uri()+"?mode=ro&immutable=1"
+    second_bytes = (tmp_path/caps.expected_ledgers[1].database).read_bytes()
     original_connect = sqlite3.connect
+    original_snapshot = readiness._ledger_snapshot
     errors = []
     triggered = []
     def mutate_predecessor():
@@ -336,14 +338,14 @@ def test_concurrent_change_to_already_read_predecessor_invalidates_the_whole_cha
                 db.commit()
         except Exception as error:
             errors.append(error)
-    def observe_connection(database, *args, **kwargs):
-        if database == second_uri and not triggered:
+    def observe_snapshot(raw_db):
+        if raw_db == second_bytes and not triggered:
             triggered.append(True)
             worker = Thread(target=mutate_predecessor)
             worker.start(); worker.join(timeout=10)
             assert not worker.is_alive() and not errors
-        return original_connect(database, *args, **kwargs)
-    monkeypatch.setattr(sqlite3, "connect", observe_connection)
+        return original_snapshot(raw_db)
+    monkeypatch.setattr(readiness, "_ledger_snapshot", observe_snapshot)
     with pytest.raises(ReadinessError, match="declared chain changed"):
         inspect_campaign(caps, root=tmp_path)
     assert triggered == [True] and digest(first) != caps.expected_ledgers[0].expected_sha256

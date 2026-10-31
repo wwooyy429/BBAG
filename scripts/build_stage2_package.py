@@ -271,7 +271,7 @@ def development_report(root: Path, evidence: Path, commit: str, verification: di
 
 前置 S1 被审实现：`{S1_REVIEWED_SHA}`；负责人授权的 S1 合并结果：`{S1_MERGE_SHA}`。本轮将这项已审基础修复集成回 S2；其批准不能覆盖本次 S2，新版本仍须独立复审。
 
-准确 5fe1b62c09216e17f001afde80fbcdfda7c51bdc 的独立本地工程复审已关闭 S2-001、S2-002（含多事件遗漏）、S2-003，负责人已接受并授权继续离线 S2；整阶段仍为 PENDING / IN_PROGRESS。本包是冻结快照时钟、合成分批/缓存、身份及静态持仓权益诊断、累计预算只读计划的新源码，不继承 5fe 的批准。93ca 原失败、中间失败和所有闭项证据保留，范围见 docs/S2_AUDIT_REMEDIATION.md 及 docs/S2_OFFLINE_CONTINUATION.md。
+准确 5fe1b62c09216e17f001afde80fbcdfda7c51bdc 的独立本地工程复审已关闭 S2-001、S2-002（含多事件遗漏）、S2-003，负责人已接受并授权继续离线 S2；整阶段仍为 PENDING / IN_PROGRESS。后续 ecf424b06f5b7ef9290011a883e395de3bec7bd1 独立审核为 CHANGES_REQUIRED／工程 FAIL，新增 S2-004（P2）：预算摘要的 A 与实际解析／查询的 B 未绑定。当前修复直接严格解析已核 payload，并从已核数据库字节建立隔离的内存只读查询图像，不继承旧版本批准。93ca/ecf 原失败、中间失败和所有闭项证据保留，范围见 docs/S2_AUDIT_REMEDIATION.md、docs/S2_OFFLINE_CONTINUATION.md 及 docs/S2_004_BYTE_BINDING.md。
 
 本包保留原始美股日频标准契约、交易日历、SID/更名/退市、时点成员、滞后流动性、质量、synthetic-only S1 投影及已审任务状态修复。新增本地数据缓存只接受合成输入，身份解释和权益链不是因子评估或总收益回测；readiness 只读固定历史账本链，不创建新库恢复额度。真实云端原始及可重建数据必须留在云内；本地 gateway 仅接受严格控制元数据。配置和只读计划不授予运行时权限，外部回执导入不认证来源。
 
@@ -337,9 +337,11 @@ def main() -> int:
 
 重点按 docs/S2_OFFLINE_CONTINUATION.md 独立复算冻结快照时钟、6类知识截止、选择不得推进、整批首IO前门禁、精确身份缓存命中/冲突/篡改/重解析/路径边界、历史身份解释、质量自一致、静态权益链及同日歧义拒绝。检查只读累计预算计划的固定完整链、重复/遗漏/修改/未知活动拒绝，四笔账单仍未知，不把旧局部budget上限相加成新总额；不认证输入配置，也不授权dispatch。保持真实Cloud拒本地缓存、数据不进入控制输出、S1来源不冒充。
 
+优先复测 S2-004 两条真实文件 ABA：已 pin 错误 A，在解析／查询边界短暂写合法 B 后恢复 A，使用真实严格 parser 和 SQLite，不伪造返回值；错误 A 必须拒绝。核 JSON source/config/request、重复键/非有限/extra/类型及数据库 schema/事件矛盾，保留 CALLER 非规范合法字节及 LOCAL 规范要求。核隔离图像只由捕获 bytes 派生，WAL 两字节内存适配不改原文件/摘要，缺 deserialize 不回退路径；只读 SQL 边界及全链稳定性继续生效。原脚本读取 hook 若已移除，保留原件并明确记录调度适配副本，不能把未触发攻击计作通过。共享 jsonio 的提取不得放宽 S0/S1 拒绝。
+
 原5fe三个P2关闭记录保留，需按新SHA复测不回归：无ID普通超时错误仍UNKNOWN；已知真假verdict跨error/incomplete多事件省略仍保留；固定会话/时刻/质量/投影污染即便重算外hash也JSON退出2、写前拒绝且哨兵原字节不变。正确锁跨伪CWD正例和两隐藏标记四格必须真实执行。原审核数学答案、原失败与旧SHA不改写。
 
-本轮离线续建和复审不增加平台调用，不消耗最后一次 Research、不上传触发编译；累计 compile 2/2、Research 2/3、未知账单保持。S2-N01 的时钟契约已实现，是否足以关闭由本次独立复核决定，不据此声称实际供应商披露/修订通过；S0-N02 继续历史 P3 待办。S0-004、S0-N01、S1-001、S1-002 历史关闭不变。平台验收缺口按续建文档逐项保持 NOT_RUN，不能凭旧七标志或静态Cloud源码复用批准整个新S2。
+本轮离线修复和复审不增加平台调用，不消耗最后一次 Research、不上传触发编译；累计 compile 2/2、Research 2/3、未知账单保持。S2-N01 已由 ecf 独立审核仅在声明时钟契约范围关闭，不据此声称实际供应商披露/修订通过；S0-N02 继续历史 P3 待办。S0-004、S0-N01、S1-001、S1-002 历史关闭不变。平台验收缺口按续建文档逐项保持 NOT_RUN，不能凭旧七标志或静态Cloud源码复用批准整个新S2。
 
 逐项记录 EXECUTED/STATIC_ONLY/NOT_RUN、预期/实际、退出码及原始证据。真实平台验收仅依据实际授权范围内的真实任务，许可数据留云内，不能从本包合成验证推定 PASS。经济 NOT_APPLICABLE；保留 S6.4 与最终派生隔离。填写绑定本 SHA 的 S2 回执；不得合并、启动 S3 或自动改变权限。
 """, encoding="utf-8")

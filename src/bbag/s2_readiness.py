@@ -20,7 +20,7 @@ from typing import Annotated, Literal, Sequence, Self
 from pydantic import Field, ValidationError, field_validator, model_validator
 
 from .contracts import GitCommit, NonNegativeInt, PositiveInt, Sha256, StrictContract, Text
-from .jsonio import read_json_object
+from .jsonio import parse_json_object
 from .s2_tasks import (
     RawMetadataRef, SynchronousResultMetadata, TaskAttempt, TaskBudget,
     TaskReconciliation, TaskRecord, TaskResponse, TaskSpec, canonical_task_bytes,
@@ -237,7 +237,7 @@ def platform_gaps() -> list[PlatformGap]:
         ("DISCLOSURE_REVISION_PIT", "NOT_COVERED", "Bar ordering does not establish supplier disclosure, revision or survivorship history."),
         ("PROVIDER_RECOVERY", "PARTIAL", "Local injected recovery is not actual provider timeout/restart/reconciliation evidence."),
         ("RESOURCE_CAPABILITY", "NOT_COVERED", "Actual supported tools, preregistered resource thresholds and independent platform review of the exact new SHA remain required; no self-approval."),
-        ("DEPLOYED_SOURCE_IDENTITY", "PARTIAL", "Unchanged eight deployed files establish only historical smoke scope, not execution of new local modules. Recheck deployed identity before reuse; changed Cloud dependencies/uploads need explicit authorization and available compile budget."),
+        ("DEPLOYED_SOURCE_IDENTITY", "PARTIAL", "The historical eight-file deployment proves only its old smoke scope. The local shared JSON reader has changed and new modules are not deployed. Recheck exact deployed identity; changed Cloud dependencies/uploads need explicit authorization and available compile budget."),
         ("ALIAS_SID_BINDING", "NOT_COVERED", "SPY/AAPL request aliases must not impersonate provider SIDs. Real raw-to-standard mapping needs a Cloud-internal identity binding without exporting SID records."),
     )
     return [PlatformGap(condition=name, current_scope_coverage=coverage, description=text)
@@ -368,6 +368,54 @@ def _event_state(spec: TaskSpec, attempt: TaskAttempt, events: dict[str, tuple[R
              "persisted attempt snapshot differs from its immutable event history")
 
 
+def _snapshot_authorizer(action: int, first: str | None, second: str | None,
+                         database: str | None, origin: str | None) -> int:
+    """Allow only the fixed inspector's reads, including its schema PRAGMAs."""
+    if action == sqlite3.SQLITE_SELECT:
+        return sqlite3.SQLITE_OK
+    if action == sqlite3.SQLITE_READ and database == "main" and first in _TABLES | {"sqlite_master", "sqlite_schema"}:
+        return sqlite3.SQLITE_OK
+    if action == sqlite3.SQLITE_PRAGMA:
+        if first == "table_info" and second in _TABLES:
+            return sqlite3.SQLITE_OK
+        if second is None and first in {"integrity_check", "foreign_key_check", "query_only", "trusted_schema", "temp_store", "database_list"}:
+            return sqlite3.SQLITE_OK
+    return sqlite3.SQLITE_DENY
+
+
+def _ledger_snapshot(raw_db: bytes) -> sqlite3.Connection:
+    """Query an isolated image derived solely from the already anchored bytes.
+
+    SQLite's deserialize API cannot read a WAL-format image. For a closed,
+    sidecar-free ledger only, adapt the two journal-mode header bytes in this
+    private memory image as prescribed by sqlite.org/c3ref/deserialize.html.
+    All page content comes from raw_db; its digest and the original disk bytes
+    stay unchanged. Never reopen the input path or fall back to a fresh ledger.
+    """
+    _require(100 <= len(raw_db) <= 64_000_000 and raw_db[:16] == b"SQLite format 3\x00"
+             and raw_db[18:20] in {b"\x01\x01", b"\x02\x02"}, "unsupported SQLite snapshot header")
+    image = raw_db[:18] + b"\x01\x01" + raw_db[20:]
+    connection = sqlite3.connect(":memory:")
+    try:
+        _require(callable(getattr(connection, "deserialize", None)),
+                 "SQLite deserialize support is required for anchored offline inspection")
+        connection.execute("PRAGMA trusted_schema=OFF")
+        connection.deserialize(image)
+        connection.execute("PRAGMA query_only=ON")
+        connection.execute("PRAGMA trusted_schema=OFF")
+        connection.execute("PRAGMA temp_store=MEMORY")
+        _require(connection.execute("PRAGMA query_only").fetchone() == (1,)
+                 and connection.execute("PRAGMA trusted_schema").fetchone() == (0,)
+                 and connection.execute("PRAGMA temp_store").fetchone() == (2,)
+                 and connection.execute("PRAGMA database_list").fetchall() == [(0, "main", "")],
+                 "SQLite snapshot must remain isolated and query-only")
+        connection.set_authorizer(_snapshot_authorizer)
+        return connection
+    except BaseException:
+        connection.close()
+        raise
+
+
 def _inspect_ledger(expected: ExpectedLedger, root: Path, caps: CampaignCaps):
     database, directory = _path(expected.database, root), _path(expected.metadata_directory, root)
     for suffix in ("-wal", "-shm", "-journal"):
@@ -375,9 +423,7 @@ def _inspect_ledger(expected: ExpectedLedger, root: Path, caps: CampaignCaps):
     raw_db = _file(database)
     _require(len(raw_db) <= 64_000_000 and _sha(raw_db) == expected.expected_sha256, "ledger bytes differ from the externally declared anchor")
     raw_metadata = _metadata(directory)
-    with closing(sqlite3.connect(database.as_uri()+"?mode=ro&immutable=1", uri=True)) as connection:
-        connection.execute("PRAGMA query_only=ON")
-        connection.execute("PRAGMA trusted_schema=OFF")
+    with closing(_ledger_snapshot(raw_db)) as connection:
         _require(connection.execute("PRAGMA integrity_check").fetchone() == ("ok",)
                  and not connection.execute("PRAGMA foreign_key_check").fetchall(), "ledger database integrity failed")
         objects = connection.execute("SELECT type,name FROM sqlite_master WHERE type IN ('table','view','trigger')").fetchall()
@@ -431,7 +477,7 @@ def _inspect_ledger(expected: ExpectedLedger, root: Path, caps: CampaignCaps):
                      "SynchronousResultMetadata": SynchronousResultMetadata}[kind]
             # Provider bytes need not be canonical, but duplicate keys/nonfinite
             # fields must be rejected before JSON-mode typed validation.
-            checked = read_json_object(directory/reference.relative_path)
+            checked = parse_json_object(payload)
             event = model.model_validate_json(json.dumps(checked, allow_nan=False))
             if reference.capture_kind == "LOCAL_NORMALIZED_METADATA":
                 _require(payload == canonical_task_bytes(event), "normalized local metadata bytes are not canonical")
