@@ -29,12 +29,16 @@ def fixture_git(root: Path, *arguments: str, input_text: str | None = None) -> s
 
 
 def make_repository(path: Path) -> tuple[Path, str]:
-    """Use plumbing in a temporary fixture; no staging or git commit is performed."""
+    """Build a synthetic Git tree with plumbing only in this temporary fixture."""
     if shutil.which("git") is None:
         pytest.skip("real Git executable is required for provenance boundary tests")
     path.mkdir()
     fixture_git(path, "init", "--initial-branch=fixture-main", "--object-format=sha1")
-    tree = fixture_git(path, "mktree", input_text="")
+    # Valid package provenance includes the exact source dependency lock. These
+    # are temporary synthetic repositories, never actual development commits.
+    lock = (Path(__file__).resolve().parents[1] / "requirements.lock").read_bytes()
+    blob = fixture_git(path, "hash-object", "-w", "--stdin", input_text=lock.decode("utf-8"))
+    tree = fixture_git(path, "mktree", input_text=f"100644 blob {blob}\trequirements.lock\n")
     commit_text = (
         f"tree {tree}\n"
         "author Development Fixture <fixture@example.invalid> 1700000000 +0000\n"
@@ -43,6 +47,8 @@ def make_repository(path: Path) -> tuple[Path, str]:
     )
     commit = fixture_git(path, "hash-object", "-t", "commit", "-w", "--stdin", input_text=commit_text)
     fixture_git(path, "update-ref", "refs/heads/fixture-main", commit)
+    fixture_git(path, "read-tree", commit)
+    (path / "requirements.lock").write_bytes(lock)
     assert fixture_git(path, "rev-parse", "HEAD") == commit
     return path, commit
 
@@ -56,6 +62,7 @@ def copy_script_source(project_root: Path, target: Path) -> None:
     (target / "scripts").mkdir()
     for name in ("verify_stage0.py", "build_review_package.py"):
         shutil.copy2(project_root / "scripts" / name, target / "scripts" / name)
+    shutil.copy2(project_root / "requirements.lock", target / "requirements.lock")
 
 
 def guarded_script(
@@ -168,6 +175,9 @@ def make_synthetic_package_evidence(evidence: Path, commit: str, example_path: P
     verification = {
         "stage": "S0", "implementation_commit": commit, "working_tree_dirty": False,
         "python": "synthetic fixture only", "checks": checks, "developer_checks_passed": True,
+        "dependency_lock_sha256": hashlib.sha256(
+            (Path(__file__).resolve().parents[1] / "requirements.lock").read_bytes()
+        ).hexdigest(),
         "independent_review": "PENDING", "platform_integration": "NOT_APPLICABLE",
         "economic_evidence": "NOT_APPLICABLE", "next_stage_authorized": False,
     }
