@@ -1,0 +1,174 @@
+{
+  "sessions": [
+    {
+      "session": "2024-01-02",
+      "open_at": "2024-01-02T14:30:00+00:00",
+      "close_at": "2024-01-02T21:00:00+00:00",
+      "signal_at": "2024-01-02T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-03",
+      "open_at": "2024-01-03T14:30:00+00:00",
+      "close_at": "2024-01-03T21:00:00+00:00",
+      "signal_at": "2024-01-03T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-04",
+      "open_at": "2024-01-04T14:30:00+00:00",
+      "close_at": "2024-01-04T21:00:00+00:00",
+      "signal_at": "2024-01-04T21:05:00+00:00"
+    },
+    {
+      "session": "2024-01-05",
+      "open_at": "2024-01-05T14:30:00+00:00",
+      "close_at": "2024-01-05T21:00:00+00:00",
+      "signal_at": "2024-01-05T21:05:00+00:00"
+    }
+  ],
+  "identities": [
+    {
+      "sid": "SYN_A",
+      "listed_from": "2024-01-02",
+      "known_at": "2024-01-02T13:00:00+00:00"
+    },
+    {
+      "sid": "SYN_B",
+      "listed_from": "2024-01-02",
+      "known_at": "2024-01-02T13:00:00+00:00"
+    }
+  ],
+  "tickers": [
+    {
+      "sid": "SYN_A",
+      "ticker": "OLD",
+      "valid_from": "2024-01-02",
+      "valid_to": "2024-01-03",
+      "known_at": "2024-01-02T13:00:00+00:00",
+      "valid_to_known_at": "2024-01-04T13:00:00+00:00"
+    },
+    {
+      "sid": "SYN_A",
+      "ticker": "NEW",
+      "valid_from": "2024-01-04",
+      "known_at": "2024-01-04T13:00:00+00:00"
+    },
+    {
+      "sid": "SYN_B",
+      "ticker": "B",
+      "valid_from": "2024-01-02",
+      "known_at": "2024-01-02T13:00:00+00:00"
+    }
+  ],
+  "membership": [
+    {
+      "sid": "SYN_A",
+      "effective_on": "2024-01-02",
+      "member": true,
+      "known_at": "2024-01-02T13:00:00+00:00"
+    },
+    {
+      "sid": "SYN_B",
+      "effective_on": "2024-01-02",
+      "member": true,
+      "known_at": "2024-01-02T13:00:00+00:00"
+    }
+  ],
+  "corporate_actions": [
+    {
+      "sid": "SYN_A",
+      "kind": "SPLIT",
+      "effective_on": "2024-01-04",
+      "known_at": "2024-01-04T13:00:00+00:00",
+      "shares_after_per_before": 2.0
+    },
+    {
+      "sid": "SYN_B",
+      "kind": "DIVIDEND",
+      "effective_on": "2024-01-05",
+      "known_at": "2024-01-05T13:00:00+00:00",
+      "cash_per_share": 1.0
+    }
+  ],
+  "bars": [
+    {
+      "sid": "SYN_A",
+      "session": "2024-01-02",
+      "open": 20.0,
+      "high": 21.0,
+      "low": 19.0,
+      "close": 20.0,
+      "volume": 100.0,
+      "available_at": "2024-01-02T21:01:00+00:00"
+    },
+    {
+      "sid": "SYN_A",
+      "session": "2024-01-03",
+      "open": 22.0,
+      "high": 23.0,
+      "low": 21.0,
+      "close": 22.0,
+      "volume": 100.0,
+      "available_at": "2024-01-03T21:01:00+00:00"
+    },
+    {
+      "sid": "SYN_A",
+      "session": "2024-01-04",
+      "open": 11.0,
+      "high": 12.0,
+      "low": 10.0,
+      "close": 11.0,
+      "volume": 100.0,
+      "available_at": "2024-01-04T21:01:00+00:00"
+    },
+    {
+      "sid": "SYN_A",
+      "session": "2024-01-05",
+      "open": 12.0,
+      "high": 13.0,
+      "low": 11.0,
+      "close": 12.0,
+      "volume": 100.0,
+      "available_at": "2024-01-05T21:01:00+00:00"
+    },
+    {
+      "sid": "SYN_B",
+      "session": "2024-01-02",
+      "open": 30.0,
+      "high": 31.0,
+      "low": 29.0,
+      "close": 30.0,
+      "volume": 100.0,
+      "available_at": "2024-01-02T21:01:00+00:00"
+    },
+    {
+      "sid": "SYN_B",
+      "session": "2024-01-03",
+      "open": 30.0,
+      "high": 31.0,
+      "low": 29.0,
+      "close": 30.0,
+      "volume": 100.0,
+      "available_at": "2024-01-03T21:01:00+00:00"
+    },
+    {
+      "sid": "SYN_B",
+      "session": "2024-01-04",
+      "open": 31.0,
+      "high": 32.0,
+      "low": 30.0,
+      "close": 31.0,
+      "volume": 100.0,
+      "available_at": "2024-01-04T21:01:00+00:00"
+    },
+    {
+      "sid": "SYN_B",
+      "session": "2024-01-05",
+      "open": 32.0,
+      "high": 33.0,
+      "low": 31.0,
+      "close": 32.0,
+      "volume": 100.0,
+      "available_at": "2024-01-05T21:01:00+00:00"
+    }
+  ]
+}

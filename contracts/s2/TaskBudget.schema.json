@@ -1,0 +1,87 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "max_attempts": {
+      "default": 0,
+      "maximum": 100000,
+      "minimum": 0,
+      "title": "Max Attempts",
+      "type": "integer"
+    },
+    "max_concurrent_attempts": {
+      "default": 1,
+      "maximum": 1000,
+      "minimum": 1,
+      "title": "Max Concurrent Attempts",
+      "type": "integer"
+    },
+    "max_configurations": {
+      "default": 1,
+      "maximum": 100000,
+      "minimum": 0,
+      "title": "Max Configurations",
+      "type": "integer"
+    },
+    "max_cost_microusd": {
+      "default": 0,
+      "maximum": 1000000000000000,
+      "minimum": 0,
+      "title": "Max Cost Microusd",
+      "type": "integer"
+    },
+    "operation_limits": {
+      "additionalProperties": {
+        "maximum": 100000,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "propertyNames": {
+        "enum": [
+          "compile",
+          "research_check",
+          "data_query",
+          "project_read",
+          "file_read",
+          "research_read"
+        ]
+      },
+      "title": "Operation Limits",
+      "type": "object"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "response_class": {
+      "default": "CONTROL_ONLY",
+      "enum": [
+        "CONTROL_ONLY",
+        "SYNTHETIC_TEST"
+      ],
+      "title": "Response Class",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "stage": {
+      "const": "S2",
+      "default": "S2",
+      "title": "Stage",
+      "type": "string"
+    },
+    "status": {
+      "const": "DRAFT",
+      "default": "DRAFT",
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "title": "TaskBudget",
+  "type": "object"
+}

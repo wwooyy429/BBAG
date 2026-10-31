@@ -1,0 +1,86 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "code_commit": {
+      "pattern": "^[0-9a-fA-F]{40}$",
+      "title": "Code Commit",
+      "type": "string"
+    },
+    "config_sha256": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Config Sha256",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "independent_review": {
+      "const": "PENDING",
+      "default": "PENDING",
+      "title": "Independent Review",
+      "type": "string"
+    },
+    "kind": {
+      "const": "synthetic_data_and_task_control",
+      "default": "synthetic_data_and_task_control",
+      "title": "Kind",
+      "type": "string"
+    },
+    "platform_execution": {
+      "const": "NOT_RUN",
+      "default": "NOT_RUN",
+      "title": "Platform Execution",
+      "type": "string"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "result_sha256": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Result Sha256",
+      "type": "string"
+    },
+    "run_id": {
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "stage": {
+      "const": "S2",
+      "default": "S2",
+      "title": "Stage",
+      "type": "string"
+    },
+    "status": {
+      "const": "DRAFT",
+      "default": "DRAFT",
+      "title": "Status",
+      "type": "string"
+    },
+    "working_tree_dirty": {
+      "title": "Working Tree Dirty",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "run_id",
+    "config_sha256",
+    "result_sha256",
+    "code_commit",
+    "working_tree_dirty",
+    "created_at"
+  ],
+  "title": "S2RunManifest",
+  "type": "object"
+}

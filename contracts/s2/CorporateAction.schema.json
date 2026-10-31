@@ -1,0 +1,62 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "cash_per_share": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Cash Per Share"
+    },
+    "effective_on": {
+      "format": "date",
+      "title": "Effective On",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "SPLIT",
+        "DIVIDEND"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "known_at": {
+      "format": "date-time",
+      "title": "Known At",
+      "type": "string"
+    },
+    "shares_after_per_before": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Shares After Per Before"
+    },
+    "sid": {
+      "minLength": 1,
+      "title": "Sid",
+      "type": "string"
+    }
+  },
+  "required": [
+    "sid",
+    "kind",
+    "effective_on",
+    "known_at"
+  ],
+  "title": "CorporateAction",
+  "type": "object"
+}

@@ -33,11 +33,11 @@ def parser() -> argparse.ArgumentParser:
     schemas = commands.add_parser("schemas", help="Export or check versioned JSON schemas")
     schemas.add_argument("--output-dir", required=True, type=Path)
     schemas.add_argument("--check", action="store_true")
-    schemas.add_argument("--stage", choices=("S0", "S1"), default="S0")
+    schemas.add_argument("--stage", choices=("S0", "S1", "S2"), default="S0")
     review = commands.add_parser("check-review", help="Check receipt consistency; never merge or advance a stage")
     review.add_argument("--receipt", required=True, type=Path)
     review.add_argument("--commit", required=True)
-    review.add_argument("--stage", choices=("S0", "S1"), default="S0")
+    review.add_argument("--stage", choices=("S0", "S1", "S2"), default="S0")
     audit = commands.add_parser("s1-audit", help="Audit a restricted synthetic factor expression")
     audit.add_argument("--config", required=True, type=Path)
     for name in ("s1-factors", "s1-labels"):
@@ -47,6 +47,15 @@ def parser() -> argparse.ArgumentParser:
         run.add_argument("--run-id", required=True)
         if name == "s1-factors":
             run.add_argument("--mode", choices=("batch", "incremental"), default="batch")
+    s2_validate = commands.add_parser("s2-validate", help="Validate S2 configuration without granting access")
+    s2_validate.add_argument("--config", required=True, type=Path)
+    s2_run = commands.add_parser("s2-run-synthetic", help="Exercise synthetic S2 data and durable task controls")
+    s2_run.add_argument("--config", required=True, type=Path)
+    s2_run.add_argument("--output-dir", required=True, type=Path)
+    s2_run.add_argument("--run-id", required=True)
+    s2_plan = commands.add_parser("s2-cloud-plan", help="Prepare a cloud-only control plan; perform no remote calls")
+    s2_plan.add_argument("--config", required=True, type=Path)
+    s2_plan.add_argument("--project-id", required=True, type=int)
     return result
 
 
@@ -82,6 +91,9 @@ def schemas_command(output_dir: Path, check: bool, stage: str = "S0") -> int:
     if stage == "S1":
         from .s1_contracts import S1_CONTRACT_MODELS
         models = S1_CONTRACT_MODELS
+    elif stage == "S2":
+        from .s2_contracts import S2_CONTRACT_MODELS
+        models = S2_CONTRACT_MODELS
     expected: dict[str, bytes] = {}
     for name, model in sorted(models.items()):
         expected[f"{name}.schema.json"] = json_bytes(model.model_json_schema()) + b"\n"
@@ -115,6 +127,9 @@ def review_command(receipt_path: Path, commit: str, stage: str = "S0") -> int:
     if stage == "S1":
         from .s1_contracts import S1ReviewReceipt
         receipt_model = S1ReviewReceipt
+    elif stage == "S2":
+        from .s2_contracts import S2ReviewReceipt
+        receipt_model = S2ReviewReceipt
     receipt = receipt_model.model_validate_json(json.dumps(read_json_object(receipt_path), allow_nan=False))
     reasons = []
     if receipt.audited_commit != commit:
@@ -144,6 +159,16 @@ def main(argv: list[str] | None = None) -> int:
             return schemas_command(args.output_dir, args.check, args.stage)
         if args.command == "check-review":
             return review_command(args.receipt, args.commit, args.stage)
+        if args.command.startswith("s2-"):
+            from . import s2_cli
+            if args.command == "s2-validate":
+                output = s2_cli.validate_command(args.config)
+            elif args.command == "s2-cloud-plan":
+                output = s2_cli.plan_command(args.config, args.project_id)
+            else:
+                output = s2_cli.synthetic_command(args.config, args.output_dir, args.run_id)
+            emit(output)
+            return 0
         if args.command.startswith("s1-"):
             from . import s1_cli
             if args.command == "s1-audit":
