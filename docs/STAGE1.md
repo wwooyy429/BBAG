@@ -42,6 +42,8 @@ Observation以(session,asset)唯一；values必须恰含panel.fields，用null�
 
 LabelRule独立读取未来输入。目标i在i+1开盘入场，i+1+H开盘退出，H不等同调仓周期。记录signal_at、entry_at、exit_at、mature_at；成熟取退出时刻和所有目标/基准必要报价available_at的最大值。因此共同日线availability比真实退出开盘更保守。
 
+当前固定开盘事件只支持 `price_field="open"`，用于目标与基准的相同开盘区间。配置、直接标签服务与CLI均拒绝 `close`、`volume`、别名或其它报价字段，不能用延迟成熟来替代事件与价格的一致性；也不静默改写为open。字段仍可作为因子输入。此约束修复原提交 `f5c07d2b878c3b7e9f122bcf064ef45589d9aaa7` 的阻断S1-001；原先被误接纳的非open标签配置须拒绝，详见 [修复说明](S1_REMEDIATION.md)。S1 Schema版本仍为1.0，LabelRule及嵌套配置/结果的price_field收紧为常量open；合法open配置和既有手算答案不变。
+
 | 状态 | 行为 |
 |---|---|
 | MATURED | 必要正价格有效且as_of达到成熟时间，才返回value |

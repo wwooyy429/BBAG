@@ -35,8 +35,8 @@
           "type": "integer"
         },
         "price_field": {
+          "const": "open",
           "default": "open",
-          "pattern": "^[A-Za-z][A-Za-z0-9_]{0,63}$",
           "title": "Price Field",
           "type": "string"
         },

@@ -133,7 +133,7 @@ class LabelRule(StrictContract):
     entry_rule: Literal["next_session_open"] = "next_session_open"
     exit_rule: Literal["open_after_h_sessions"] = "open_after_h_sessions"
     return_type: Literal["price_return", "excess_price_return"] = "price_return"
-    price_field: FieldName = "open"
+    price_field: Literal["open"] = "open"
     benchmark_asset: Text | None = None
 
     @model_validator(mode="after")

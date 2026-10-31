@@ -42,6 +42,7 @@ def compute_labels(
     """Compute next-open-to-open labels available at the requested cutoff.
 
     A signal on index i enters at i+1 and exits at i+1+horizon_sessions.
+    The only supported quote field is exactly ``open``, matching both events.
     Actual quote availability can postpone maturity beyond the scheduled exit.
     Unmatured values stay None, including when future prices are already present
     in this offline synthetic input. Output order is session then asset name.
@@ -52,7 +53,9 @@ def compute_labels(
     # Containers can be mutated in place after construction. Revalidate before
     # reading input; assignment validation alone does not cover those changes.
     panel = MarketPanel.model_validate(panel.model_dump(mode="python"))
-    rule = LabelRule.model_validate(rule.model_dump(mode="python"))
+    # StrictContract revalidates instances, including model_construct/model_copy
+    # values that skipped validation. Never substitute another field for open.
+    rule = LabelRule.model_validate(rule)
     if (type(universe) is not list or not universe
             or any(type(asset) is not str or not asset for asset in universe)
             or len(universe) != len(set(universe))):
