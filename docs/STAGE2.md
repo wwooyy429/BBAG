@@ -85,7 +85,9 @@ UNKNOWN 未核实前禁止盲目重提。`reconcile_not_submitted` 要求与同�
 
 响应只包含项目、operation、绑定 hash、status、封闭 error_category 及 `check_results`。字段之外的原始行情、日志或图形即使出现在 callback 中也会拒绝，错误不回显该内容；重复 JSON 键、非有限数、非布尔 verdict、其它请求的绑定或不一致 check 集合同样拒绝。网关结果始终注明 NOT_AUTHENTICATED、未认证来源及无市场数据导出；自身 platform_integration 保持 NOT_RUN，外部真实执行证据与独立平台结论另行登记。
 
-[cloud/s2_probe.py](../cloud/s2_probe.py) 的 `run_cloud_check(plan, policy, trusted_policy_sha256)` 用于已授权的小样本。完整 preflight 在 SDK 导入、QuantBook 创建、订阅和 history 之前；内部云请求通过同一授权再校验。设置历史起止日期后才添加股票，使用 RAW 日频、fill_forward=False、extended_market_hours=False、daily_precise_end_time=True。typed `history[TradeBar]` 使用显式日期范围；结束参数为 2020-01-11 零时的排除端，以纳入 1 月 10 日，不授予 1 月 11 日数据。不会使用可能跨界的条数或相对跨度重载。
+[cloud/s2_probe.py](../cloud/s2_probe.py) 的 `run_cloud_check(plan, policy, trusted_policy_sha256)` 用于已授权的小样本。完整 preflight 在 SDK 导入、QuantBook 创建、订阅和 history 之前；内部云请求通过同一授权再校验。使用 RAW 日频、fill_forward=False、extended_market_hours=False、daily_precise_end_time=True。typed `history[TradeBar]` 使用显式日期范围：2020-01-02 零时至 2020-01-11 零时的排除端，以纳入 1 月 10 日，不授予 1 月 11 日数据。不会使用可能跨界的条数或相对跨度重载。
+
+Research 上下文时钟与这段查询范围分开设置。按官方 [QuantBook 初始化说明](https://www.quantconnect.com/docs/v2/research-environment/initialization)，`set_start_date` 在 Research 中限制 history 可返回数据的最晚日期，不能把它当成查询起始日。本探针在添加股票前将 QuantBook 时钟设为查询排除端 2020-01-11，并把其上下文 end_date 设为更晚的 2020-01-12；这两个上下文设置不发起额外日期的 history 查询，实际请求仍只有上述白名单区间。若把时钟错误地放在 1 月 2 日零时，合法查询会被截成空结果。修复移动上下文时钟，保留查询参数和 data_presence 的真实判定，不把空数据改写为通过。模拟 SDK 回归也按该时钟截断历史，检查旧行为为空、修复后合成数据可见的区别。
 
 | 固定检查名 | 限定含义 |
 |---|---|
@@ -99,7 +101,7 @@ UNKNOWN 未核实前禁止盲目重提。`reconcile_not_submitted` 要求与同�
 
 Python SDK 的意外 stdout/stderr 在探针执行区丢弃，不作为 Notebook 数据发布。有效请求的拒绝和执行异常返回有限错误类别；无法绑定项目/源码的非法计划只抛 `CloudProbeRejected`，消息仅为 INVALID_REQUEST，调用 cell 须捕获并仅发布该常量类别，不输出 traceback 或异常 repr。探针不返回计数、价格、时间序列、数据哈希或 DataFrame。
 
-当前 71 项网关检查和 39 项云探针模拟 SDK 检查属于开发自测的实际记录，不是独立审核或真实平台 PASS，也不是最终全库计数。它们验证了门禁先于 callback/缓存、字段拒绝、来源声明、异常脱敏及模拟 SDK 调用参数。真实 Cloud 小样本必须在固定提交后另行执行并保留准确源码与安全元数据证据；非空拆股、分红、更名和退市案例若在白名单外，保持 NOT_RUN，不能为补齐覆盖而扩大查询。
+当前 71 项网关检查和 40 项云探针模拟 SDK 检查属于开发自测的实际记录，不是独立审核或真实平台 PASS，也不是最终全库计数。它们验证了门禁先于 callback/缓存、字段拒绝、来源声明、异常脱敏、Research 时钟截断及模拟 SDK 调用参数。真实 Cloud 小样本必须在固定提交后另行执行并保留准确源码与安全元数据证据；非空拆股、分红、更名和退市案例若在白名单外，保持 NOT_RUN，不能为补齐覆盖而扩大查询。
 
 ## 本地复现与提交后交接
 

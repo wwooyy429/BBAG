@@ -119,9 +119,14 @@ def _run(request: QuantConnectCheckRequest, policy: AccessPolicy) -> dict:
     qb.set_time_zone(policy.timezone)
     qb.settings.daily_precise_end_time = True
     first, last = request.data.start, request.data.end
-    # Establish the historical mapping context before security subscriptions.
-    qb.set_start_date(first.year, first.month, first.day)
-    qb.set_end_date(last.year, last.month, last.day)
+    start = datetime.combine(first, time.min)
+    end = datetime.combine(last + timedelta(days=1), time.min)
+    # In Research, QuantBook's start date is the latest available history date.
+    # Put that clock at the query's exclusive end, before subscriptions. The
+    # later QuantBook end date is context only; it does not widen the query.
+    context_end = end + timedelta(days=1)
+    qb.set_start_date(end.year, end.month, end.day)
+    qb.set_end_date(context_end.year, context_end.month, context_end.day)
     securities = [qb.add_equity(asset, Resolution.DAILY, market=Market.USA,
                     fill_forward=False, extended_market_hours=False,
                     data_normalization_mode=Normalization.RAW) for asset in request.data.assets]
@@ -134,10 +139,8 @@ def _run(request: QuantConnectCheckRequest, policy: AccessPolicy) -> dict:
         configs = tuple(security.subscriptions)
         checks["normalization_raw"] &= bool(configs) and all(
             config.data_normalization_mode == Normalization.RAW for config in configs)
-    start = datetime.combine(first, time.min)
     # QC's date-range end is exclusive. Jan 11 midnight includes Jan 10 without
     # granting data for Jan 11 or using a span/bar-count overload across bounds.
-    end = datetime.combine(last + timedelta(days=1), time.min)
     history = qb.history[TradeBar](symbols, start, end, Resolution.DAILY,
         fill_forward=False, extended_market_hours=False, data_normalization_mode=Normalization.RAW)
     seen = set()

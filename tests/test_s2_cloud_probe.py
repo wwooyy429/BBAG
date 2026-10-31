@@ -65,7 +65,10 @@ class FakeHistory:
             raise self.owner.error
         packets = []
         day = start
-        while day < end:
+        # QuantBook's start date is the latest accessible history date, not the
+        # beginning of the history query. Model this platform behavior explicitly.
+        ceiling = min(end, self.owner.research_clock)
+        while day < ceiling:
             if day.weekday() < 5:
                 packets.append({symbol.id: SimpleNamespace(symbol=symbol,
                     time=day.replace(hour=9, minute=30), end_time=day.replace(hour=16),
@@ -85,14 +88,18 @@ class FakeBook:
         self.error = None
         self.change = None
         self.raw = "RAW"
+        self.research_clock = datetime.max
+        self.research_end = datetime.max
 
     def set_time_zone(self, zone):
         self.events.append(("timezone", zone))
 
     def set_start_date(self, *args):
+        self.research_clock = datetime(*args)
         self.events.append(("start", args))
 
     def set_end_date(self, *args):
+        self.research_end = datetime(*args)
         self.events.append(("end", args))
 
     def add_equity(self, ticker, resolution, **kwargs):
@@ -141,6 +148,21 @@ def test_synthetic_sdk_uses_exact_date_range_raw_daily_no_fill_and_only_emits_ve
     assert result["request_sha256"] == qc_request_sha256(QuantConnectCheckRequest.model_validate_json(json.dumps(plan)))
     assert plan["data"]["output_mode"] == "CONTROL_ONLY"
     assert_no_market_output(result, capsys)
+
+
+def test_quantbook_research_clock_is_history_ceiling_not_query_start(sdk) -> None:
+    book, _ = sdk
+    result = probe.run_cloud_check(*inputs())
+    # The old Jan 2 midnight clock clips the authorized Jan 2..10 request to
+    # nothing. Jan 11 midnight makes Jan 10 available without widening history.
+    assert result["check_results"]["data_presence"] is True
+    assert book.research_clock == datetime(2020, 1, 11)
+    assert book.research_end == datetime(2020, 1, 12)
+    history = next(event for event in book.events if event[0] == "history")
+    assert history[2:4] == (datetime(2020, 1, 2), datetime(2020, 1, 11))
+    starts = [index for index, event in enumerate(book.events) if event[0] == "start"]
+    adds = [index for index, event in enumerate(book.events) if event[0] == "add"]
+    assert max(starts) < min(adds)
 
 
 @pytest.mark.parametrize("change", [
