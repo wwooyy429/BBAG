@@ -168,23 +168,23 @@ def main() -> int:
     history = ("本包实际包含历史输入目录：" + "、".join(f"`evidence/{name}/`" for name in histories)
                + "。旧结论只覆盖各自准确版本，不构成本次新 SHA 的批准。"
                if histories else "本包未包含可选历史审核目录，不声称附有原审核文件；历史版本与最新联合复审状态按下文记录。")
-    remediation = root / "docs/S0_LOCK_HASH_REMEDIATION.md"
+    remediation = root / "docs/S1_COMMITTED_LOCK_REMEDIATION.md"
     remediation_details = remediation.read_text(encoding="utf-8") if remediation.is_file() else ""
-    remediation_report = evidence / "remediation/S0_FIX_REPORT.md"
+    remediation_report = evidence / "remediation/S1_FIX_REPORT.md"
     remediation_results = remediation_report.read_text(encoding="utf-8") if remediation_report.is_file() else "补充复验报告未提供，不能宣称已执行额外检查。"
     development = f"""# BBAG S0 开发报告
 
 实现 commit SHA：`{commit}`
 
-本报告在提交后生成，审核对象为 source.zip 中该 SHA 的完整源码。开发分支为 `{git(root, 'branch', '--show-current')}`，本次新 SHA 独立审核保持 PENDING。本轮范围为 S0-004 基础修复；完整源码包含已合并的 S1 基线，S1 受影响验证使用单独的 S1 包，不以本包冒充。
+本报告在提交后生成，审核对象为 source.zip 中该 SHA 的完整源码。开发分支为 `{git(root, 'branch', '--show-current')}`，本次新 SHA 独立审核保持 PENDING。本轮实现范围为 S1-002 提交锁比对修复；本包记录同 SHA 的 S0 回归，S1 专项使用单独的 S1 包，不以本包冒充。
 
-## 本轮 S0 修复
+## 本轮范围与已关闭记录
 
-本轮基线：`41789706f710e131d4a654e349798ddb15ea70f5`。负责人提供的 `dual_reaudit_S0_S1_20261031_1339` 将 S0 `f46fad2ff4b3ec9659001659fa44201e10951fd5` 与 S1 `c56db883cd7841c94517ee9817d7ad551e811dc2` 的联合结论更新为 CHANGES_REQUIRED / 工程 FAIL，新增 S0-004（P2）。S1 功能专项通过，原 S1-001 保持关闭；旧批准、失败及实际合并事实保留，新修复不继承旧 SHA 的批准。
+本轮基线：`0889d277bfdda4894d7e359157d092a4f07639f5`，未合并 main。负责人提供的 `reaudit_joint_0889d277bfdd_20261031_1522` 批准该 SHA 的 S0 范围并关闭 S0-004、S0-N01；S1 因唯一新增 S1-002（P2）为 CHANGES_REQUIRED / 工程 FAIL。S1-001 保持关闭，S0-N02 为非阻断待办。旧批准、失败及实际合并事实保留，新 SHA 不自动继承旧批准。
 
-- S0-004：要求证据依赖锁字段为规范小写 64 位十六进制 SHA-256，且等于源码根目录 requirements.lock 的摘要；完整 CLI 另与准确提交中的锁字节核对。错误、缺失、非法格式及隐藏的本地锁差异在创建输出、archive 和 ZIP 前退出 2。
-- 正确锁跨工作目录打包、既有输出不变及 S1 原有锁拒绝对照均有回归入口。
-- S0-N01：历史证据目录按实际存在情况说明，纠正已过期的阶段和合并措辞。S0-N02 的 Windows 设备别名建议保留待办，本轮不修改路径契约。
+- S1-002：S1 在准确 HEAD 与 clean 检查后，补充 Git 提交锁与磁盘锁摘要比对，保留证据与磁盘锁检查，失败在 mkdir/archive/ZIP 前退出 2。
+- S0 已批准的接纳逻辑原样保留；S0-004 与 S0-N01 不重开，当前报告仅更新最新审核与本轮范围。
+- 新增 S1 隐藏 Git 标记、正确锁跨工作目录及已有输出保持回归；S0/S1 原坏锁拒绝继续验证。S0-N02 的 Windows 设备别名建议保留待办，本轮不修改路径契约。
 - 前轮严格 JSON、JUnit 明细、完整契约、规范字节/哈希/SHA、证据树与输出路径边界检查保留；锁版本、公式、标签、标准答案和研究参数不变。
 
 ## 保留的 S0 基础能力
@@ -249,6 +249,7 @@ S1 确定性计算、公式审计和独立未来标签已存在于基线；本�
 9. 核对 evidence/remediation（如有）的原件哈希、适配差异、原始失败与新结果，以及新源码与 PR 的准确 SHA；旧版工程 FAIL 不自动覆盖修复效果，新版也不得自填 ACCEPTED。
 10. 对照 docs/S0_SUPPLEMENT_CHECK.md 复测 S0 回执平台状态、证据 symlink/junction 与越界、输入输出重叠、已有 ZIP 冲突；所有拒绝均须发生在新交付目录和源码 archive 创建前。普通目录、合法兄弟路径及云占位符正例须保留。
 11. 对照 docs/S0_LOCK_HASH_REMEDIATION.md 独立复测 S0-004：正确锁正例；错误摘要、缺字段、非法格式、另一个合法摘要及非法 JSON 类型；跨调用目录及 Git 隐藏差异。检查退出 2、无新交付且旧输出不变，并保留 S1 原有锁拒绝对照。
+12. S0-004 已在 0889d277 独立关闭，第 11 项是保留回归。当前唯一新修复 S1-002 的两种隐藏 Git 标记、准确提交/磁盘/证据锁比对及正确锁正例，使用同 SHA 的 S1 包和 docs/S1_COMMITTED_LOCK_REMEDIATION.md 独立复审，不重复计为新的 S0 缺陷。
 
 ## 结论要求
 

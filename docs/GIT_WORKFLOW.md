@@ -1,6 +1,6 @@
 # BBAG Git 与独立审核流程
 
-仓库为 [wwooyy429 BBAG](https://github.com/wwooyy429/BBAG)。S0、S1 的历史授权与实际合并保留，当前 main 为 `41789706f710e131d4a654e349798ddb15ea70f5`。后续联合复审发现 S0-004，当前分支 `codex/s0-lock-hash-remediation` 只修复该基础缺陷并重新交审 S0/S1，见 [修复与复审说明](S0_LOCK_HASH_REMEDIATION.md)。本轮没有 main 合并、回退或 S2 推进授权。
+仓库为 [wwooyy429 BBAG](https://github.com/wwooyy429/BBAG)。S0、S1 的历史授权与实际合并保留，当前 main 为 `41789706f710e131d4a654e349798ddb15ea70f5`。最新复审已在开发提交 `0889d277bfdda4894d7e359157d092a4f07639f5` 关闭 S0-004 并批准 S0；S1 新增 S1-002，仍需修改。当前 `codex/s1-committed-lock-remediation` 基于该未合并提交修复 S1 交审接纳，见 [S1 提交锁说明](S1_COMMITTED_LOCK_REMEDIATION.md)。本轮没有 main 合并、回退或 S2 推进授权。
 
 ## 每次开发的固定顺序
 
@@ -44,7 +44,7 @@ python scripts/verify_stage0.py --output-dir artifacts/verification/<完整实�
 python scripts/build_review_package.py --commit <完整实现SHA> --evidence-dir artifacts/verification/<完整实现SHA>
 ```
 
-打包器要求当前 HEAD 与实现 SHA 相同、工作区干净、开发验证来自该 SHA 且独立审核仍为 PENDING。S0 锁哈希须为小写 64 位十六进制 SHA-256，并与源码根目录及准确提交的 requirements.lock 字节一致；错误、缺失及非法格式在创建交付目录和 ZIP 前退出 2。源码从 Git 提交导出；未知来源、过期证据或未完成开发检查均不能冒充可交审的固定版本。
+打包器要求当前 HEAD 与实现 SHA 相同、工作区干净、开发验证来自该 SHA 且新提交独立审核仍为 PENDING。S0、S1 证据锁哈希须与源码根目录及准确提交的 requirements.lock 字节摘要一致；Git 状态为空不替代准确提交锁的比对。错误、缺失及非法格式在创建交付目录和 ZIP 前退出 2。源码从 Git 提交导出；未知来源、过期证据或未完成开发检查均不能冒充可交审的固定版本。
 
 证据树应由普通文件和目录组成，子符号链接、junction、循环及根外路径在读取契约和创建交付前拒绝；需要引用的材料先复制为证据根内的普通文件。普通同步云文件不会仅因 Cloud reparse 标记被当作链接。实际每 SHA 输出目录与最终 ZIP 不得与证据树重叠，安全的共同父目录允许。已有输出目录、ZIP 或悬空目标链接会在创建新输出前拒绝；ZIP 使用排他创建，保留旧材料。
 

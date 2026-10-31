@@ -167,7 +167,9 @@ def development_report(root: Path, evidence: Path, commit: str, verification: di
 
 ## 授权与基线
 
-历史上负责人验收 S0 后明确授权合并并开始 S1。S0 被审实现：`{S0_REVIEWED_SHA}`；首次 S0 合并结果：`{S0_MERGE_SHA}`。S1 后续 c56db883cd7841c94517ee9817d7ad551e811dc2 经负责人接受独立复审并授权合并为 41789706f710e131d4a654e349798ddb15ea70f5，后者是本轮 S0-004 修复基线。最新联合复审因 S0-004 更新为 CHANGES_REQUIRED；S1 功能通过且 S1-001 保持关闭，历史批准不能覆盖本次新 SHA。当前源码分支：`{git(root, 'branch', '--show-current')}`。具体范围见 docs/S0_LOCK_HASH_REMEDIATION.md。
+历史上负责人验收 S0 后明确授权合并并开始 S1。S0 首次被审实现：`{S0_REVIEWED_SHA}`；首次 S0 合并结果：`{S0_MERGE_SHA}`。S1 后续 c56db883cd7841c94517ee9817d7ad551e811dc2 获负责人授权合并为 41789706f710e131d4a654e349798ddb15ea70f5。当前修复基线为未合并的 0889d277bfdda4894d7e359157d092a4f07639f5；最新独立复审已批准该 SHA 的 S0 范围并关闭 S0-004、S0-N01，S1 因新增 S1-002（P2）仍为 CHANGES_REQUIRED。S1-001 保持关闭，历史批准不能覆盖本次新 SHA。当前源码分支：`{git(root, 'branch', '--show-current')}`。具体范围见 docs/S1_COMMITTED_LOCK_REMEDIATION.md。
+
+本轮仅修复 S1-002：在准确 HEAD 与 clean 检查后、创建任何交付前，比较准确提交中的 requirements.lock Git blob 与源码根目录磁盘锁摘要，保留原有证据锁校验。隐藏标记不能使不一致的提交/磁盘/证据锁生成交审包；失败退出 2、旧输出保留。以下 S1 计算能力属于保留基线，不是本轮新增公式或标签逻辑。
 
 ## 实际交付范围
 
@@ -213,6 +215,9 @@ def main() -> int:
     commit = git(root, "rev-parse", "--verify", f"{args.commit}^{{commit}}")
     if git(root, "rev-parse", "HEAD") != commit or git(root, "status", "--porcelain"):
         raise ValueError("Check out the exact S1 implementation with an unchanged clean working tree")
+    committed_lock = subprocess.check_output(["git", "show", f"{commit}:requirements.lock"], cwd=root, stderr=subprocess.PIPE)
+    if digest(root / "requirements.lock") != hashlib.sha256(committed_lock).hexdigest():
+        raise ValueError("S1 working dependency lock does not match the exact committed source")
     evidence = args.evidence_dir.resolve()
     base = args.output_dir.resolve()
     output = base / commit
@@ -230,13 +235,15 @@ def main() -> int:
     (output / "DEVELOPMENT_REPORT.md").write_text(development_report(root, evidence, commit, verification, counts), encoding="utf-8")
     audit = f"""# BBAG S1 独立审核请求
 
-准确 S1 SHA：`{commit}`。范围仅 S1，当前独立审核 PENDING。S0 被审 `{S0_REVIEWED_SHA}`、合并 `{S0_MERGE_SHA}` 仅作为前置，不是本次批准。
+准确 S1 SHA：`{commit}`。当前范围为 S1-002 提交锁比对修复及保留回归，独立审核 PENDING。S0 首次被审 `{S0_REVIEWED_SHA}`、合并 `{S0_MERGE_SHA}` 属历史前置；最新 S0 批准绑定 0889d277bfdda4894d7e359157d092a4f07639f5，不自动批准本次新 SHA。S0-004 与 S0-N01 已关闭，S1-001 保持关闭。
 
 核对 manifest、source.zip 与 Git 提交、锁依赖、样例及原始证据，按 REPRODUCE.md 在独立副本复验。自行构造语法/字段/类型/窗口/复杂度/参数/回看、缺失/常数/不足窗口/除零/非有限、重复 JSON、日期/可用时点和来源/输出边界反例；使用独立手算或参考值，不只重复生产函数。
 
 验证未来数据扰动不改变过去因子、截断和完整输入在相同可用时点一致；批量与逐期在登记容差内一致。分开验证未来标签：入场严格在信号后、退出按会话规则、仅成熟后披露值；未来价格可合法改变未来收益标签。检查价格收益与真实含公司行动总收益的边界。
 
 核查 S1 专用回执及验证契约、十项检查、真实 JUnit、规范配置/结果字节、哈希、准确 SHA 与 clean 快照、固定提交的手算/有理数标准答案。检查 evidence 链接、越界/重叠、已有输出防覆盖及可选历史目录的说明准确。
+
+独立复测 S1-002：在临时准确 checkout 对锁使用 assume-unchanged、skip-worktree 隐藏修改，仅令证据锁摘要匹配磁盘而不匹配 Git blob；两类均须退出 2、无新目录/archive/ZIP、旧输出不变。正确锁跨调用目录正例须保留，回读 source.zip/证据/准确提交三方锁字节。缺锁或读取失败保持可读 JSON 错误；原 S0/S1 错误、缺失、非法格式锁反例继续拒绝。
 
 逐项记录 EXECUTED/STATIC_ONLY/NOT_RUN、输入/预期/实际/退出码和原始证据。工程结论由你实测判定，不预设通过；平台和经济 NOT_APPLICABLE。保留 S6.4、最终派生隔离与固定/滚动模型规则；不调用模型或量化平台，不运行完整 F01—F08，不合并、不开始 S2。
 

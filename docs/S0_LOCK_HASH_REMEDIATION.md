@@ -1,5 +1,7 @@
 # S0-004 依赖锁哈希修复与联合复审
 
+本页保留 S0-004 的修复历史。后续 `reaudit_joint_0889d277bfdd_20261031_1522` 已在准确 SHA `0889d277bfdda4894d7e359157d092a4f07639f5` 独立关闭 S0-004 与 S0-N01，S0 APPROVED / 工程 PASS；本页下文的待审描述是当时交审状态。当前唯一新增阻断为 S1-002，见 [S1 提交锁修复说明](S1_COMMITTED_LOCK_REMEDIATION.md)。
+
 本轮基线为 main 合并提交 `41789706f710e131d4a654e349798ddb15ea70f5`，其源码树与已审 S1 `c56db883cd7841c94517ee9817d7ad551e811dc2` 相同。修复位于独立开发分支 `codex/s0-lock-hash-remediation`；准确新 SHA、实际命令和结果在提交后生成的交审材料中登记。
 
 ## 审核来源与状态
