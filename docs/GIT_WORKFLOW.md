@@ -1,6 +1,6 @@
 # BBAG Git 与独立审核流程
 
-仓库为 [wwooyy429 BBAG](https://github.com/wwooyy429/BBAG)。main 仅作已审核版本基线；仓库初始化标记不包含阶段实现。阶段 0 在 `codex/stage-0-foundation` 开发分支交付，未经审核不合并 main，也不进入 S1。
+仓库为 [wwooyy429 BBAG](https://github.com/wwooyy429/BBAG)。main 保存负责人批准的基线。S0 的 f46fad2ff4b3ec9659001659fa44201e10951fd5 已获准合并为 b2555efe7201c473bdb66c7dd1c14552ad130ac5，见 [S0验收记录](S0_ACCEPTANCE.md)。S1 在 `codex/stage-1-factor-engine` 开发，未经本阶段独立复审和新授权不合并，也不进入 S2。
 
 ## 每次开发的固定顺序
 
@@ -11,7 +11,7 @@
 5. 按该 SHA 生成开发报告和 GPT Work 审核请求，导出准确提交源码并核对文件哈希。
 6. 将报告和审核材料置于 Git 忽略的 `deliverables/`；以草稿 PR 交付，注明实现 SHA 和审核尚待完成。
 7. GPT Work 对固定 SHA 独立复验。缺陷交回 Codex，在开发分支修复、提交新 SHA、生成新报告和审核包。
-8. 核实独立审核结论确实绑定当前 PR head SHA，阻断项均已解决，再评估合并资格。当前授权仍为 S0，下一阶段需另行授权。
+8. 核实独立审核结论确实绑定当前 PR head SHA，阻断项均已解决，再评估合并资格。当前授权为 S1，S1合并和下一阶段需另行授权。
 
 不删除失败运行、旧报告、旧结论和复验记录，不把开发自测或协作代理检查写为独立 GPT Work 验收通过。
 
@@ -71,7 +71,9 @@ git config core.hooksPath .githooks
 
 钩子阻止直接推送 main 或 master，鼓励通过经过审核的 PR 更新基线。钩子只在已配置的本地仓库生效，不能阻止绕过钩子或从其他客户端改远程；草稿 PR 也不等于服务器端分支保护。
 
-服务器端规则应单独核实。若尚未启用或当前工具无管理权限，在开发报告中明确保留此限制，不宣称仓库已实现服务器强制审核。无论服务器配置如何，Codex 仍须遵守本次不合并 main、不进入 S1 的用户要求。
+服务器端规则应单独核实。若尚未启用或当前工具无管理权限，在开发报告中明确保留此限制，不宣称仓库已实现服务器强制审核。无论服务器配置如何，Codex 仍须遵守本次不合并S1、不进入S2的用户要求。
+
+S1使用scripts/verify_stage1.py和scripts/build_stage1_package.py，输出按deliverables/stages/S1/<准确SHA>组织；S0脚本不能冒充S1证据。S1回执为独立契约，不能用S0已通过回执批准S1。
 
 ## CI 与审核区别
 

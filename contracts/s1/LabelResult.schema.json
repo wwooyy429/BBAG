@@ -1,0 +1,205 @@
+{
+  "$defs": {
+    "LabelRule": {
+      "additionalProperties": false,
+      "properties": {
+        "benchmark_asset": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Benchmark Asset"
+        },
+        "entry_rule": {
+          "const": "next_session_open",
+          "default": "next_session_open",
+          "title": "Entry Rule",
+          "type": "string"
+        },
+        "exit_rule": {
+          "const": "open_after_h_sessions",
+          "default": "open_after_h_sessions",
+          "title": "Exit Rule",
+          "type": "string"
+        },
+        "horizon_sessions": {
+          "maximum": 128,
+          "minimum": 1,
+          "title": "Horizon Sessions",
+          "type": "integer"
+        },
+        "price_field": {
+          "const": "open",
+          "default": "open",
+          "title": "Price Field",
+          "type": "string"
+        },
+        "return_type": {
+          "default": "price_return",
+          "enum": [
+            "price_return",
+            "excess_price_return"
+          ],
+          "title": "Return Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "horizon_sessions"
+      ],
+      "title": "LabelRule",
+      "type": "object"
+    },
+    "LabelValue": {
+      "additionalProperties": false,
+      "properties": {
+        "asset": {
+          "minLength": 1,
+          "title": "Asset",
+          "type": "string"
+        },
+        "entry_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Entry At"
+        },
+        "exit_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Exit At"
+        },
+        "mature_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Mature At"
+        },
+        "session": {
+          "format": "date",
+          "title": "Session",
+          "type": "string"
+        },
+        "signal_at": {
+          "format": "date-time",
+          "title": "Signal At",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "MATURED",
+            "NOT_MATURED",
+            "INSUFFICIENT_FUTURE",
+            "MISSING_INPUT"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "session",
+        "asset",
+        "signal_at",
+        "entry_at",
+        "exit_at",
+        "mature_at",
+        "value",
+        "status"
+      ],
+      "title": "LabelValue",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "data_id": {
+      "minLength": 1,
+      "title": "Data Id",
+      "type": "string"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "rows": {
+      "items": {
+        "$ref": "#/$defs/LabelValue"
+      },
+      "maxItems": 8192,
+      "title": "Rows",
+      "type": "array"
+    },
+    "rule": {
+      "$ref": "#/$defs/LabelRule"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "stage": {
+      "const": "S1",
+      "default": "S1",
+      "title": "Stage",
+      "type": "string"
+    },
+    "status": {
+      "const": "DRAFT",
+      "default": "DRAFT",
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "data_id",
+    "as_of",
+    "rule",
+    "rows"
+  ],
+  "title": "LabelResult",
+  "type": "object"
+}

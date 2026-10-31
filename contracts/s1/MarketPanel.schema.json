@@ -1,0 +1,155 @@
+{
+  "$defs": {
+    "Observation": {
+      "additionalProperties": false,
+      "properties": {
+        "asset": {
+          "minLength": 1,
+          "title": "Asset",
+          "type": "string"
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "session": {
+          "format": "date",
+          "title": "Session",
+          "type": "string"
+        },
+        "values": {
+          "maxProperties": 16,
+          "minProperties": 1,
+          "patternProperties": {
+            "^[A-Za-z][A-Za-z0-9_]{0,63}$": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "title": "Values",
+          "type": "object"
+        }
+      },
+      "required": [
+        "session",
+        "asset",
+        "available_at",
+        "values"
+      ],
+      "title": "Observation",
+      "type": "object"
+    },
+    "Session": {
+      "additionalProperties": false,
+      "properties": {
+        "close_at": {
+          "format": "date-time",
+          "title": "Close At",
+          "type": "string"
+        },
+        "open_at": {
+          "format": "date-time",
+          "title": "Open At",
+          "type": "string"
+        },
+        "session": {
+          "format": "date",
+          "title": "Session",
+          "type": "string"
+        },
+        "signal_at": {
+          "format": "date-time",
+          "title": "Signal At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "session",
+        "open_at",
+        "close_at",
+        "signal_at"
+      ],
+      "title": "Session",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assets": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Assets",
+      "type": "array"
+    },
+    "data_id": {
+      "minLength": 1,
+      "title": "Data Id",
+      "type": "string"
+    },
+    "fields": {
+      "items": {
+        "pattern": "^[A-Za-z][A-Za-z0-9_]{0,63}$",
+        "type": "string"
+      },
+      "maxItems": 16,
+      "minItems": 1,
+      "title": "Fields",
+      "type": "array"
+    },
+    "observations": {
+      "items": {
+        "$ref": "#/$defs/Observation"
+      },
+      "maxItems": 8192,
+      "title": "Observations",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sessions": {
+      "items": {
+        "$ref": "#/$defs/Session"
+      },
+      "maxItems": 256,
+      "minItems": 1,
+      "title": "Sessions",
+      "type": "array"
+    },
+    "source": {
+      "const": "synthetic_fixture",
+      "default": "synthetic_fixture",
+      "title": "Source",
+      "type": "string"
+    },
+    "timezone": {
+      "minLength": 1,
+      "title": "Timezone",
+      "type": "string"
+    }
+  },
+  "required": [
+    "data_id",
+    "timezone",
+    "sessions",
+    "assets",
+    "fields",
+    "observations"
+  ],
+  "title": "MarketPanel",
+  "type": "object"
+}

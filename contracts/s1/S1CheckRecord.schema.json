@@ -1,0 +1,63 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "command": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Command",
+      "type": "array"
+    },
+    "duration_seconds": {
+      "minimum": 0,
+      "title": "Duration Seconds",
+      "type": "number"
+    },
+    "exit_code": {
+      "title": "Exit Code",
+      "type": "integer"
+    },
+    "expected_exit_code": {
+      "title": "Expected Exit Code",
+      "type": "integer"
+    },
+    "name": {
+      "enum": [
+        "pip_check",
+        "pytest",
+        "audit",
+        "schemas_s0",
+        "schemas_s1",
+        "factors_batch",
+        "factors_incremental",
+        "labels",
+        "reference_check",
+        "pending_review_gate"
+      ],
+      "title": "Name",
+      "type": "string"
+    },
+    "passed": {
+      "title": "Passed",
+      "type": "boolean"
+    },
+    "started_at_utc": {
+      "format": "date-time",
+      "title": "Started At Utc",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "command",
+    "exit_code",
+    "expected_exit_code",
+    "passed",
+    "started_at_utc",
+    "duration_seconds"
+  ],
+  "title": "S1CheckRecord",
+  "type": "object"
+}

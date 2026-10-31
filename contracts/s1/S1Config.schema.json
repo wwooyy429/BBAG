@@ -1,0 +1,460 @@
+{
+  "$defs": {
+    "AuditLimits": {
+      "additionalProperties": false,
+      "properties": {
+        "max_depth": {
+          "default": 16,
+          "maximum": 32,
+          "minimum": 1,
+          "title": "Max Depth",
+          "type": "integer"
+        },
+        "max_lookback_sessions": {
+          "default": 256,
+          "maximum": 512,
+          "minimum": 1,
+          "title": "Max Lookback Sessions",
+          "type": "integer"
+        },
+        "max_nodes": {
+          "default": 128,
+          "maximum": 256,
+          "minimum": 1,
+          "title": "Max Nodes",
+          "type": "integer"
+        },
+        "max_parameters": {
+          "default": 16,
+          "maximum": 64,
+          "minimum": 0,
+          "title": "Max Parameters",
+          "type": "integer"
+        },
+        "max_window": {
+          "default": 64,
+          "maximum": 128,
+          "minimum": 1,
+          "title": "Max Window",
+          "type": "integer"
+        },
+        "max_work_units": {
+          "default": 1000000,
+          "maximum": 5000000,
+          "minimum": 1,
+          "title": "Max Work Units",
+          "type": "integer"
+        }
+      },
+      "title": "AuditLimits",
+      "type": "object"
+    },
+    "FactorSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_direction": {
+          "enum": [
+            "positive",
+            "negative",
+            "undetermined"
+          ],
+          "title": "Expected Direction",
+          "type": "string"
+        },
+        "factor_id": {
+          "minLength": 1,
+          "title": "Factor Id",
+          "type": "string"
+        },
+        "formula": {
+          "minLength": 1,
+          "title": "Formula",
+          "type": "string"
+        },
+        "hypothesis": {
+          "minLength": 1,
+          "title": "Hypothesis",
+          "type": "string"
+        },
+        "lookback_sessions": {
+          "exclusiveMinimum": 0,
+          "title": "Lookback Sessions",
+          "type": "integer"
+        },
+        "required_fields": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Required Fields",
+          "type": "array"
+        }
+      },
+      "required": [
+        "factor_id",
+        "hypothesis",
+        "formula",
+        "required_fields",
+        "lookback_sessions",
+        "expected_direction"
+      ],
+      "title": "FactorSpec",
+      "type": "object"
+    },
+    "LabelRule": {
+      "additionalProperties": false,
+      "properties": {
+        "benchmark_asset": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Benchmark Asset"
+        },
+        "entry_rule": {
+          "const": "next_session_open",
+          "default": "next_session_open",
+          "title": "Entry Rule",
+          "type": "string"
+        },
+        "exit_rule": {
+          "const": "open_after_h_sessions",
+          "default": "open_after_h_sessions",
+          "title": "Exit Rule",
+          "type": "string"
+        },
+        "horizon_sessions": {
+          "maximum": 128,
+          "minimum": 1,
+          "title": "Horizon Sessions",
+          "type": "integer"
+        },
+        "price_field": {
+          "const": "open",
+          "default": "open",
+          "title": "Price Field",
+          "type": "string"
+        },
+        "return_type": {
+          "default": "price_return",
+          "enum": [
+            "price_return",
+            "excess_price_return"
+          ],
+          "title": "Return Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "horizon_sessions"
+      ],
+      "title": "LabelRule",
+      "type": "object"
+    },
+    "MarketPanel": {
+      "additionalProperties": false,
+      "properties": {
+        "assets": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Assets",
+          "type": "array"
+        },
+        "data_id": {
+          "minLength": 1,
+          "title": "Data Id",
+          "type": "string"
+        },
+        "fields": {
+          "items": {
+            "pattern": "^[A-Za-z][A-Za-z0-9_]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Fields",
+          "type": "array"
+        },
+        "observations": {
+          "items": {
+            "$ref": "#/$defs/Observation"
+          },
+          "maxItems": 8192,
+          "title": "Observations",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "sessions": {
+          "items": {
+            "$ref": "#/$defs/Session"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "title": "Sessions",
+          "type": "array"
+        },
+        "source": {
+          "const": "synthetic_fixture",
+          "default": "synthetic_fixture",
+          "title": "Source",
+          "type": "string"
+        },
+        "timezone": {
+          "minLength": 1,
+          "title": "Timezone",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data_id",
+        "timezone",
+        "sessions",
+        "assets",
+        "fields",
+        "observations"
+      ],
+      "title": "MarketPanel",
+      "type": "object"
+    },
+    "NumericPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "absolute_tolerance": {
+          "default": 1e-12,
+          "exclusiveMinimum": 0,
+          "maximum": 1e-06,
+          "title": "Absolute Tolerance",
+          "type": "number"
+        },
+        "division_by_zero": {
+          "const": "missing",
+          "default": "missing",
+          "title": "Division By Zero",
+          "type": "string"
+        },
+        "min_periods": {
+          "const": "full_window",
+          "default": "full_window",
+          "title": "Min Periods",
+          "type": "string"
+        },
+        "missing": {
+          "const": "propagate",
+          "default": "propagate",
+          "title": "Missing",
+          "type": "string"
+        },
+        "nonfinite_result": {
+          "const": "missing",
+          "default": "missing",
+          "title": "Nonfinite Result",
+          "type": "string"
+        },
+        "rank_scale": {
+          "const": "zero_to_one",
+          "default": "zero_to_one",
+          "title": "Rank Scale",
+          "type": "string"
+        },
+        "rank_ties": {
+          "const": "average",
+          "default": "average",
+          "title": "Rank Ties",
+          "type": "string"
+        },
+        "relative_tolerance": {
+          "default": 1e-12,
+          "exclusiveMinimum": 0,
+          "maximum": 1e-06,
+          "title": "Relative Tolerance",
+          "type": "number"
+        },
+        "singleton_rank": {
+          "const": 0.5,
+          "default": 0.5,
+          "title": "Singleton Rank",
+          "type": "number"
+        },
+        "std_ddof": {
+          "const": 0,
+          "default": 0,
+          "title": "Std Ddof",
+          "type": "integer"
+        }
+      },
+      "title": "NumericPolicy",
+      "type": "object"
+    },
+    "Observation": {
+      "additionalProperties": false,
+      "properties": {
+        "asset": {
+          "minLength": 1,
+          "title": "Asset",
+          "type": "string"
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "session": {
+          "format": "date",
+          "title": "Session",
+          "type": "string"
+        },
+        "values": {
+          "maxProperties": 16,
+          "minProperties": 1,
+          "patternProperties": {
+            "^[A-Za-z][A-Za-z0-9_]{0,63}$": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "title": "Values",
+          "type": "object"
+        }
+      },
+      "required": [
+        "session",
+        "asset",
+        "available_at",
+        "values"
+      ],
+      "title": "Observation",
+      "type": "object"
+    },
+    "Session": {
+      "additionalProperties": false,
+      "properties": {
+        "close_at": {
+          "format": "date-time",
+          "title": "Close At",
+          "type": "string"
+        },
+        "open_at": {
+          "format": "date-time",
+          "title": "Open At",
+          "type": "string"
+        },
+        "session": {
+          "format": "date",
+          "title": "Session",
+          "type": "string"
+        },
+        "signal_at": {
+          "format": "date-time",
+          "title": "Signal At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "session",
+        "open_at",
+        "close_at",
+        "signal_at"
+      ],
+      "title": "Session",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "audit_limits": {
+      "$ref": "#/$defs/AuditLimits"
+    },
+    "factor": {
+      "$ref": "#/$defs/FactorSpec"
+    },
+    "label": {
+      "$ref": "#/$defs/LabelRule"
+    },
+    "numerics": {
+      "$ref": "#/$defs/NumericPolicy"
+    },
+    "panel": {
+      "$ref": "#/$defs/MarketPanel"
+    },
+    "pending_decisions": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Pending Decisions",
+      "type": "array"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "stage": {
+      "const": "S1",
+      "default": "S1",
+      "title": "Stage",
+      "type": "string"
+    },
+    "status": {
+      "const": "DRAFT",
+      "default": "DRAFT",
+      "title": "Status",
+      "type": "string"
+    },
+    "universe": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Universe",
+      "type": "array"
+    }
+  },
+  "required": [
+    "panel",
+    "universe",
+    "factor",
+    "label",
+    "as_of",
+    "pending_decisions"
+  ],
+  "title": "S1Config",
+  "type": "object"
+}

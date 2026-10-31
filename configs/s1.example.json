@@ -1,0 +1,412 @@
+{
+  "schema_version": "1.0",
+  "stage": "S1",
+  "purpose": "ENGINEERING_TEST",
+  "status": "DRAFT",
+  "panel": {
+    "schema_version": "1.0",
+    "data_id": "s1-eight-session-synthetic-v1",
+    "source": "synthetic_fixture",
+    "timezone": "America/New_York",
+    "sessions": [
+      {
+        "session": "2024-01-02",
+        "open_at": "2024-01-02T14:30:00+00:00",
+        "close_at": "2024-01-02T21:00:00+00:00",
+        "signal_at": "2024-01-02T21:05:00+00:00"
+      },
+      {
+        "session": "2024-01-03",
+        "open_at": "2024-01-03T14:30:00+00:00",
+        "close_at": "2024-01-03T21:00:00+00:00",
+        "signal_at": "2024-01-03T21:05:00+00:00"
+      },
+      {
+        "session": "2024-01-04",
+        "open_at": "2024-01-04T14:30:00+00:00",
+        "close_at": "2024-01-04T21:00:00+00:00",
+        "signal_at": "2024-01-04T21:05:00+00:00"
+      },
+      {
+        "session": "2024-01-05",
+        "open_at": "2024-01-05T14:30:00+00:00",
+        "close_at": "2024-01-05T21:00:00+00:00",
+        "signal_at": "2024-01-05T21:05:00+00:00"
+      },
+      {
+        "session": "2024-01-08",
+        "open_at": "2024-01-08T14:30:00+00:00",
+        "close_at": "2024-01-08T21:00:00+00:00",
+        "signal_at": "2024-01-08T21:05:00+00:00"
+      },
+      {
+        "session": "2024-01-09",
+        "open_at": "2024-01-09T14:30:00+00:00",
+        "close_at": "2024-01-09T21:00:00+00:00",
+        "signal_at": "2024-01-09T21:05:00+00:00"
+      },
+      {
+        "session": "2024-01-10",
+        "open_at": "2024-01-10T14:30:00+00:00",
+        "close_at": "2024-01-10T21:00:00+00:00",
+        "signal_at": "2024-01-10T21:05:00+00:00"
+      },
+      {
+        "session": "2024-01-11",
+        "open_at": "2024-01-11T14:30:00+00:00",
+        "close_at": "2024-01-11T21:00:00+00:00",
+        "signal_at": "2024-01-11T21:05:00+00:00"
+      }
+    ],
+    "assets": [
+      "A",
+      "B",
+      "BM",
+      "C"
+    ],
+    "fields": [
+      "open",
+      "close"
+    ],
+    "observations": [
+      {
+        "session": "2024-01-02",
+        "asset": "A",
+        "available_at": "2024-01-02T21:01:00+00:00",
+        "values": {
+          "open": 100,
+          "close": 100
+        }
+      },
+      {
+        "session": "2024-01-02",
+        "asset": "B",
+        "available_at": "2024-01-02T21:01:00+00:00",
+        "values": {
+          "open": 100,
+          "close": 100
+        }
+      },
+      {
+        "session": "2024-01-02",
+        "asset": "BM",
+        "available_at": "2024-01-02T21:01:00+00:00",
+        "values": {
+          "open": 100,
+          "close": 100
+        }
+      },
+      {
+        "session": "2024-01-02",
+        "asset": "C",
+        "available_at": "2024-01-02T21:01:00+00:00",
+        "values": {
+          "open": 100,
+          "close": 100
+        }
+      },
+      {
+        "session": "2024-01-03",
+        "asset": "A",
+        "available_at": "2024-01-03T21:01:00+00:00",
+        "values": {
+          "open": 102,
+          "close": 110
+        }
+      },
+      {
+        "session": "2024-01-03",
+        "asset": "B",
+        "available_at": "2024-01-03T21:01:00+00:00",
+        "values": {
+          "open": 100,
+          "close": 100
+        }
+      },
+      {
+        "session": "2024-01-03",
+        "asset": "BM",
+        "available_at": "2024-01-03T21:01:00+00:00",
+        "values": {
+          "open": 101,
+          "close": 101
+        }
+      },
+      {
+        "session": "2024-01-03",
+        "asset": "C",
+        "available_at": "2024-01-03T21:01:00+00:00",
+        "values": {
+          "open": 98,
+          "close": 90
+        }
+      },
+      {
+        "session": "2024-01-04",
+        "asset": "A",
+        "available_at": "2024-01-04T21:01:00+00:00",
+        "values": {
+          "open": 104,
+          "close": 121
+        }
+      },
+      {
+        "session": "2024-01-04",
+        "asset": "B",
+        "available_at": "2024-01-04T21:01:00+00:00",
+        "values": {
+          "open": 102,
+          "close": 110
+        }
+      },
+      {
+        "session": "2024-01-04",
+        "asset": "BM",
+        "available_at": "2024-01-04T21:01:00+00:00",
+        "values": {
+          "open": 102,
+          "close": 102
+        }
+      },
+      {
+        "session": "2024-01-04",
+        "asset": "C",
+        "available_at": "2024-01-04T21:01:00+00:00",
+        "values": {
+          "open": 96,
+          "close": 81
+        }
+      },
+      {
+        "session": "2024-01-05",
+        "asset": "A",
+        "available_at": "2024-01-05T21:01:00+00:00",
+        "values": {
+          "open": 106,
+          "close": 121
+        }
+      },
+      {
+        "session": "2024-01-05",
+        "asset": "B",
+        "available_at": "2024-01-05T21:01:00+00:00",
+        "values": {
+          "open": 104,
+          "close": 121
+        }
+      },
+      {
+        "session": "2024-01-05",
+        "asset": "BM",
+        "available_at": "2024-01-05T21:01:00+00:00",
+        "values": {
+          "open": 103,
+          "close": 103
+        }
+      },
+      {
+        "session": "2024-01-05",
+        "asset": "C",
+        "available_at": "2024-01-05T21:01:00+00:00",
+        "values": {
+          "open": 98,
+          "close": 89.1
+        }
+      },
+      {
+        "session": "2024-01-08",
+        "asset": "A",
+        "available_at": "2024-01-08T21:01:00+00:00",
+        "values": {
+          "open": 108,
+          "close": 108.9
+        }
+      },
+      {
+        "session": "2024-01-08",
+        "asset": "B",
+        "available_at": "2024-01-08T21:01:00+00:00",
+        "values": {
+          "open": 106,
+          "close": 121
+        }
+      },
+      {
+        "session": "2024-01-08",
+        "asset": "BM",
+        "available_at": "2024-01-08T21:01:00+00:00",
+        "values": {
+          "open": 104,
+          "close": 104
+        }
+      },
+      {
+        "session": "2024-01-08",
+        "asset": "C",
+        "available_at": "2024-01-08T21:01:00+00:00",
+        "values": {
+          "open": 100,
+          "close": 98.01
+        }
+      },
+      {
+        "session": "2024-01-09",
+        "asset": "A",
+        "available_at": "2024-01-09T21:01:00+00:00",
+        "values": {
+          "open": 110,
+          "close": 98.01
+        }
+      },
+      {
+        "session": "2024-01-09",
+        "asset": "B",
+        "available_at": "2024-01-09T21:01:00+00:00",
+        "values": {
+          "open": 108,
+          "close": 121
+        }
+      },
+      {
+        "session": "2024-01-09",
+        "asset": "BM",
+        "available_at": "2024-01-09T21:01:00+00:00",
+        "values": {
+          "open": 105,
+          "close": 105
+        }
+      },
+      {
+        "session": "2024-01-09",
+        "asset": "C",
+        "available_at": "2024-01-09T21:01:00+00:00",
+        "values": {
+          "open": 102,
+          "close": 98.01
+        }
+      },
+      {
+        "session": "2024-01-10",
+        "asset": "A",
+        "available_at": "2024-01-10T21:01:00+00:00",
+        "values": {
+          "open": 112,
+          "close": 107.811
+        }
+      },
+      {
+        "session": "2024-01-10",
+        "asset": "B",
+        "available_at": "2024-01-10T21:01:00+00:00",
+        "values": {
+          "open": 110,
+          "close": 108.9
+        }
+      },
+      {
+        "session": "2024-01-10",
+        "asset": "BM",
+        "available_at": "2024-01-10T21:01:00+00:00",
+        "values": {
+          "open": 106,
+          "close": 106
+        }
+      },
+      {
+        "session": "2024-01-10",
+        "asset": "C",
+        "available_at": "2024-01-10T21:01:00+00:00",
+        "values": {
+          "open": 104,
+          "close": 98.01
+        }
+      },
+      {
+        "session": "2024-01-11",
+        "asset": "A",
+        "available_at": "2024-01-11T21:01:00+00:00",
+        "values": {
+          "open": 114,
+          "close": 107.811
+        }
+      },
+      {
+        "session": "2024-01-11",
+        "asset": "B",
+        "available_at": "2024-01-11T21:01:00+00:00",
+        "values": {
+          "open": 112,
+          "close": 119.79
+        }
+      },
+      {
+        "session": "2024-01-11",
+        "asset": "BM",
+        "available_at": "2024-01-11T21:01:00+00:00",
+        "values": {
+          "open": 107,
+          "close": 107
+        }
+      },
+      {
+        "session": "2024-01-11",
+        "asset": "C",
+        "available_at": "2024-01-11T21:01:00+00:00",
+        "values": {
+          "open": 106,
+          "close": null
+        }
+      }
+    ]
+  },
+  "universe": [
+    "A",
+    "B",
+    "C"
+  ],
+  "factor": {
+    "factor_id": "s1-hand-reversal-rank",
+    "hypothesis": "合成手算接口基准，未检验经济有效性",
+    "formula": "cs_rank(neg(return(close, 2)))",
+    "required_fields": [
+      "close"
+    ],
+    "lookback_sessions": 3,
+    "expected_direction": "undetermined"
+  },
+  "audit_limits": {
+    "max_nodes": 128,
+    "max_depth": 16,
+    "max_parameters": 16,
+    "max_window": 64,
+    "max_lookback_sessions": 256,
+    "max_work_units": 1000000
+  },
+  "numerics": {
+    "missing": "propagate",
+    "min_periods": "full_window",
+    "division_by_zero": "missing",
+    "nonfinite_result": "missing",
+    "std_ddof": 0,
+    "rank_ties": "average",
+    "rank_scale": "zero_to_one",
+    "singleton_rank": 0.5,
+    "absolute_tolerance": 1e-12,
+    "relative_tolerance": 1e-12
+  },
+  "label": {
+    "horizon_sessions": 2,
+    "entry_rule": "next_session_open",
+    "exit_rule": "open_after_h_sessions",
+    "return_type": "excess_price_return",
+    "price_field": "open",
+    "benchmark_asset": "BM"
+  },
+  "as_of": "2024-01-11T21:05:00+00:00",
+  "pending_decisions": [
+    "日期、证券与价量均为合成夹具；真实市场日历、数据权限及历史股票池仍待S2落实",
+    "S1采用开盘到开盘的价格收益；公司行动及真实总收益口径须在后续阶段独立实现和核对",
+    "演示窗口、方向、风险、费用及正式研究和资源门槛均未获经济批准",
+    "最终配置S6.4复验、最终测试隔离与固定/滚动模型准入规则保留，S1不运行这些路径"
+  ]
+}

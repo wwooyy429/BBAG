@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "asset": {
+      "minLength": 1,
+      "title": "Asset",
+      "type": "string"
+    },
+    "session": {
+      "format": "date",
+      "title": "Session",
+      "type": "string"
+    },
+    "signal_at": {
+      "format": "date-time",
+      "title": "Signal At",
+      "type": "string"
+    },
+    "value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Value"
+    }
+  },
+  "required": [
+    "session",
+    "asset",
+    "signal_at",
+    "value"
+  ],
+  "title": "FactorValue",
+  "type": "object"
+}

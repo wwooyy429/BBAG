@@ -1,0 +1,89 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "asset": {
+      "minLength": 1,
+      "title": "Asset",
+      "type": "string"
+    },
+    "entry_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Entry At"
+    },
+    "exit_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Exit At"
+    },
+    "mature_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Mature At"
+    },
+    "session": {
+      "format": "date",
+      "title": "Session",
+      "type": "string"
+    },
+    "signal_at": {
+      "format": "date-time",
+      "title": "Signal At",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "MATURED",
+        "NOT_MATURED",
+        "INSUFFICIENT_FUTURE",
+        "MISSING_INPUT"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Value"
+    }
+  },
+  "required": [
+    "session",
+    "asset",
+    "signal_at",
+    "entry_at",
+    "exit_at",
+    "mature_at",
+    "value",
+    "status"
+  ],
+  "title": "LabelValue",
+  "type": "object"
+}

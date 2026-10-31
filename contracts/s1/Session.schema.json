@@ -1,0 +1,33 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "close_at": {
+      "format": "date-time",
+      "title": "Close At",
+      "type": "string"
+    },
+    "open_at": {
+      "format": "date-time",
+      "title": "Open At",
+      "type": "string"
+    },
+    "session": {
+      "format": "date",
+      "title": "Session",
+      "type": "string"
+    },
+    "signal_at": {
+      "format": "date-time",
+      "title": "Signal At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "session",
+    "open_at",
+    "close_at",
+    "signal_at"
+  ],
+  "title": "Session",
+  "type": "object"
+}
