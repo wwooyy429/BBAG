@@ -26,8 +26,8 @@ from bbag.s2_data import canonical_request_sha256
 from bbag.s2_quantconnect import S2_QC_CONTRACTS
 from bbag.s2_tasks import RawMetadataRef, S2_TASK_CONTRACTS, TaskAttempt, TaskResponse, TaskSpec, canonical_task_bytes
 
-S1_REVIEWED_SHA = "c56db883cd7841c94517ee9817d7ad551e811dc2"
-S1_MERGE_SHA = "41789706f710e131d4a654e349798ddb15ea70f5"
+S1_REVIEWED_SHA = "259962860d2301ead894c5d649a29eab1f8db1ac"
+S1_MERGE_SHA = "7aac4886b50493c09235c49b5de90643b7090e07"
 
 
 def git(root: Path, *arguments: str) -> str:
@@ -266,7 +266,7 @@ def development_report(root: Path, evidence: Path, commit: str, verification: di
 
 准确实现 SHA：`{commit}`。源码提交后生成；独立审核保持 PENDING，S3 未获授权，不合并本次 S2。
 
-前置 S1 被审实现：`{S1_REVIEWED_SHA}`；S1 合并结果：`{S1_MERGE_SHA}`。二者是历史版本身份，不能覆盖本次 S2。
+前置 S1 被审实现：`{S1_REVIEWED_SHA}`；负责人授权的 S1 合并结果：`{S1_MERGE_SHA}`。本轮将这项已审基础修复集成回 S2；其批准不能覆盖本次 S2，新版本仍须独立复审。
 
 本包包含原始美股日频标准契约、显式交易日历、SID/更名/退市及 known_at 成员事件、原始公司行动元数据与单事件持仓权益、滞后流动性、缺失/陈旧/异常覆盖检查、synthetic-only S1 投影、运行时访问/派生隔离、云端控制回执桥接与持久任务/预算/未知状态控制。真实云端原始及可重建数据必须留在云内；本地 gateway 仅接受严格控制元数据。配置文件不授予运行时访问权，外部回执导入不认证来源。
 
@@ -300,6 +300,9 @@ def main() -> int:
     commit = git(root, "rev-parse", "--verify", f"{args.commit}^{{commit}}")
     if git(root, "rev-parse", "HEAD") != commit or git(root, "status", "--porcelain"):
         raise ValueError("Check out the exact S2 implementation with an unchanged clean working tree")
+    committed_lock = subprocess.check_output(["git", "show", f"{commit}:requirements.lock"], cwd=root, stderr=subprocess.PIPE)
+    if digest(root / "requirements.lock") != hashlib.sha256(committed_lock).hexdigest():
+        raise ValueError("S2 working dependency lock does not match the exact committed source")
     evidence, base = args.evidence_dir.resolve(), args.output_dir.resolve()
     output, archive_path = base / commit, base / f"BBAG_S2_GPT_Work_{commit[:12]}.zip"
     validate_package_paths(evidence, output, archive_path)
