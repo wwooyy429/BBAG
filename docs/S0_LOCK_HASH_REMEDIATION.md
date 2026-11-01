@@ -1,5 +1,7 @@
 # S0-004 依赖锁哈希修复与联合复审
 
+最新基础提交 `259962860d2301ead894c5d649a29eab1f8db1ac` 已完成新的独立清单复审，S0/S1 均 APPROVED / 工程 PASS，四项关闭保持；负责人授权合并为 `7aac4886b50493c09235c49b5de90643b7090e07` 并恢复 S2。以下 0889 及更早轮次说明保留历史适用范围，当前状态见 [最新验收](S1_ACCEPTANCE.md) 与 [S2恢复](S2_RESUMPTION.md)。
+
 本页保留 S0-004 的修复历史。后续 `reaudit_joint_0889d277bfdd_20261031_1522` 已在准确 SHA `0889d277bfdda4894d7e359157d092a4f07639f5` 独立关闭 S0-004 与 S0-N01，S0 APPROVED / 工程 PASS；本页下文的待审描述是当时交审状态。当前唯一新增阻断为 S1-002，见 [S1 提交锁修复说明](S1_COMMITTED_LOCK_REMEDIATION.md)。
 
 本轮基线为 main 合并提交 `41789706f710e131d4a654e349798ddb15ea70f5`，其源码树与已审 S1 `c56db883cd7841c94517ee9817d7ad551e811dc2` 相同。修复位于独立开发分支 `codex/s0-lock-hash-remediation`；准确新 SHA、实际命令和结果在提交后生成的交审材料中登记。

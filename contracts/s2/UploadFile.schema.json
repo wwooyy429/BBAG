@@ -1,0 +1,86 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "compile_charge": {
+      "const": 1,
+      "default": 1,
+      "title": "Compile Charge",
+      "type": "integer"
+    },
+    "dependencies": {
+      "items": {
+        "maxLength": 200,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 64,
+      "title": "Dependencies",
+      "type": "array"
+    },
+    "git_blob": {
+      "pattern": "^[0-9a-f]{40}$",
+      "title": "Git Blob",
+      "type": "string"
+    },
+    "git_mode": {
+      "enum": [
+        "100644",
+        "100755"
+      ],
+      "title": "Git Mode",
+      "type": "string"
+    },
+    "order": {
+      "maximum": 64,
+      "minimum": 1,
+      "title": "Order",
+      "type": "integer"
+    },
+    "remote_path": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Remote Path",
+      "type": "string"
+    },
+    "size_bytes": {
+      "maximum": 256000000,
+      "minimum": 0,
+      "title": "Size Bytes",
+      "type": "integer"
+    },
+    "source_commit": {
+      "pattern": "^[0-9a-f]{40}$",
+      "title": "Source Commit",
+      "type": "string"
+    },
+    "source_path": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Source Path",
+      "type": "string"
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Source Sha256",
+      "type": "string"
+    },
+    "write_mode": {
+      "const": "CREATE_OR_EDIT_AFTER_REMOTE_PREFLIGHT",
+      "default": "CREATE_OR_EDIT_AFTER_REMOTE_PREFLIGHT",
+      "title": "Write Mode",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_path",
+    "remote_path",
+    "source_commit",
+    "git_blob",
+    "git_mode",
+    "source_sha256",
+    "size_bytes",
+    "order"
+  ],
+  "title": "UploadFile",
+  "type": "object"
+}

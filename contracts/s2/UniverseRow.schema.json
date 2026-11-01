@@ -1,0 +1,31 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "assets": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Assets",
+      "type": "array"
+    },
+    "session": {
+      "format": "date",
+      "title": "Session",
+      "type": "string"
+    },
+    "signal_at": {
+      "format": "date-time",
+      "title": "Signal At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "session",
+    "signal_at",
+    "assets"
+  ],
+  "title": "UniverseRow",
+  "type": "object"
+}

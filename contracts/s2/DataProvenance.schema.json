@@ -1,0 +1,86 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "classification": {
+      "default": "UNKNOWN",
+      "enum": [
+        "DEVELOPMENT",
+        "SEALED_FINAL",
+        "SEALED_DERIVATIVE",
+        "UNKNOWN"
+      ],
+      "title": "Classification",
+      "type": "string"
+    },
+    "derived_from": {
+      "items": {
+        "enum": [
+          "DEVELOPMENT",
+          "SEALED_FINAL",
+          "SEALED_DERIVATIVE",
+          "UNKNOWN"
+        ],
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Derived From",
+      "type": "array"
+    },
+    "normalization": {
+      "const": "raw",
+      "default": "raw",
+      "title": "Normalization",
+      "type": "string"
+    },
+    "price_semantics": {
+      "const": "unadjusted_trade_price",
+      "default": "unadjusted_trade_price",
+      "title": "Price Semantics",
+      "type": "string"
+    },
+    "provider": {
+      "enum": [
+        "SYNTHETIC",
+        "QUANTCONNECT_CLOUD"
+      ],
+      "title": "Provider",
+      "type": "string"
+    },
+    "provider_data_version": {
+      "minLength": 1,
+      "title": "Provider Data Version",
+      "type": "string"
+    },
+    "request_sha256": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Request Sha256",
+      "type": "string"
+    },
+    "retrieved_at": {
+      "format": "date-time",
+      "title": "Retrieved At",
+      "type": "string"
+    },
+    "source_sha256": {
+      "description": "SHA-256 of original provider input bytes; licensed data hashes remain inside cloud and never enter control metadata",
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Source Sha256",
+      "type": "string"
+    },
+    "volume_semantics": {
+      "const": "unadjusted_shares",
+      "default": "unadjusted_shares",
+      "title": "Volume Semantics",
+      "type": "string"
+    }
+  },
+  "required": [
+    "provider",
+    "provider_data_version",
+    "source_sha256",
+    "request_sha256",
+    "retrieved_at"
+  ],
+  "title": "DataProvenance",
+  "type": "object"
+}

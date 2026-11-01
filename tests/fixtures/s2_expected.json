@@ -1,0 +1,38 @@
+{
+  "purpose": "ENGINEERING_TEST",
+  "status": "DRAFT",
+  "method": "Literal hand calculation; not generated from production outputs",
+  "universe_assets": [
+    [],
+    [],
+    [
+      "SYN_B",
+      "SYN_A"
+    ],
+    [
+      "SYN_B",
+      "SYN_A"
+    ]
+  ],
+  "expected_bars": 8,
+  "available_bars": 8,
+  "complete_bars": 8,
+  "coverage": 1.0,
+  "split_entitlement_for_10_shares": {
+    "shares_after": 20.0,
+    "cash_distribution": 0.0
+  },
+  "dividend_entitlement_for_10_shares": {
+    "shares_after": 10.0,
+    "cash_distribution": 10.0
+  },
+  "raw_close_jumps": [
+    [
+      "2024-01-04",
+      "SYN_A"
+    ]
+  ],
+  "local_task_attempt_count": 1,
+  "local_task_class": "SYNTHETIC_TEST",
+  "provider_task_ids": []
+}

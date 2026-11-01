@@ -1,4 +1,4 @@
-# Locked S0/S1 dependency set; install before editable package installation.
+# Locked S0/S1/S2 local dependency set; cloud runtime versions are recorded separately.
 annotated-types==0.8.0
 colorama==0.4.6
 iniconfig==2.3.1

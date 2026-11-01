@@ -26,4 +26,4 @@ Describe the concrete problem and the behavior implemented in this stage.
 
 Keep this PR in draft while review is pending or changes are required. Developer self-tests, CI and local receipt consistency checks do not replace independent approval. Do not merge main or begin the next stage before the applicable review and user authorization requirements are met.
 
-S1 permits offline deterministic factors and separate synthetic price labels. It adds no GPT or QuantConnect calls, alpha evaluation, backtests or deployment. S0 approval does not approve S1. A server-enforced branch-protection claim requires separately verified repository settings.
+S2 permits bounded platform engineering, durable control records and point-in-time data contracts. QuantConnect dataset values remain in Cloud; local handoff data is synthetic. This scope adds no GPT calls, alpha evaluation, strategy backtests, optimization or deployment. Prior-stage approval does not approve this implementation. Server-enforced branch-protection claims require separately verified repository settings.

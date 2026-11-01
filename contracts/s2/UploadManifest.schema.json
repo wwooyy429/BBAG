@@ -1,0 +1,292 @@
+{
+  "$defs": {
+    "UploadFile": {
+      "additionalProperties": false,
+      "properties": {
+        "compile_charge": {
+          "const": 1,
+          "default": 1,
+          "title": "Compile Charge",
+          "type": "integer"
+        },
+        "dependencies": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "git_blob": {
+          "pattern": "^[0-9a-f]{40}$",
+          "title": "Git Blob",
+          "type": "string"
+        },
+        "git_mode": {
+          "enum": [
+            "100644",
+            "100755"
+          ],
+          "title": "Git Mode",
+          "type": "string"
+        },
+        "order": {
+          "maximum": 64,
+          "minimum": 1,
+          "title": "Order",
+          "type": "integer"
+        },
+        "remote_path": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Remote Path",
+          "type": "string"
+        },
+        "size_bytes": {
+          "maximum": 256000000,
+          "minimum": 0,
+          "title": "Size Bytes",
+          "type": "integer"
+        },
+        "source_commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "title": "Source Commit",
+          "type": "string"
+        },
+        "source_path": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Source Path",
+          "type": "string"
+        },
+        "source_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Source Sha256",
+          "type": "string"
+        },
+        "write_mode": {
+          "const": "CREATE_OR_EDIT_AFTER_REMOTE_PREFLIGHT",
+          "default": "CREATE_OR_EDIT_AFTER_REMOTE_PREFLIGHT",
+          "title": "Write Mode",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_path",
+        "remote_path",
+        "source_commit",
+        "git_blob",
+        "git_mode",
+        "source_sha256",
+        "size_bytes",
+        "order"
+      ],
+      "title": "UploadFile",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "authorization_granted": {
+      "const": false,
+      "default": false,
+      "title": "Authorization Granted",
+      "type": "boolean"
+    },
+    "authorized_compile_increment": {
+      "const": 0,
+      "default": 0,
+      "title": "Authorized Compile Increment",
+      "type": "integer"
+    },
+    "available_compile_calls": {
+      "const": 0,
+      "default": 0,
+      "title": "Available Compile Calls",
+      "type": "integer"
+    },
+    "budget_change_applied": {
+      "const": false,
+      "default": false,
+      "title": "Budget Change Applied",
+      "type": "boolean"
+    },
+    "current_compile_remaining": {
+      "const": 0,
+      "default": 0,
+      "title": "Current Compile Remaining",
+      "type": "integer"
+    },
+    "economic_evidence": {
+      "const": "NOT_APPLICABLE",
+      "default": "NOT_APPLICABLE",
+      "title": "Economic Evidence",
+      "type": "string"
+    },
+    "entrypoints": {
+      "items": {
+        "maxLength": 200,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 16,
+      "minItems": 1,
+      "title": "Entrypoints",
+      "type": "array"
+    },
+    "executable": {
+      "const": false,
+      "default": false,
+      "title": "Executable",
+      "type": "boolean"
+    },
+    "external_import_roots": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 128,
+      "title": "External Import Roots",
+      "type": "array"
+    },
+    "extra_compile_calls": {
+      "default": 0,
+      "maximum": 1000000,
+      "minimum": 0,
+      "title": "Extra Compile Calls",
+      "type": "integer"
+    },
+    "files": {
+      "items": {
+        "$ref": "#/$defs/UploadFile"
+      },
+      "maxItems": 64,
+      "minItems": 1,
+      "title": "Files",
+      "type": "array"
+    },
+    "historical_compile_cap": {
+      "const": 2,
+      "default": 2,
+      "title": "Historical Compile Cap",
+      "type": "integer"
+    },
+    "historical_compile_used": {
+      "const": 2,
+      "default": 2,
+      "title": "Historical Compile Used",
+      "type": "integer"
+    },
+    "independent_review": {
+      "const": "PENDING",
+      "default": "PENDING",
+      "title": "Independent Review",
+      "type": "string"
+    },
+    "limit_kind": {
+      "const": "CALLER_ENGINEERING_LIMIT_NOT_PROVIDER_ENTITLEMENT",
+      "default": "CALLER_ENGINEERING_LIMIT_NOT_PROVIDER_ENTITLEMENT",
+      "title": "Limit Kind",
+      "type": "string"
+    },
+    "max_file_bytes": {
+      "exclusiveMinimum": 0,
+      "maximum": 256000000,
+      "title": "Max File Bytes",
+      "type": "integer"
+    },
+    "max_total_bytes": {
+      "exclusiveMinimum": 0,
+      "maximum": 256000000,
+      "title": "Max Total Bytes",
+      "type": "integer"
+    },
+    "platform_execution": {
+      "const": "NOT_RUN",
+      "default": "NOT_RUN",
+      "title": "Platform Execution",
+      "type": "string"
+    },
+    "profile": {
+      "const": "FULL_FRESH",
+      "default": "FULL_FRESH",
+      "title": "Profile",
+      "type": "string"
+    },
+    "proposed_compile_total_cap": {
+      "maximum": 1000000,
+      "minimum": 0,
+      "title": "Proposed Compile Total Cap",
+      "type": "integer"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "remote_state": {
+      "const": "UNKNOWN_NOT_QUERIED",
+      "default": "UNKNOWN_NOT_QUERIED",
+      "title": "Remote State",
+      "type": "string"
+    },
+    "required_compile_increment": {
+      "maximum": 1000000,
+      "minimum": 0,
+      "title": "Required Compile Increment",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_commit": {
+      "pattern": "^[0-9a-f]{40}$",
+      "title": "Source Commit",
+      "type": "string"
+    },
+    "stage": {
+      "const": "S2",
+      "default": "S2",
+      "title": "Stage",
+      "type": "string"
+    },
+    "status": {
+      "const": "DRAFT",
+      "default": "DRAFT",
+      "title": "Status",
+      "type": "string"
+    },
+    "total_source_bytes": {
+      "maximum": 256000000,
+      "minimum": 0,
+      "title": "Total Source Bytes",
+      "type": "integer"
+    },
+    "write_call_count": {
+      "maximum": 1000000,
+      "minimum": 0,
+      "title": "Write Call Count",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "source_commit",
+    "max_file_bytes",
+    "max_total_bytes",
+    "total_source_bytes",
+    "entrypoints",
+    "files",
+    "external_import_roots",
+    "write_call_count",
+    "required_compile_increment",
+    "proposed_compile_total_cap"
+  ],
+  "title": "UploadManifest",
+  "type": "object"
+}

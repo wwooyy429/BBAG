@@ -1,5 +1,7 @@
 # S0 契约与配置说明
 
+本文主体描述已验收S0接口。S1的16份Schema位于s1/；S2独立契约位于s2/，对应 [S2规范](../docs/STAGE2.md)，不改写原S0/S1 Schema。S2将配置声明、受控应用的实际授权、平台执行证据与独立审核分开记录。真实QuantConnect数据留云内；本地规范样例与标准答案为合成ENGINEERING_TEST/DRAFT，来源及安全控制元数据不等于平台或研究批准。
+
 `src/bbag/contracts.py` 使用 Pydantic 2 定义项目接口。全部契约拒绝额外键、赋值时校验、禁止非有限数值，并对整数、布尔及浮点输入启用严格类型校验。浮点字段允许整数数值，拒绝字符串和布尔冒充数值；零预算必须是整数 `0`，不接受 `false`、`0.0` 或 `"0"`。
 
 `CONTRACT_MODELS` 导出七个命名主契约、ResearchProtocol、ReviewReceipt 及必要子契约，可供 CLI 导出 JSON Schema。Schema、配置校验和 `VALIDATED` 仅证明结构及已实现的一致性检查，不证明运行、权限隔离、经济有效或独立审核通过。

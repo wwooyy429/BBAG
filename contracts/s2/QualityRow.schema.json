@@ -1,0 +1,67 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "available": {
+      "title": "Available",
+      "type": "boolean"
+    },
+    "known_action_on_session": {
+      "title": "Known Action On Session",
+      "type": "boolean"
+    },
+    "missing_fields": {
+      "items": {
+        "enum": [
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume"
+        ],
+        "type": "string"
+      },
+      "maxItems": 5,
+      "title": "Missing Fields",
+      "type": "array"
+    },
+    "present": {
+      "title": "Present",
+      "type": "boolean"
+    },
+    "raw_close_jump": {
+      "title": "Raw Close Jump",
+      "type": "boolean"
+    },
+    "session": {
+      "format": "date",
+      "title": "Session",
+      "type": "string"
+    },
+    "sid": {
+      "minLength": 1,
+      "title": "Sid",
+      "type": "string"
+    },
+    "stale": {
+      "title": "Stale",
+      "type": "boolean"
+    },
+    "zero_volume": {
+      "title": "Zero Volume",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "session",
+    "sid",
+    "present",
+    "available",
+    "missing_fields",
+    "stale",
+    "zero_volume",
+    "raw_close_jump",
+    "known_action_on_session"
+  ],
+  "title": "QualityRow",
+  "type": "object"
+}

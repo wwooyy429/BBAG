@@ -1,0 +1,66 @@
+{
+  "additionalProperties": false,
+  "description": "A declared connector inventory, not an authenticated platform result.",
+  "properties": {
+    "checks": {
+      "items": {
+        "enum": [
+          "data_presence",
+          "requested_bounds",
+          "field_availability",
+          "normalization_raw",
+          "point_in_time",
+          "identity_consistency",
+          "no_data_export"
+        ],
+        "type": "string"
+      },
+      "maxItems": 7,
+      "minItems": 1,
+      "title": "Checks",
+      "type": "array"
+    },
+    "evidence_class": {
+      "const": "UNAUTHENTICATED_DECLARATION",
+      "default": "UNAUTHENTICATED_DECLARATION",
+      "title": "Evidence Class",
+      "type": "string"
+    },
+    "operations": {
+      "items": {
+        "const": "research_check",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Operations",
+      "type": "array"
+    },
+    "project_ids": {
+      "items": {
+        "minimum": 1,
+        "type": "integer"
+      },
+      "maxItems": 50,
+      "minItems": 1,
+      "title": "Project Ids",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "transport": {
+      "const": "assistant_tool_callback",
+      "default": "assistant_tool_callback",
+      "title": "Transport",
+      "type": "string"
+    }
+  },
+  "required": [
+    "project_ids"
+  ],
+  "title": "QuantConnectCapabilities",
+  "type": "object"
+}

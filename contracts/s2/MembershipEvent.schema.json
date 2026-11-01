@@ -1,0 +1,32 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "effective_on": {
+      "format": "date",
+      "title": "Effective On",
+      "type": "string"
+    },
+    "known_at": {
+      "format": "date-time",
+      "title": "Known At",
+      "type": "string"
+    },
+    "member": {
+      "title": "Member",
+      "type": "boolean"
+    },
+    "sid": {
+      "minLength": 1,
+      "title": "Sid",
+      "type": "string"
+    }
+  },
+  "required": [
+    "sid",
+    "effective_on",
+    "member",
+    "known_at"
+  ],
+  "title": "MembershipEvent",
+  "type": "object"
+}

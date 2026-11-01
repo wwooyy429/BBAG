@@ -1,0 +1,21 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "cash_distribution": {
+      "minimum": 0,
+      "title": "Cash Distribution",
+      "type": "number"
+    },
+    "shares_after": {
+      "minimum": 0,
+      "title": "Shares After",
+      "type": "number"
+    }
+  },
+  "required": [
+    "shares_after",
+    "cash_distribution"
+  ],
+  "title": "ActionEntitlement",
+  "type": "object"
+}

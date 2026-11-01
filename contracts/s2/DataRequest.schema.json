@@ -1,0 +1,114 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "assets": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Assets",
+      "type": "array"
+    },
+    "classification": {
+      "default": "UNKNOWN",
+      "enum": [
+        "DEVELOPMENT",
+        "SEALED_FINAL",
+        "SEALED_DERIVATIVE",
+        "UNKNOWN"
+      ],
+      "title": "Classification",
+      "type": "string"
+    },
+    "derived_from": {
+      "items": {
+        "enum": [
+          "DEVELOPMENT",
+          "SEALED_FINAL",
+          "SEALED_DERIVATIVE",
+          "UNKNOWN"
+        ],
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Derived From",
+      "type": "array"
+    },
+    "end": {
+      "format": "date",
+      "title": "End",
+      "type": "string"
+    },
+    "fields": {
+      "items": {
+        "enum": [
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume"
+        ],
+        "type": "string"
+      },
+      "maxItems": 5,
+      "minItems": 1,
+      "title": "Fields",
+      "type": "array"
+    },
+    "output_mode": {
+      "default": "LOCAL_DATA",
+      "enum": [
+        "LOCAL_DATA",
+        "CONTROL_ONLY",
+        "IN_CLOUD_DATA"
+      ],
+      "title": "Output Mode",
+      "type": "string"
+    },
+    "provider": {
+      "enum": [
+        "SYNTHETIC",
+        "QUANTCONNECT_CLOUD"
+      ],
+      "title": "Provider",
+      "type": "string"
+    },
+    "purpose": {
+      "default": "ENGINEERING_TEST",
+      "enum": [
+        "ENGINEERING_TEST",
+        "DEVELOPMENT"
+      ],
+      "title": "Purpose",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "start": {
+      "format": "date",
+      "title": "Start",
+      "type": "string"
+    }
+  },
+  "required": [
+    "provider",
+    "start",
+    "end",
+    "assets",
+    "fields",
+    "as_of"
+  ],
+  "title": "DataRequest",
+  "type": "object"
+}

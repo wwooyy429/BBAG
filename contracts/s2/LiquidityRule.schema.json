@@ -1,0 +1,45 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "lag_sessions": {
+      "const": 1,
+      "default": 1,
+      "title": "Lag Sessions",
+      "type": "integer"
+    },
+    "lookback_sessions": {
+      "default": 2,
+      "maximum": 128,
+      "minimum": 1,
+      "title": "Lookback Sessions",
+      "type": "integer"
+    },
+    "max_assets": {
+      "default": 32,
+      "maximum": 32,
+      "minimum": 1,
+      "title": "Max Assets",
+      "type": "integer"
+    },
+    "minimum_mean_raw_dollar_volume": {
+      "default": 0.0,
+      "minimum": 0,
+      "title": "Minimum Mean Raw Dollar Volume",
+      "type": "number"
+    },
+    "missing": {
+      "const": "exclude_full_window",
+      "default": "exclude_full_window",
+      "title": "Missing",
+      "type": "string"
+    },
+    "tie_break": {
+      "const": "sid_ascending",
+      "default": "sid_ascending",
+      "title": "Tie Break",
+      "type": "string"
+    }
+  },
+  "title": "LiquidityRule",
+  "type": "object"
+}

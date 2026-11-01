@@ -1,0 +1,616 @@
+{
+  "$defs": {
+    "RawMetadataRef": {
+      "additionalProperties": false,
+      "properties": {
+        "capture_kind": {
+          "enum": [
+            "LOCAL_NORMALIZED_METADATA",
+            "CALLER_METADATA_BYTES"
+          ],
+          "title": "Capture Kind",
+          "type": "string"
+        },
+        "evidence_authentication": {
+          "const": "NOT_AUTHENTICATED",
+          "default": "NOT_AUTHENTICATED",
+          "title": "Evidence Authentication",
+          "type": "string"
+        },
+        "market_data_export": {
+          "const": "NOT_SUPPORTED",
+          "default": "NOT_SUPPORTED",
+          "title": "Market Data Export",
+          "type": "string"
+        },
+        "payload_kind": {
+          "enum": [
+            "TaskResponse",
+            "TaskReconciliation",
+            "SynchronousResultMetadata"
+          ],
+          "title": "Payload Kind",
+          "type": "string"
+        },
+        "relative_path": {
+          "pattern": "^metadata_[0-9a-f]{32}_[0-9a-f]{64}\\.json$",
+          "title": "Relative Path",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "size_bytes": {
+          "maximum": 65536,
+          "minimum": 1,
+          "title": "Size Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "relative_path",
+        "sha256",
+        "size_bytes",
+        "capture_kind",
+        "payload_kind"
+      ],
+      "title": "RawMetadataRef",
+      "type": "object"
+    },
+    "SynchronousCompletionRecord": {
+      "additionalProperties": false,
+      "description": "Trusted application's assertion about a fresh synchronous tool return.\n\nThis is deliberately an explicit API separate from importing a provider\nstatus claim. It authenticates neither the caller nor the platform. The\napplication must actually observe the reserved invocation returning before\nconstructing this record; arbitrary JSON is not proof of that observation.\nIts digest covers only allowlisted TaskResponse metadata, never market data.",
+      "properties": {
+        "completion_observed": {
+          "const": true,
+          "default": true,
+          "title": "Completion Observed",
+          "type": "boolean"
+        },
+        "config_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Config Sha256",
+          "type": "string"
+        },
+        "evidence_authentication": {
+          "const": "NOT_AUTHENTICATED",
+          "default": "NOT_AUTHENTICATED",
+          "title": "Evidence Authentication",
+          "type": "string"
+        },
+        "local_attempt_id": {
+          "pattern": "^local_[0-9a-f]{32}$",
+          "title": "Local Attempt Id",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "operation": {
+          "enum": [
+            "compile",
+            "research_check"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "project_id": {
+          "exclusiveMinimum": 0,
+          "title": "Project Id",
+          "type": "integer"
+        },
+        "provider_task_id_availability": {
+          "const": "NOT_RETURNED",
+          "default": "NOT_RETURNED",
+          "title": "Provider Task Id Availability",
+          "type": "string"
+        },
+        "request_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Request Sha256",
+          "type": "string"
+        },
+        "response_class": {
+          "default": "CONTROL_ONLY",
+          "enum": [
+            "CONTROL_ONLY",
+            "SYNTHETIC_TEST"
+          ],
+          "title": "Response Class",
+          "type": "string"
+        },
+        "response_kind": {
+          "const": "SYNCHRONOUS_TOOL_RETURN",
+          "default": "SYNCHRONOUS_TOOL_RETURN",
+          "title": "Response Kind",
+          "type": "string"
+        },
+        "response_metadata_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Response Metadata Sha256",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_commit": {
+          "pattern": "^[0-9a-fA-F]{40}$",
+          "title": "Source Commit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "local_attempt_id",
+        "observed_at",
+        "operation",
+        "source_commit",
+        "config_sha256",
+        "request_sha256",
+        "project_id",
+        "response_metadata_sha256"
+      ],
+      "title": "SynchronousCompletionRecord",
+      "type": "object"
+    },
+    "TaskAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "actual_cost_microusd": {
+          "anyOf": [
+            {
+              "maximum": 1000000000000000,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Actual Cost Microusd"
+        },
+        "attempt_number": {
+          "exclusiveMinimum": 0,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "cell_index": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cell Index"
+        },
+        "check_passed": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Check Passed"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "error_category": {
+          "default": "NONE",
+          "enum": [
+            "NONE",
+            "INVALID_REQUEST",
+            "ACCESS_DENIED",
+            "CAPABILITY_UNAVAILABLE",
+            "PROVIDER_ERROR",
+            "TIMEOUT",
+            "MALFORMED_RESPONSE"
+          ],
+          "title": "Error Category",
+          "type": "string"
+        },
+        "invocation_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Invocation Id"
+        },
+        "local_attempt_id": {
+          "pattern": "^local_[0-9a-f]{32}$",
+          "title": "Local Attempt Id",
+          "type": "string"
+        },
+        "platform_task_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Platform Task Id"
+        },
+        "raw_metadata": {
+          "items": {
+            "$ref": "#/$defs/RawMetadataRef"
+          },
+          "title": "Raw Metadata",
+          "type": "array"
+        },
+        "reconciliation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TaskReconciliation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "reported_status": {
+          "anyOf": [
+            {
+              "enum": [
+                "accepted",
+                "compiling",
+                "compiled",
+                "running",
+                "run_finished",
+                "result_available",
+                "completed",
+                "error",
+                "incomplete",
+                "UNKNOWN"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reported Status"
+        },
+        "reserved_cost_microusd": {
+          "maximum": 1000000000000000,
+          "minimum": 0,
+          "title": "Reserved Cost Microusd",
+          "type": "integer"
+        },
+        "status": {
+          "enum": [
+            "accepted",
+            "compiling",
+            "compiled",
+            "running",
+            "run_finished",
+            "result_available",
+            "completed",
+            "error",
+            "incomplete",
+            "UNKNOWN"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "success": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Success"
+        },
+        "sync_confirmation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SynchronousCompletionRecord"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "task_id": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Task Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "local_attempt_id",
+        "task_id",
+        "attempt_number",
+        "created_at",
+        "status",
+        "reserved_cost_microusd"
+      ],
+      "title": "TaskAttempt",
+      "type": "object"
+    },
+    "TaskReconciliation": {
+      "additionalProperties": false,
+      "description": "Explicit, unauthenticated assertion that the prior submission did not occur.\n\nThe caller must actually perform this lookup/manual reconciliation. Supplying\nthe model itself is not authentication or authorization for another attempt.",
+      "properties": {
+        "checked_at": {
+          "format": "date-time",
+          "title": "Checked At",
+          "type": "string"
+        },
+        "config_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Config Sha256",
+          "type": "string"
+        },
+        "evidence_authentication": {
+          "const": "NOT_AUTHENTICATED",
+          "default": "NOT_AUTHENTICATED",
+          "title": "Evidence Authentication",
+          "type": "string"
+        },
+        "kind": {
+          "const": "NOT_SUBMITTED",
+          "default": "NOT_SUBMITTED",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lookup_method": {
+          "enum": [
+            "PROVIDER_IDEMPOTENCY_LOOKUP",
+            "PROVIDER_REQUEST_LOOKUP",
+            "OWNER_MANUAL_RECONCILIATION"
+          ],
+          "title": "Lookup Method",
+          "type": "string"
+        },
+        "operation": {
+          "enum": [
+            "compile",
+            "research_check",
+            "data_query",
+            "project_read",
+            "file_read",
+            "research_read"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "project_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Project Id"
+        },
+        "request_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Request Sha256",
+          "type": "string"
+        },
+        "response_class": {
+          "default": "CONTROL_ONLY",
+          "enum": [
+            "CONTROL_ONLY",
+            "SYNTHETIC_TEST"
+          ],
+          "title": "Response Class",
+          "type": "string"
+        },
+        "source_commit": {
+          "pattern": "^[0-9a-fA-F]{40}$",
+          "title": "Source Commit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "lookup_method",
+        "checked_at",
+        "operation",
+        "source_commit",
+        "config_sha256",
+        "request_sha256"
+      ],
+      "title": "TaskReconciliation",
+      "type": "object"
+    },
+    "TaskSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "config_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Config Sha256",
+          "type": "string"
+        },
+        "correlation_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+          "title": "Correlation Id",
+          "type": "string"
+        },
+        "operation": {
+          "enum": [
+            "compile",
+            "research_check",
+            "data_query",
+            "project_read",
+            "file_read",
+            "research_read"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "project_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Project Id"
+        },
+        "purpose": {
+          "const": "ENGINEERING_TEST",
+          "default": "ENGINEERING_TEST",
+          "title": "Purpose",
+          "type": "string"
+        },
+        "request_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Request Sha256",
+          "type": "string"
+        },
+        "response_class": {
+          "default": "CONTROL_ONLY",
+          "enum": [
+            "CONTROL_ONLY",
+            "SYNTHETIC_TEST"
+          ],
+          "title": "Response Class",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_commit": {
+          "pattern": "^[0-9a-fA-F]{40}$",
+          "title": "Source Commit",
+          "type": "string"
+        },
+        "stage": {
+          "const": "S2",
+          "default": "S2",
+          "title": "Stage",
+          "type": "string"
+        }
+      },
+      "required": [
+        "correlation_id",
+        "operation",
+        "source_commit",
+        "config_sha256",
+        "request_sha256"
+      ],
+      "title": "TaskSpec",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "attempts": {
+      "items": {
+        "$ref": "#/$defs/TaskAttempt"
+      },
+      "title": "Attempts",
+      "type": "array"
+    },
+    "configuration_id": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Configuration Id",
+      "type": "string"
+    },
+    "correlation_ids": {
+      "items": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+        "type": "string"
+      },
+      "title": "Correlation Ids",
+      "type": "array"
+    },
+    "economic_evaluation": {
+      "const": "NOT_EVALUATED",
+      "default": "NOT_EVALUATED",
+      "title": "Economic Evaluation",
+      "type": "string"
+    },
+    "evidence_authentication": {
+      "const": "NOT_AUTHENTICATED",
+      "default": "NOT_AUTHENTICATED",
+      "title": "Evidence Authentication",
+      "type": "string"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "spec": {
+      "$ref": "#/$defs/TaskSpec"
+    },
+    "status": {
+      "enum": [
+        "accepted",
+        "compiling",
+        "compiled",
+        "running",
+        "run_finished",
+        "result_available",
+        "completed",
+        "error",
+        "incomplete",
+        "UNKNOWN"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "task_id": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Task Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "task_id",
+    "configuration_id",
+    "spec",
+    "correlation_ids",
+    "status",
+    "attempts"
+  ],
+  "title": "TaskRecord",
+  "type": "object"
+}

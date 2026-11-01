@@ -1,0 +1,50 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "corporate_actions": {
+      "enum": [
+        "NOT_PROVIDED",
+        "PROVIDED_EMPTY",
+        "PROVIDED_NONEMPTY"
+      ],
+      "title": "Corporate Actions",
+      "type": "string"
+    },
+    "disclosure_revision": {
+      "const": "UNVERIFIED",
+      "default": "UNVERIFIED",
+      "title": "Disclosure Revision",
+      "type": "string"
+    },
+    "identity_knowledge": {
+      "enum": [
+        "PROVIDER_DOCUMENTED",
+        "UNVERIFIED"
+      ],
+      "title": "Identity Knowledge",
+      "type": "string"
+    },
+    "independent_platform_review": {
+      "const": "PENDING",
+      "default": "PENDING",
+      "title": "Independent Platform Review",
+      "type": "string"
+    },
+    "membership": {
+      "enum": [
+        "NOT_PROVIDED",
+        "PROVIDED_EMPTY",
+        "PROVIDED_NONEMPTY"
+      ],
+      "title": "Membership",
+      "type": "string"
+    }
+  },
+  "required": [
+    "identity_knowledge",
+    "membership",
+    "corporate_actions"
+  ],
+  "title": "CloudMetadataCoverage",
+  "type": "object"
+}

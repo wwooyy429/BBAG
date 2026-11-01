@@ -1,0 +1,303 @@
+{
+  "$defs": {
+    "SynchronousCompletionRecord": {
+      "additionalProperties": false,
+      "description": "Trusted application's assertion about a fresh synchronous tool return.\n\nThis is deliberately an explicit API separate from importing a provider\nstatus claim. It authenticates neither the caller nor the platform. The\napplication must actually observe the reserved invocation returning before\nconstructing this record; arbitrary JSON is not proof of that observation.\nIts digest covers only allowlisted TaskResponse metadata, never market data.",
+      "properties": {
+        "completion_observed": {
+          "const": true,
+          "default": true,
+          "title": "Completion Observed",
+          "type": "boolean"
+        },
+        "config_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Config Sha256",
+          "type": "string"
+        },
+        "evidence_authentication": {
+          "const": "NOT_AUTHENTICATED",
+          "default": "NOT_AUTHENTICATED",
+          "title": "Evidence Authentication",
+          "type": "string"
+        },
+        "local_attempt_id": {
+          "pattern": "^local_[0-9a-f]{32}$",
+          "title": "Local Attempt Id",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "operation": {
+          "enum": [
+            "compile",
+            "research_check"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "project_id": {
+          "exclusiveMinimum": 0,
+          "title": "Project Id",
+          "type": "integer"
+        },
+        "provider_task_id_availability": {
+          "const": "NOT_RETURNED",
+          "default": "NOT_RETURNED",
+          "title": "Provider Task Id Availability",
+          "type": "string"
+        },
+        "request_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Request Sha256",
+          "type": "string"
+        },
+        "response_class": {
+          "default": "CONTROL_ONLY",
+          "enum": [
+            "CONTROL_ONLY",
+            "SYNTHETIC_TEST"
+          ],
+          "title": "Response Class",
+          "type": "string"
+        },
+        "response_kind": {
+          "const": "SYNCHRONOUS_TOOL_RETURN",
+          "default": "SYNCHRONOUS_TOOL_RETURN",
+          "title": "Response Kind",
+          "type": "string"
+        },
+        "response_metadata_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Response Metadata Sha256",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_commit": {
+          "pattern": "^[0-9a-fA-F]{40}$",
+          "title": "Source Commit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "local_attempt_id",
+        "observed_at",
+        "operation",
+        "source_commit",
+        "config_sha256",
+        "request_sha256",
+        "project_id",
+        "response_metadata_sha256"
+      ],
+      "title": "SynchronousCompletionRecord",
+      "type": "object"
+    },
+    "TaskResponse": {
+      "additionalProperties": false,
+      "description": "Whitelisted metadata, not arbitrary provider JSON or a market-data digest.",
+      "properties": {
+        "actual_cost_microusd": {
+          "anyOf": [
+            {
+              "maximum": 1000000000000000,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Actual Cost Microusd"
+        },
+        "cell_index": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cell Index"
+        },
+        "check_passed": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Check Passed"
+        },
+        "config_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Config Sha256",
+          "type": "string"
+        },
+        "error_category": {
+          "default": "NONE",
+          "enum": [
+            "NONE",
+            "INVALID_REQUEST",
+            "ACCESS_DENIED",
+            "CAPABILITY_UNAVAILABLE",
+            "PROVIDER_ERROR",
+            "TIMEOUT",
+            "MALFORMED_RESPONSE"
+          ],
+          "title": "Error Category",
+          "type": "string"
+        },
+        "invocation_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Invocation Id"
+        },
+        "operation": {
+          "enum": [
+            "compile",
+            "research_check",
+            "data_query",
+            "project_read",
+            "file_read",
+            "research_read"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "platform_task_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Platform Task Id"
+        },
+        "project_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Project Id"
+        },
+        "purpose": {
+          "const": "ENGINEERING_TEST",
+          "default": "ENGINEERING_TEST",
+          "title": "Purpose",
+          "type": "string"
+        },
+        "request_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Request Sha256",
+          "type": "string"
+        },
+        "response_class": {
+          "default": "CONTROL_ONLY",
+          "enum": [
+            "CONTROL_ONLY",
+            "SYNTHETIC_TEST"
+          ],
+          "title": "Response Class",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_commit": {
+          "pattern": "^[0-9a-fA-F]{40}$",
+          "title": "Source Commit",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "accepted",
+            "compiling",
+            "compiled",
+            "running",
+            "run_finished",
+            "result_available",
+            "completed",
+            "error",
+            "incomplete",
+            "UNKNOWN"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "success": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Success"
+        }
+      },
+      "required": [
+        "operation",
+        "source_commit",
+        "config_sha256",
+        "request_sha256",
+        "status"
+      ],
+      "title": "TaskResponse",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Complete normalized safe response plus its explicit application assertion.",
+  "properties": {
+    "confirmation": {
+      "$ref": "#/$defs/SynchronousCompletionRecord"
+    },
+    "response": {
+      "$ref": "#/$defs/TaskResponse"
+    }
+  },
+  "required": [
+    "response",
+    "confirmation"
+  ],
+  "title": "SynchronousResultMetadata",
+  "type": "object"
+}

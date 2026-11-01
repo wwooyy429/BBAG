@@ -1,0 +1,144 @@
+{
+  "$defs": {
+    "TaskBudget": {
+      "additionalProperties": false,
+      "properties": {
+        "max_attempts": {
+          "default": 0,
+          "maximum": 100000,
+          "minimum": 0,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "max_concurrent_attempts": {
+          "default": 1,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Max Concurrent Attempts",
+          "type": "integer"
+        },
+        "max_configurations": {
+          "default": 1,
+          "maximum": 100000,
+          "minimum": 0,
+          "title": "Max Configurations",
+          "type": "integer"
+        },
+        "max_cost_microusd": {
+          "default": 0,
+          "maximum": 1000000000000000,
+          "minimum": 0,
+          "title": "Max Cost Microusd",
+          "type": "integer"
+        },
+        "operation_limits": {
+          "additionalProperties": {
+            "maximum": 100000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "propertyNames": {
+            "enum": [
+              "compile",
+              "research_check",
+              "data_query",
+              "project_read",
+              "file_read",
+              "research_read"
+            ]
+          },
+          "title": "Operation Limits",
+          "type": "object"
+        },
+        "purpose": {
+          "const": "ENGINEERING_TEST",
+          "default": "ENGINEERING_TEST",
+          "title": "Purpose",
+          "type": "string"
+        },
+        "response_class": {
+          "default": "CONTROL_ONLY",
+          "enum": [
+            "CONTROL_ONLY",
+            "SYNTHETIC_TEST"
+          ],
+          "title": "Response Class",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "stage": {
+          "const": "S2",
+          "default": "S2",
+          "title": "Stage",
+          "type": "string"
+        },
+        "status": {
+          "const": "DRAFT",
+          "default": "DRAFT",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "title": "TaskBudget",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "attempt_count": {
+      "exclusiveMinimum": 0,
+      "title": "Attempt Count",
+      "type": "integer"
+    },
+    "database": {
+      "minLength": 1,
+      "title": "Database",
+      "type": "string"
+    },
+    "database_sha256": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Database Sha256",
+      "type": "string"
+    },
+    "immutable_metadata_sha256": {
+      "additionalProperties": {
+        "pattern": "^[0-9a-fA-F]{64}$",
+        "type": "string"
+      },
+      "propertyNames": {
+        "minLength": 1
+      },
+      "title": "Immutable Metadata Sha256",
+      "type": "object"
+    },
+    "metadata_directory": {
+      "minLength": 1,
+      "title": "Metadata Directory",
+      "type": "string"
+    },
+    "persisted_budget": {
+      "$ref": "#/$defs/TaskBudget"
+    },
+    "task_count": {
+      "exclusiveMinimum": 0,
+      "title": "Task Count",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "database",
+    "metadata_directory",
+    "database_sha256",
+    "immutable_metadata_sha256",
+    "task_count",
+    "attempt_count",
+    "persisted_budget"
+  ],
+  "title": "LedgerInspection",
+  "type": "object"
+}

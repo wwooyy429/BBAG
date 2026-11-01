@@ -1,0 +1,59 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "known_at": {
+      "format": "date-time",
+      "title": "Known At",
+      "type": "string"
+    },
+    "sid": {
+      "minLength": 1,
+      "title": "Sid",
+      "type": "string"
+    },
+    "ticker": {
+      "minLength": 1,
+      "title": "Ticker",
+      "type": "string"
+    },
+    "valid_from": {
+      "format": "date",
+      "title": "Valid From",
+      "type": "string"
+    },
+    "valid_to": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Valid To"
+    },
+    "valid_to_known_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Valid To Known At"
+    }
+  },
+  "required": [
+    "sid",
+    "ticker",
+    "valid_from",
+    "known_at"
+  ],
+  "title": "TickerMapping",
+  "type": "object"
+}

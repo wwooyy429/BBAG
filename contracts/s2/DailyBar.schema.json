@@ -1,0 +1,92 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "available_at": {
+      "format": "date-time",
+      "title": "Available At",
+      "type": "string"
+    },
+    "close": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Close"
+    },
+    "high": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "High"
+    },
+    "low": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Low"
+    },
+    "open": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Open"
+    },
+    "session": {
+      "format": "date",
+      "title": "Session",
+      "type": "string"
+    },
+    "sid": {
+      "minLength": 1,
+      "title": "Sid",
+      "type": "string"
+    },
+    "volume": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Volume"
+    }
+  },
+  "required": [
+    "sid",
+    "session",
+    "available_at"
+  ],
+  "title": "DailyBar",
+  "type": "object"
+}

@@ -1,0 +1,107 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "actual_cost_microusd": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Actual Cost Microusd"
+    },
+    "check_passed": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Check Passed"
+    },
+    "config_sha256": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Config Sha256",
+      "type": "string"
+    },
+    "configuration_id": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Configuration Id",
+      "type": "string"
+    },
+    "database_sha256": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Database Sha256",
+      "type": "string"
+    },
+    "local_attempt_id": {
+      "minLength": 1,
+      "title": "Local Attempt Id",
+      "type": "string"
+    },
+    "operation": {
+      "enum": [
+        "compile",
+        "research_check"
+      ],
+      "title": "Operation",
+      "type": "string"
+    },
+    "project_id": {
+      "exclusiveMinimum": 0,
+      "title": "Project Id",
+      "type": "integer"
+    },
+    "request_sha256": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Request Sha256",
+      "type": "string"
+    },
+    "reserved_cost_microusd": {
+      "minimum": 0,
+      "title": "Reserved Cost Microusd",
+      "type": "integer"
+    },
+    "source_commit": {
+      "pattern": "^[0-9a-fA-F]{40}$",
+      "title": "Source Commit",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "error",
+        "incomplete"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "task_id": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Task Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "database_sha256",
+    "task_id",
+    "configuration_id",
+    "local_attempt_id",
+    "source_commit",
+    "config_sha256",
+    "request_sha256",
+    "project_id",
+    "operation",
+    "status",
+    "actual_cost_microusd",
+    "reserved_cost_microusd",
+    "check_passed"
+  ],
+  "title": "AttemptProvenance",
+  "type": "object"
+}

@@ -1,6 +1,6 @@
 # BBAG Git 与独立审核流程
 
-仓库为 [wwooyy429 BBAG](https://github.com/wwooyy429/BBAG)。S0、S1 的历史授权与实际合并保留，当前 main 为 `41789706f710e131d4a654e349798ddb15ea70f5`。最新复审已在开发提交 `0889d277bfdda4894d7e359157d092a4f07639f5` 关闭 S0-004 并批准 S0；S1 新增 S1-002，仍需修改。当前 `codex/s1-committed-lock-remediation` 基于该未合并提交修复 S1 交审接纳，见 [S1 提交锁说明](S1_COMMITTED_LOCK_REMEDIATION.md)。本轮没有 main 合并、回退或 S2 推进授权。
+仓库为 [wwooyy429 BBAG](https://github.com/wwooyy429/BBAG)。负责人接受准确 `259962860d2301ead894c5d649a29eab1f8db1ac` 的 S0/S1 独立复审并授权合并与 S2 恢复；PR #5 按 expected_head_sha 以 merge 方式合并为 `7aac4886b50493c09235c49b5de90643b7090e07`，源码树与被审提交相同。旧验收及实际合并见 [S0记录](S0_ACCEPTANCE.md)、[S1记录](S1_ACCEPTANCE.md)。S2 在 `codex/stage-2-data-platform` 集成该基础，累计预算与旧证据按 [恢复记录](S2_RESUMPTION.md) 延续。未经 S2 独立复审和新授权不合并，也不进入 S3。
 
 ## 每次开发的固定顺序
 
@@ -11,7 +11,7 @@
 5. 按该 SHA 生成开发报告和 GPT Work 审核请求，导出准确提交源码并核对文件哈希。
 6. 将报告和审核材料置于 Git 忽略的 `deliverables/`；以草稿 PR 交付，注明实现 SHA 和审核尚待完成。
 7. GPT Work 对固定 SHA 独立复验。缺陷交回 Codex，在开发分支修复、提交新 SHA、生成新报告和审核包。
-8. 核实独立审核结论确实绑定当前 PR head SHA，阻断项均已解决，再评估合并资格。本轮新修复的合并及阶段推进需负责人另行授权。
+8. 核实独立审核结论确实绑定当前 PR head SHA，阻断项均已解决，再评估合并资格。当前仅授权S2开发，S2合并和下一阶段需另行授权。
 
 不删除失败运行、旧报告、旧结论和复验记录，不把开发自测或协作代理检查写为独立 GPT Work 验收通过。
 
@@ -44,7 +44,9 @@ python scripts/verify_stage0.py --output-dir artifacts/verification/<完整实�
 python scripts/build_review_package.py --commit <完整实现SHA> --evidence-dir artifacts/verification/<完整实现SHA>
 ```
 
-打包器要求当前 HEAD 与实现 SHA 相同、工作区干净、开发验证来自该 SHA 且新提交独立审核仍为 PENDING。S0、S1 证据锁哈希须与源码根目录及准确提交的 requirements.lock 字节摘要一致；Git 状态为空不替代准确提交锁的比对。错误、缺失及非法格式在创建交付目录和 ZIP 前退出 2。源码从 Git 提交导出；未知来源、过期证据或未完成开发检查均不能冒充可交审的固定版本。
+打包器要求当前 HEAD 与实现 SHA 相同、工作区干净、开发验证来自该 SHA 且独立审核仍为 PENDING。源码从 Git 提交导出；未知来源、过期证据或未完成开发检查均不能冒充可交审的固定版本。
+
+S0/S1 已审修复及 S2 集成后的打包入口均须在创建输出前核对准确提交的 requirements.lock Git blob、源码根磁盘锁及证据锁摘要；隐藏 Git 标记不能替代逐字节绑定。新 S2 SHA 也必须重新采集实际锁摘要，不能沿用旧 S1 或旧 S2 锁值。恢复后的平台任务预算按全部历史持久台账累计，不随新提交或新库重置。
 
 证据树应由普通文件和目录组成，子符号链接、junction、循环及根外路径在读取契约和创建交付前拒绝；需要引用的材料先复制为证据根内的普通文件。普通同步云文件不会仅因 Cloud reparse 标记被当作链接。实际每 SHA 输出目录与最终 ZIP 不得与证据树重叠，安全的共同父目录允许。已有输出目录、ZIP 或悬空目标链接会在创建新输出前拒绝；ZIP 使用排他创建，保留旧材料。
 
@@ -71,9 +73,11 @@ git config core.hooksPath .githooks
 
 钩子阻止直接推送 main 或 master，鼓励通过经过审核的 PR 更新基线。钩子只在已配置的本地仓库生效，不能阻止绕过钩子或从其他客户端改远程；草稿 PR 也不等于服务器端分支保护。
 
-服务器端规则应单独核实。若尚未启用或当前工具无管理权限，在开发报告中明确保留此限制，不宣称仓库已实现服务器强制审核。无论服务器配置如何，本轮仍不得合并修复、回退 main 或推进 S2。
+服务器端规则应单独核实。若尚未启用或当前工具无管理权限，在开发报告中明确保留此限制，不宣称仓库已实现服务器强制审核。无论服务器配置如何，Codex仍须遵守本次不合并S2、不进入S3的范围。
 
 S1使用scripts/verify_stage1.py和scripts/build_stage1_package.py，输出按deliverables/stages/S1/<准确SHA>组织；S0脚本不能冒充S1证据。S1回执为独立契约，不能用S0已通过回执批准S1。
+
+S2使用scripts/verify_stage2.py和scripts/build_stage2_package.py，输出按deliverables/stages/S2/<准确SHA>组织。S2回执独立校验工程与平台条件；S1批准不覆盖S2。真实云端数据留在平台内，交审包只收合成数据、源码及允许的控制证据。
 
 ## CI 与审核区别
 

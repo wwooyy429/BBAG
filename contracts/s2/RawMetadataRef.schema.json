@@ -1,0 +1,59 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "capture_kind": {
+      "enum": [
+        "LOCAL_NORMALIZED_METADATA",
+        "CALLER_METADATA_BYTES"
+      ],
+      "title": "Capture Kind",
+      "type": "string"
+    },
+    "evidence_authentication": {
+      "const": "NOT_AUTHENTICATED",
+      "default": "NOT_AUTHENTICATED",
+      "title": "Evidence Authentication",
+      "type": "string"
+    },
+    "market_data_export": {
+      "const": "NOT_SUPPORTED",
+      "default": "NOT_SUPPORTED",
+      "title": "Market Data Export",
+      "type": "string"
+    },
+    "payload_kind": {
+      "enum": [
+        "TaskResponse",
+        "TaskReconciliation",
+        "SynchronousResultMetadata"
+      ],
+      "title": "Payload Kind",
+      "type": "string"
+    },
+    "relative_path": {
+      "pattern": "^metadata_[0-9a-f]{32}_[0-9a-f]{64}\\.json$",
+      "title": "Relative Path",
+      "type": "string"
+    },
+    "sha256": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Sha256",
+      "type": "string"
+    },
+    "size_bytes": {
+      "maximum": 65536,
+      "minimum": 1,
+      "title": "Size Bytes",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "relative_path",
+    "sha256",
+    "size_bytes",
+    "capture_kind",
+    "payload_kind"
+  ],
+  "title": "RawMetadataRef",
+  "type": "object"
+}

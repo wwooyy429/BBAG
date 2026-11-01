@@ -1,0 +1,27 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "database": {
+      "minLength": 1,
+      "title": "Database",
+      "type": "string"
+    },
+    "expected_sha256": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Expected Sha256",
+      "type": "string"
+    },
+    "metadata_directory": {
+      "minLength": 1,
+      "title": "Metadata Directory",
+      "type": "string"
+    }
+  },
+  "required": [
+    "database",
+    "metadata_directory",
+    "expected_sha256"
+  ],
+  "title": "ExpectedLedger",
+  "type": "object"
+}

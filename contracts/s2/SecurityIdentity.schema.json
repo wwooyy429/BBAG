@@ -1,0 +1,53 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "delisted_on": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Delisted On"
+    },
+    "delisting_known_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Delisting Known At"
+    },
+    "known_at": {
+      "format": "date-time",
+      "title": "Known At",
+      "type": "string"
+    },
+    "listed_from": {
+      "format": "date",
+      "title": "Listed From",
+      "type": "string"
+    },
+    "sid": {
+      "minLength": 1,
+      "title": "Sid",
+      "type": "string"
+    }
+  },
+  "required": [
+    "sid",
+    "listed_from",
+    "known_at"
+  ],
+  "title": "SecurityIdentity",
+  "type": "object"
+}

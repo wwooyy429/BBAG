@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0",
+  "stage": "S2",
+  "purpose": "ENGINEERING_TEST",
+  "status": "DRAFT",
+  "config_id": "owner-s2-cloud-engineering-small-whitelist",
+  "policy": {
+    "schema_version": "1.0",
+    "policy_id": "owner-s2-cloud-engineering-20261031",
+    "authorization": "OWNER_AUTHORIZED",
+    "provider": "QUANTCONNECT_CLOUD",
+    "timezone": "America/New_York",
+    "development": {
+      "start": "2020-01-02",
+      "end": "2020-01-10"
+    },
+    "sealed": [],
+    "allowed_assets": [
+      "SPY",
+      "AAPL"
+    ],
+    "allowed_fields": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume"
+    ],
+    "allowed_purposes": [
+      "ENGINEERING_TEST"
+    ],
+    "max_query_days": 9,
+    "approval_reference": "Owner message in current development chat: 2020-01-02..10 SPY/AAPL only; all other dates denied; compile<=2,Research<=3,no new spend",
+    "approved_by": "project_owner_in_current_chat",
+    "approved_at": "2026-10-31T05:55:04.981720Z"
+  },
+  "request": {
+    "schema_version": "1.0",
+    "provider": "QUANTCONNECT_CLOUD",
+    "start": "2020-01-02",
+    "end": "2020-01-10",
+    "assets": [
+      "SPY",
+      "AAPL"
+    ],
+    "fields": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume"
+    ],
+    "as_of": "2020-01-11T05:00:00Z",
+    "purpose": "ENGINEERING_TEST",
+    "classification": "DEVELOPMENT",
+    "derived_from": [],
+    "output_mode": "CONTROL_ONLY"
+  },
+  "task_budget": {
+    "schema_version": "1.0",
+    "stage": "S2",
+    "purpose": "ENGINEERING_TEST",
+    "status": "DRAFT",
+    "response_class": "CONTROL_ONLY",
+    "max_configurations": 1,
+    "max_attempts": 5,
+    "max_concurrent_attempts": 1,
+    "max_cost_microusd": 0,
+    "operation_limits": {
+      "compile": 2,
+      "research_check": 3
+    }
+  },
+  "bundle": null,
+  "liquidity": {
+    "lookback_sessions": 2,
+    "minimum_mean_raw_dollar_volume": 0.0,
+    "max_assets": 32,
+    "lag_sessions": 1,
+    "missing": "exclude_full_window",
+    "tie_break": "sid_ascending"
+  },
+  "quality": {
+    "stale_after_sessions": 1,
+    "maximum_absolute_raw_close_change": 0.5,
+    "raw_change_is_economic_signal": false
+  },
+  "pending_decisions": [
+    "This records an engineering whitelist, not alpha research parameters or final-test selection",
+    "Policy approval time is the developer receipt-recording time, not an authenticated external signature",
+    "Actual billing may be unavailable; no purchase, upgrade or paid task is permitted",
+    "Raw market data and reconstructable derivatives stay in QuantConnect Cloud",
+    "Nonempty real split/dividend/rename/delisting cases outside this whitelist remain NOT_RUN"
+  ]
+}

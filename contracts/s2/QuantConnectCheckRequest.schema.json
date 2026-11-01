@@ -1,0 +1,220 @@
+{
+  "$defs": {
+    "DataRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "as_of": {
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "assets": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Assets",
+          "type": "array"
+        },
+        "classification": {
+          "default": "UNKNOWN",
+          "enum": [
+            "DEVELOPMENT",
+            "SEALED_FINAL",
+            "SEALED_DERIVATIVE",
+            "UNKNOWN"
+          ],
+          "title": "Classification",
+          "type": "string"
+        },
+        "derived_from": {
+          "items": {
+            "enum": [
+              "DEVELOPMENT",
+              "SEALED_FINAL",
+              "SEALED_DERIVATIVE",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Derived From",
+          "type": "array"
+        },
+        "end": {
+          "format": "date",
+          "title": "End",
+          "type": "string"
+        },
+        "fields": {
+          "items": {
+            "enum": [
+              "open",
+              "high",
+              "low",
+              "close",
+              "volume"
+            ],
+            "type": "string"
+          },
+          "maxItems": 5,
+          "minItems": 1,
+          "title": "Fields",
+          "type": "array"
+        },
+        "output_mode": {
+          "default": "LOCAL_DATA",
+          "enum": [
+            "LOCAL_DATA",
+            "CONTROL_ONLY",
+            "IN_CLOUD_DATA"
+          ],
+          "title": "Output Mode",
+          "type": "string"
+        },
+        "provider": {
+          "enum": [
+            "SYNTHETIC",
+            "QUANTCONNECT_CLOUD"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "purpose": {
+          "default": "ENGINEERING_TEST",
+          "enum": [
+            "ENGINEERING_TEST",
+            "DEVELOPMENT"
+          ],
+          "title": "Purpose",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "start": {
+          "format": "date",
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "provider",
+        "start",
+        "end",
+        "assets",
+        "fields",
+        "as_of"
+      ],
+      "title": "DataRequest",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "checks": {
+      "items": {
+        "enum": [
+          "data_presence",
+          "requested_bounds",
+          "field_availability",
+          "normalization_raw",
+          "point_in_time",
+          "identity_consistency",
+          "no_data_export"
+        ],
+        "type": "string"
+      },
+      "maxItems": 7,
+      "minItems": 1,
+      "title": "Checks",
+      "type": "array"
+    },
+    "config_sha256": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Config Sha256",
+      "type": "string"
+    },
+    "data": {
+      "$ref": "#/$defs/DataRequest"
+    },
+    "data_retention": {
+      "const": "cloud_only",
+      "default": "cloud_only",
+      "title": "Data Retention",
+      "type": "string"
+    },
+    "max_history_rows": {
+      "default": 32,
+      "maximum": 128,
+      "minimum": 1,
+      "title": "Max History Rows",
+      "type": "integer"
+    },
+    "normalization": {
+      "const": "raw",
+      "default": "raw",
+      "title": "Normalization",
+      "type": "string"
+    },
+    "operation": {
+      "const": "research_check",
+      "default": "research_check",
+      "title": "Operation",
+      "type": "string"
+    },
+    "output_policy": {
+      "const": "verdicts_only",
+      "default": "verdicts_only",
+      "title": "Output Policy",
+      "type": "string"
+    },
+    "project_id": {
+      "minimum": 1,
+      "title": "Project Id",
+      "type": "integer"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "resolution": {
+      "const": "daily",
+      "default": "daily",
+      "title": "Resolution",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_commit": {
+      "pattern": "^[0-9a-fA-F]{40}$",
+      "title": "Source Commit",
+      "type": "string"
+    },
+    "stage": {
+      "const": "S2",
+      "default": "S2",
+      "title": "Stage",
+      "type": "string"
+    }
+  },
+  "required": [
+    "project_id",
+    "data",
+    "source_commit",
+    "config_sha256"
+  ],
+  "title": "QuantConnectCheckRequest",
+  "type": "object"
+}

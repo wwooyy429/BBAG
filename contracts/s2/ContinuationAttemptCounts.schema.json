@@ -1,0 +1,23 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "compile": {
+      "maximum": 10000,
+      "minimum": 0,
+      "title": "Compile",
+      "type": "integer"
+    },
+    "research_check": {
+      "maximum": 10000,
+      "minimum": 0,
+      "title": "Research Check",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "compile",
+    "research_check"
+  ],
+  "title": "ContinuationAttemptCounts",
+  "type": "object"
+}

@@ -1,0 +1,145 @@
+{
+  "$defs": {
+    "ExpectedLedger": {
+      "additionalProperties": false,
+      "properties": {
+        "database": {
+          "minLength": 1,
+          "title": "Database",
+          "type": "string"
+        },
+        "expected_sha256": {
+          "pattern": "^[0-9a-fA-F]{64}$",
+          "title": "Expected Sha256",
+          "type": "string"
+        },
+        "metadata_directory": {
+          "minLength": 1,
+          "title": "Metadata Directory",
+          "type": "string"
+        }
+      },
+      "required": [
+        "database",
+        "metadata_directory",
+        "expected_sha256"
+      ],
+      "title": "ExpectedLedger",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "approval_reference": {
+      "minLength": 1,
+      "title": "Approval Reference",
+      "type": "string"
+    },
+    "assets": {
+      "items": {
+        "enum": [
+          "SPY",
+          "AAPL"
+        ],
+        "type": "string"
+      },
+      "maxItems": 2,
+      "minItems": 1,
+      "title": "Assets",
+      "type": "array"
+    },
+    "compile_attempt_limit": {
+      "maximum": 2,
+      "minimum": 0,
+      "title": "Compile Attempt Limit",
+      "type": "integer"
+    },
+    "end": {
+      "format": "date",
+      "title": "End",
+      "type": "string"
+    },
+    "expected_ledgers": {
+      "items": {
+        "$ref": "#/$defs/ExpectedLedger"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Expected Ledgers",
+      "type": "array"
+    },
+    "max_new_cost_microusd": {
+      "const": 0,
+      "title": "Max New Cost Microusd",
+      "type": "integer"
+    },
+    "project_id": {
+      "exclusiveMinimum": 0,
+      "title": "Project Id",
+      "type": "integer"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "research_attempt_limit": {
+      "maximum": 3,
+      "minimum": 0,
+      "title": "Research Attempt Limit",
+      "type": "integer"
+    },
+    "response_class": {
+      "enum": [
+        "CONTROL_ONLY",
+        "SYNTHETIC_TEST"
+      ],
+      "title": "Response Class",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "stage": {
+      "const": "S2",
+      "default": "S2",
+      "title": "Stage",
+      "type": "string"
+    },
+    "start": {
+      "format": "date",
+      "title": "Start",
+      "type": "string"
+    },
+    "status": {
+      "const": "DRAFT",
+      "default": "DRAFT",
+      "title": "Status",
+      "type": "string"
+    },
+    "timezone": {
+      "const": "America/New_York",
+      "default": "America/New_York",
+      "title": "Timezone",
+      "type": "string"
+    }
+  },
+  "required": [
+    "expected_ledgers",
+    "compile_attempt_limit",
+    "research_attempt_limit",
+    "max_new_cost_microusd",
+    "project_id",
+    "response_class",
+    "start",
+    "end",
+    "assets",
+    "approval_reference"
+  ],
+  "title": "CampaignCaps",
+  "type": "object"
+}

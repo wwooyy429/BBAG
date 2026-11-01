@@ -1,0 +1,94 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "active_attempt_count": {
+      "minimum": 0,
+      "title": "Active Attempt Count",
+      "type": "integer"
+    },
+    "attempt_count": {
+      "minimum": 0,
+      "title": "Attempt Count",
+      "type": "integer"
+    },
+    "budget_cost_microusd": {
+      "minimum": 0,
+      "title": "Budget Cost Microusd",
+      "type": "integer"
+    },
+    "configuration_count": {
+      "minimum": 0,
+      "title": "Configuration Count",
+      "type": "integer"
+    },
+    "confirmed_execution_count": {
+      "minimum": 0,
+      "title": "Confirmed Execution Count",
+      "type": "integer"
+    },
+    "known_cost_microusd": {
+      "minimum": 0,
+      "title": "Known Cost Microusd",
+      "type": "integer"
+    },
+    "operation_attempts": {
+      "additionalProperties": {
+        "minimum": 0,
+        "type": "integer"
+      },
+      "propertyNames": {
+        "enum": [
+          "compile",
+          "research_check",
+          "data_query",
+          "project_read",
+          "file_read",
+          "research_read"
+        ]
+      },
+      "title": "Operation Attempts",
+      "type": "object"
+    },
+    "reserved_unknown_cost_microusd": {
+      "minimum": 0,
+      "title": "Reserved Unknown Cost Microusd",
+      "type": "integer"
+    },
+    "synchronous_result_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Synchronous Result Count",
+      "type": "integer"
+    },
+    "task_count": {
+      "minimum": 0,
+      "title": "Task Count",
+      "type": "integer"
+    },
+    "unknown_attempt_count": {
+      "minimum": 0,
+      "title": "Unknown Attempt Count",
+      "type": "integer"
+    },
+    "unknown_cost_attempt_count": {
+      "minimum": 0,
+      "title": "Unknown Cost Attempt Count",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "configuration_count",
+    "task_count",
+    "attempt_count",
+    "confirmed_execution_count",
+    "unknown_attempt_count",
+    "active_attempt_count",
+    "operation_attempts",
+    "known_cost_microusd",
+    "reserved_unknown_cost_microusd",
+    "unknown_cost_attempt_count",
+    "budget_cost_microusd"
+  ],
+  "title": "TaskUsage",
+  "type": "object"
+}

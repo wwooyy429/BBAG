@@ -1,0 +1,31 @@
+{
+  "approval_reference": "Owner-authorized cumulative campaign only: compile cap 2, Research cap 3, zero new fees; already spent compile 2 / Research 2. Latest instruction preserves the final Research. This configuration is not a runtime grant.",
+  "assets": [
+    "SPY",
+    "AAPL"
+  ],
+  "compile_attempt_limit": 2,
+  "end": "2020-01-10",
+  "expected_ledgers": [
+    {
+      "database": "artifacts/s2-bootstrap/platform-9296ee14/tasks.sqlite",
+      "expected_sha256": "a86fd90200d42ccdfc5e21bc4c5b95563f27551b63693dd73fde2a8ef8a8f2da",
+      "metadata_directory": "artifacts/s2-bootstrap/platform-9296ee14/metadata"
+    },
+    {
+      "database": "artifacts/s2-bootstrap/platform-2b4e1285/tasks.sqlite",
+      "expected_sha256": "a331f8f20dc7cd60f98b8eeda0bbce4de18a9ca297ee5c7c67e3a2fa53b72dd8",
+      "metadata_directory": "artifacts/s2-bootstrap/platform-2b4e1285/metadata"
+    }
+  ],
+  "max_new_cost_microusd": 0,
+  "project_id": 38698074,
+  "purpose": "ENGINEERING_TEST",
+  "research_attempt_limit": 3,
+  "response_class": "CONTROL_ONLY",
+  "schema_version": "1.0",
+  "stage": "S2",
+  "start": "2020-01-02",
+  "status": "DRAFT",
+  "timezone": "America/New_York"
+}

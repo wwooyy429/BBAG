@@ -1,0 +1,168 @@
+{
+  "$defs": {
+    "TimeRange": {
+      "additionalProperties": false,
+      "description": "A closed date interval; both start and end are included.",
+      "properties": {
+        "end": {
+          "format": "date",
+          "title": "End",
+          "type": "string"
+        },
+        "start": {
+          "format": "date",
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "title": "TimeRange",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "allowed_assets": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Allowed Assets",
+      "type": "array"
+    },
+    "allowed_fields": {
+      "items": {
+        "enum": [
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume"
+        ],
+        "type": "string"
+      },
+      "maxItems": 5,
+      "minItems": 1,
+      "title": "Allowed Fields",
+      "type": "array"
+    },
+    "allowed_purposes": {
+      "items": {
+        "enum": [
+          "ENGINEERING_TEST",
+          "DEVELOPMENT"
+        ],
+        "type": "string"
+      },
+      "maxItems": 2,
+      "minItems": 1,
+      "title": "Allowed Purposes",
+      "type": "array"
+    },
+    "approval_reference": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Approval Reference"
+    },
+    "approved_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Approved At"
+    },
+    "approved_by": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Approved By"
+    },
+    "authorization": {
+      "default": "ENGINEERING_TEST",
+      "enum": [
+        "ENGINEERING_TEST",
+        "OWNER_AUTHORIZED"
+      ],
+      "title": "Authorization",
+      "type": "string"
+    },
+    "development": {
+      "$ref": "#/$defs/TimeRange"
+    },
+    "max_query_days": {
+      "default": 366,
+      "maximum": 3660,
+      "minimum": 1,
+      "title": "Max Query Days",
+      "type": "integer"
+    },
+    "policy_id": {
+      "minLength": 1,
+      "title": "Policy Id",
+      "type": "string"
+    },
+    "provider": {
+      "enum": [
+        "SYNTHETIC",
+        "QUANTCONNECT_CLOUD"
+      ],
+      "title": "Provider",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sealed": {
+      "items": {
+        "$ref": "#/$defs/TimeRange"
+      },
+      "maxItems": 32,
+      "title": "Sealed",
+      "type": "array"
+    },
+    "timezone": {
+      "default": "America/New_York",
+      "minLength": 1,
+      "title": "Timezone",
+      "type": "string"
+    }
+  },
+  "required": [
+    "policy_id",
+    "provider",
+    "development",
+    "allowed_assets",
+    "allowed_fields"
+  ],
+  "title": "AccessPolicy",
+  "type": "object"
+}

@@ -1,0 +1,87 @@
+{
+  "additionalProperties": false,
+  "description": "Total additions above the original 2/3 caps, never per-call top-ups.\n\nOWNER_APPROVED text alone confers no authority.",
+  "properties": {
+    "approval_reference": {
+      "minLength": 1,
+      "title": "Approval Reference",
+      "type": "string"
+    },
+    "baseline_sha256": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Baseline Sha256",
+      "type": "string"
+    },
+    "compile_increment": {
+      "default": 0,
+      "maximum": 32,
+      "minimum": 0,
+      "title": "Compile Increment",
+      "type": "integer"
+    },
+    "config_sha256": {
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "title": "Config Sha256",
+      "type": "string"
+    },
+    "max_new_cost_microusd": {
+      "const": 0,
+      "default": 0,
+      "title": "Max New Cost Microusd",
+      "type": "integer"
+    },
+    "purpose": {
+      "const": "ENGINEERING_TEST",
+      "default": "ENGINEERING_TEST",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "research_increment": {
+      "default": 0,
+      "maximum": 32,
+      "minimum": 0,
+      "title": "Research Increment",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scope": {
+      "const": "EXISTING_WHITELIST_ONLY",
+      "default": "EXISTING_WHITELIST_ONLY",
+      "title": "Scope",
+      "type": "string"
+    },
+    "source_commit": {
+      "pattern": "^[0-9a-fA-F]{40}$",
+      "title": "Source Commit",
+      "type": "string"
+    },
+    "stage": {
+      "const": "S2",
+      "default": "S2",
+      "title": "Stage",
+      "type": "string"
+    },
+    "status": {
+      "default": "DRAFT",
+      "enum": [
+        "DRAFT",
+        "OWNER_APPROVED"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "baseline_sha256",
+    "source_commit",
+    "config_sha256",
+    "approval_reference"
+  ],
+  "title": "OwnerBudgetIncrement",
+  "type": "object"
+}
