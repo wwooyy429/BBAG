@@ -269,6 +269,8 @@ def development_report(root: Path, evidence: Path, commit: str, verification: di
 
 准确实现 SHA：`{commit}`。源码提交后生成；独立审核保持 PENDING，S3 未获授权，不合并本次 S2。
 
+本轮修复 d5615f678d46836d50722e1ea9f7d5f4a26ad597 独立审核新增的 S2-005（P2）：普通预配置日志处理器持旧stream绕过输出隔离。新修复对支持的 stock 同步 profile 封闭消息生成/分发及便利入口、保留恢复原配置，不依赖logging.disable；已知不支持宿主在数据回调前拒绝。原四失败及成功泄漏见证保留，关闭仍须本新SHA独立复审。真实SDK/Cloud profile未验证，不能把本地测试当作平台批准。见 docs/S2_005_LOG_OUTPUT.md。
+
 本轮以负责人已接受的 `e412c9d0a3ec9148bab7e1f60ce614d2fa1b1ad2` 为基线；该次局部工程复审已关闭 S2-004，旧失败保留。新增 Cloud-local RAW 标准化与原 alias→SID 映射、固定控制回执、完整历史锚定的预算续接 preview、按准确 Git blob 与静态闭包生成的上传/编译增量计划，详见 docs/S2_CLOUD_PREPARATION.md。新增实现只经离线合成测试，新 SHA 必须独立复审；无 QuantConnect 调用、无增量授权、无真实 grant/新账本/任务，保留最后一次 Research。真实 SDK 查询工厂、供应商知识证据、Cloud 缓存/恢复/性能仍未实现或未平台验证，不宣称整 S2 完成。
 
 前置 S1 被审实现：`{S1_REVIEWED_SHA}`；负责人授权的 S1 合并结果：`{S1_MERGE_SHA}`。本轮将这项已审基础修复集成回 S2；其批准不能覆盖本次 S2，新版本仍须独立复审。
@@ -335,6 +337,8 @@ def main() -> int:
     (output / "GPT_WORK_AUDIT_REQUEST.md").write_text(f"""# BBAG S2 独立审核请求
 
 准确 SHA：`{commit}`；独立审核 PENDING。前置 S1 被审 `{S1_REVIEWED_SHA}`、合并 `{S1_MERGE_SHA}` 单独记录。
+
+优先复测 S2-005（docs/S2_005_LOG_OUTPUT.md）：预配置普通StreamHandler，成功/异常×resolver/fetcher×stdout/stderr；registered/direct Logger冷热cache，标准Adapter/root/lastResort/模块便利函数和captureWarnings。实际OS进程输出必须无SID/价格/计数/摘要，同时成功路径真实返回CHECKS_COMPLETED，不能靠总是拒绝消除泄漏。核原方法/stream/config/cache恢复和退出后控制日志；不支持factory/class/instance/manager、冻结GC、trace/profile、线程/嵌套在首callback前拒绝。BaseException消息不得逃出，Thread.start不得让执行晚于作用域。保留原4fail和根成功泄漏driver，重放用原安全断言/原child加新外部no-leak oracle；不得把旧泄漏断言改成通过。边界仅stock同步日志，不声明任意Python/native/OS沙箱或真实SDK兼容。新payload摘要/字节数须重算；m9/e0编译+9仍未授权、预算保持0/0新增可用。
 
 本次优先按 docs/S2_CLOUD_PREPARATION.md 审核新增离线实现：原alias授权先于resolver/fetcher/SDK factory；不得自造SID owner policy；跨alias/SID/项目/源/config/request/policy、知识/有效时段、非RAW/填充/非有限/错会话及对象污染均拒绝。缺身份知识不得补造，空成员/行动/行情与BAR_END_PROXY不得当作真实PIT或历史覆盖PASS；控制输出不得含数据/SID/hash/行数/自由异常。复算完整2库4attempt预算锚与外部later完整清单、Δ0和未受信JSON增量均不增可用量、始终保留Research1及dispatch=False，ABA安全不回归。准确上传manifest须每项Gitblob/原bytes/hash/依赖闭包/拓扑一致，hiddenflags拒绝，逐写编译m+e正确且当前授权增量0。真实平台接线/缓存/恢复等缺口如实NOT_RUN，不能把mock或提案当成授权。e412的批准只覆盖基线。
 

@@ -30,6 +30,8 @@
 
 [s2_cloud_check.py](../src/bbag/s2_cloud_check.py) 在同一桥接内计算质量并只返回固定 `CloudStandardizationReceipt`：project_id、源码/配置/原请求/策略绑定和封闭检查状态。无 SID、行数、覆盖率、行情、数据摘要或自由异常文本；执行区 stdout/stderr 丢弃。错误只返回 STANDARDIZATION_REJECTED；无法形成合法绑定时只抛 INVALID_REQUEST，不应向 Notebook 发布 traceback。
 
+后续 d561 独立复审用普通预配置 StreamHandler 证实旧重定向不足，登记 S2-005（工程 FAIL）；该旧结论与原证据保留。当前修复另行封闭标准 logging 生成/分发及便利入口，原对象精确恢复，不使用 logging.disable；只支持经过前检的单主线程、标准实现、未冻结 GC 的同步环境。线程/trace/profile、自定义实现、嵌套或其他不受支持环境在数据回调前拒绝，回调内 Thread.start 被拒绝。真实 Notebook/SDK 如不满足该 profile 也会拒绝，不能凭本地合成通过声明 Cloud 可用。具体支持范围、取消异常与未支持旁路见 [S2-005](S2_005_LOG_OUTPUT.md)；新 SHA 仍须独立复审。
+
 有数据且声明日历的每个 SID/session 字段齐全才通过 requested_field_coverage；空数据失败。成员为空或未提供，质量覆盖保持 UNVERIFIED，不能用空分母通过。非空成员/公司行动的 PASS 仅表示已提供并通过结构检查；provider 身份历史与披露修订真值始终 UNVERIFIED，缓存/平台恢复始终 NOT_RUN。这些回执是 DECLARED_INPUT_CHECKS / NOT_AUTHENTICATED，不是独立平台批准。
 
 ## 预算续接接口
