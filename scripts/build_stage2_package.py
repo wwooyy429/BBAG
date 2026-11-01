@@ -269,7 +269,7 @@ def development_report(root: Path, evidence: Path, commit: str, verification: di
 
 准确实现 SHA：`{commit}`。源码提交后生成；独立审核保持 PENDING，S3 未获授权，不合并本次 S2。
 
-本轮修复准确d7bb4f0518fec40c69c86524c2164de67e4b8fbb复审的 S2-006 残余（P2）：RootLogger.manager data descriptor 被合法实例字段掩盖时，原预检仍执行 getter 和数据回调；额外标准日志见证在隔离前输出合成标记。新代码静态核类MRO字段与stock字典槽，拒绝descriptor且不执行getter，预检不再动态读取manager/_cache。S2-006关闭仍待本新SHA独立复审；原40/41失败及影响见证保留。该次独审已关闭受测stock warnings范围的S2-N02，既有S2-005有限关闭保持；旧纯内存Manager反例不改称泄漏，S0-N02仍是另一项P3。见docs/S2_006_LOGGING_STATE.md。
+本轮修复准确6d6915fc814c6e5771eefcfed8b267561d068e82复审的 S2-006 残余（P2）：shared exact Manager 类型新增__get__后，该对象本身成为descriptor，旧类型/身份检查仍接纳未知分发。本例未证明泄漏或费用；原Root getter修补及Manager41已被该复审确认。新代码先核exact普通metaclass，再静态核plain对象类型/MRO上的__get__/__set__/__delete__（含None）及已知Logger字段/真值分发，不调用协议试探。S2-006关闭待本新SHA独立复审；原独立单列失败、Root影响见证及所有旧FAIL保留。S2-N02受测stock warnings范围关闭、S2-005有限关闭保持；S0-N02仍是另一项P3。见docs/S2_006_LOGGING_STATE.md。
 
 历史 S2-005（P2）为普通预配置日志处理器持旧stream绕过输出隔离；其受测stock同步范围已由1f6独审关闭。本轮保留消息生成/分发及便利入口封闭、原配置恢复和不依赖logging.disable的实现，重测其回归。旧四失败及成功泄漏见证不改写，不能扩大为真实SDK/Cloud profile批准。见 docs/S2_005_LOG_OUTPUT.md。
 
@@ -340,7 +340,7 @@ def main() -> int:
 
 准确 SHA：`{commit}`；独立审核 PENDING。前置 S1 被审 `{S1_REVIEWED_SHA}`、合并 `{S1_MERGE_SHA}` 单独记录。
 
-优先复测 S2-006 残余（docs/S2_006_LOGGING_STATE.md）：RootLogger.manager普通descriptor及被合法root实例字段掩盖的data descriptor，都须ERROR且getter/resolver/fetcher为0；追加标准日志影响见证不得在预检输出合成标记。核MRO静态字段、stock字典槽及相邻_cache/__dict__覆盖，不可调用getter试探。原Manager实例覆盖仍拒绝，正常stock配置须实际成功，核共享Manager/registry/PlaceHolder。S2-N02已在d7bb独审受测范围关闭，回归captureWarnings(True)+真正warnings.warn：原py.warnings不存在/空handler/已有handler、成功/异常、过滤always/error，原hook/handler/filter/cache/registry/parent及退出控制日志须恢复。原30/75/41与OS失败见证不改写，适配新source/output明示，旧攻击成功driver不能当安全oracle。S2-005有限stock同步关闭保持，不扩大为任意Python/native/OS或真实SDK批准；S0-N02仍另列历史P3。
+优先复测 S2-006 值对象协议残余（docs/S2_006_LOGGING_STATE.md）：对同一exact shared Manager类型预配置__get__/__set__/__delete__（包括None），标准getLogger路径须在首数据回调前ERROR，协议/getter/resolver/fetcher全部0；仅实例普通同名键和正常stock完整数据须成功。核type/MRO metaclass先行检查及已知Root字段/Logger真值分发，不调用未知getter或hash试探。保留原Root普通/实例字段掩盖descriptor、原标准日志影响child、Manager实例覆盖及原30/75/41/38安全断言；适配新source/output明示，旧攻击成功parent不当安全oracle。S2-N02受测范围已关闭，回归captureWarnings+真正warnings.warn恢复；S2-005有限stock同步关闭保持。新协议内存例未证明泄漏/费用，不扩大Python/native/OS或真实SDK结论；S0-N02仍另列历史P3。
 
 优先复测 S2-005（docs/S2_005_LOG_OUTPUT.md）：预配置普通StreamHandler，成功/异常×resolver/fetcher×stdout/stderr；registered/direct Logger冷热cache，标准Adapter/root/lastResort/模块便利函数和captureWarnings。实际OS进程输出必须无SID/价格/计数/摘要，同时成功路径真实返回CHECKS_COMPLETED，不能靠总是拒绝消除泄漏。核原方法/stream/config/cache恢复和退出后控制日志；不支持factory/class/instance/manager、冻结GC、trace/profile、线程/嵌套在首callback前拒绝。BaseException消息不得逃出，Thread.start不得让执行晚于作用域。保留原4fail和根成功泄漏driver，重放用原安全断言/原child加新外部no-leak oracle；不得把旧泄漏断言改成通过。边界仅stock同步日志，不声明任意Python/native/OS沙箱或真实SDK兼容。新payload摘要/字节数须重算；m9/e0编译+9仍未授权、预算保持0/0新增可用。
 

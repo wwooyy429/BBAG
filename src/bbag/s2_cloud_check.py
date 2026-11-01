@@ -97,6 +97,8 @@ _ADAPTER_METHODS = frozenset(("debug", "info", "warning", "warn", "error", "exce
 _MANAGER_METHODS = frozenset(("__init__", "getLogger", "setLoggerClass", "setLogRecordFactory",
     "_fixupParents", "_fixupChildren", "_clear_cache"))
 _MISSING = object()
+_CLASS_DISPATCH_HOOKS = frozenset(("__getattribute__", "__getattr__", "__setattr__", "__delattr__",
+    "__get__", "__set__", "__delete__", "__bool__", "__len__"))
 
 
 def _discard_log(*args, **kwargs):
@@ -133,9 +135,20 @@ def _stock_callable(cls, name, method):
     return method
 
 
+def _plain_class_mro(cls):
+    # type.__getattribute__ still honors data descriptors on a custom metaclass.
+    # Check every metaclass before reading MRO entries or their dictionaries.
+    if type(cls) is not type:
+        raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
+    bases = type.__getattribute__(cls, "__mro__")
+    if any(type(base) is not type for base in bases):
+        raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
+    return bases
+
+
 def _class_field(cls, name):
-    """Read the class MRO dictionaries without invoking an instance descriptor."""
-    for base in type.__getattribute__(cls, "__mro__"):
+    """Read validated class dictionaries without invoking a host descriptor."""
+    for base in _plain_class_mro(cls):
         namespace = type.__getattribute__(base, "__dict__")
         if name in namespace:
             return namespace[name]
@@ -147,11 +160,11 @@ def _plain_state(value):
     # Accept only the stock C dictionary slot and call that known descriptor.
     slot = _class_field(type(value), "__dict__")
     if (type(slot) is not GetSetDescriptorType or slot.__name__ != "__dict__"
-            or slot.__objclass__ not in {logging.Filterer, logging.Manager,
-                                        logging.PlaceHolder, logging.LoggerAdapter}):
+            or not any(slot.__objclass__ is owner for owner in
+                       (logging.Filterer, logging.Manager, logging.PlaceHolder, logging.LoggerAdapter))):
         raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
     state = slot.__get__(value, type(value))
-    if type(state) is not dict:
+    if type(state) is not dict or any(type(key) is not str for key in state):
         raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
     return state
 
@@ -182,7 +195,8 @@ def _stock_manager(manager):
             or not (state.get("logRecordFactory") is None or state.get("logRecordFactory") is logging.LogRecord)):
         raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
     for key, value in state["loggerDict"].items():
-        if type(key) is not str or type(value) not in {logging.Logger, logging.RootLogger, logging.PlaceHolder}:
+        if type(key) is not str or not any(type(value) is cls for cls in
+                                         (logging.Logger, logging.RootLogger, logging.PlaceHolder)):
             raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
         if type(value) is logging.PlaceHolder:
             _stock_placeholder(value)
@@ -191,7 +205,7 @@ def _stock_manager(manager):
 def _stock_placeholder(value):
     state = _plain_state(value)
     if ({"__init__", "append"}.intersection(state) or type(state.get("loggerMap")) is not dict
-            or any(type(logger) not in {logging.Logger, logging.RootLogger} or marker is not None
+            or any((type(logger) is not logging.Logger and type(logger) is not logging.RootLogger) or marker is not None
                    for logger, marker in state["loggerMap"].items())):
         raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
 
@@ -211,6 +225,16 @@ def _logging_preflight() -> tuple[list[tuple[object, str, object]], list[tuple[d
             or logging.__dict__.get("_loggerClass") is not logging.Logger
             or logging.__dict__.get("_logRecordFactory") is not logging.LogRecord):
         raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
+    classes = (logging.Manager, logging.PlaceHolder, logging.Logger, logging.RootLogger,
+               logging.LoggerAdapter, logging.Filterer, logging.Handler,
+               logging.StreamHandler, logging.FileHandler, threading.Thread)
+    # The shared Manager (and other plain logging objects) must not acquire a
+    # descriptor protocol merely by adding a hook to its type or a base class.
+    # Presence, including a None hook, rejects without probing or invoking it.
+    for cls in classes:
+        for base in _plain_class_mro(cls):
+            if base is not object and _CLASS_DISPATCH_HOOKS.intersection(type.__getattribute__(base, "__dict__")):
+                raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
     if _LOGGER_METHODS.intersection(logging.RootLogger.__dict__):
         raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
     # These are stock instance fields. A class data descriptor would change
@@ -222,12 +246,12 @@ def _logging_preflight() -> tuple[list[tuple[object, str, object]], list[tuple[d
             or any(_class_field(cls, "stream") is not _MISSING
                    for cls in (logging.StreamHandler, logging.FileHandler))):
         raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
-    for cls in (logging.Manager, logging.PlaceHolder, logging.Logger, logging.RootLogger,
-                logging.LoggerAdapter, logging.StreamHandler, logging.FileHandler):
-        for base in type.__getattribute__(cls, "__mro__"):
-            if base is not object and {"__getattribute__", "__getattr__", "__setattr__", "__delattr__"}.intersection(
-                    type.__getattribute__(base, "__dict__")):
-                raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
+    for cls in (logging.Logger, logging.RootLogger):
+        if any(_class_field(cls, name) is not _MISSING for name in
+               ("name", "parent", "level", "filters", "handlers", "propagate", "disabled", "_cache")):
+            raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
+        if _class_field(cls, "root") is not logging.root:
+            raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
     manager = logging.Logger.__dict__.get("manager")
     if type(manager) is not logging.Manager:
         raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
@@ -262,7 +286,7 @@ def _logging_preflight() -> tuple[list[tuple[object, str, object]], list[tuple[d
                 raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
             _stock_placeholder(value)
         elif issubclass(cls, logging.Logger):
-            if cls not in {logging.Logger, logging.RootLogger}:
+            if cls is not logging.Logger and cls is not logging.RootLogger:
                 raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
             state = _plain_state(value)
             if _LOGGER_METHODS.intersection(state):
@@ -273,9 +297,10 @@ def _logging_preflight() -> tuple[list[tuple[object, str, object]], list[tuple[d
                 raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
             state = _plain_state(value)
             if (_ADAPTER_METHODS.intersection(state)
-                    or type(state.get("logger")) not in {logging.Logger, logging.RootLogger}):
+                    or (type(state.get("logger")) is not logging.Logger
+                        and type(state.get("logger")) is not logging.RootLogger)):
                 raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
-        elif cls in {logging.StreamHandler, logging.FileHandler}:
+        elif cls is logging.StreamHandler or cls is logging.FileHandler:
             state = _plain_state(value)
             if "stream" not in state:
                 raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")

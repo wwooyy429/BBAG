@@ -1,6 +1,18 @@
 # S2-006 与 S2-N02 日志状态修复
 
-## 当前残余修复
+## 当前 Manager 值对象协议残余修复
+
+准确 `6d6915fc814c6e5771eefcfed8b267561d068e82` 独立复审确认原 Root 字段 descriptor 修补、原 Manager41 和新增38个邻近 OS 场景均符合；但另一个单列安全用例失败：在 exact Manager 类预先添加普通 `__get__` 后，raw Logger.manager 仍是同一个 Manager 对象，读取类属性却会隐式调用该对象的 descriptor 协议。实际为 resolver → descriptor-get → fetcher → CHECKS_COMPLETED。本例仅记内存，未证明数据泄漏或费用；原 Root 标准日志泄漏见证在6d版本已正确拒绝，不能混称继续泄漏。失败原件在 `BBAG审核/reaudit_S2_006_root_6d6915fc814c_20261101_1535`，S2-006 仍 OPEN/P2；S2-N02 和有限 S2-005 关闭保持。
+
+当前先验证参与的 stock 类与每个 MRO base 的 metaclass 都是 exact `type`，再读 MRO 或类字典。即使显式调用 `type.__getattribute__`，自定义 metaclass 的 data descriptor 仍可能执行；不能把该调用本身当作静态安全证明。
+
+随后从这些原始类字典检查 `__get__`、`__set__`、`__delete__`，任一出现都拒绝，包括值为 None；不读取或调用 Manager 的协议来试探。该规则覆盖普通 shared Manager 以及参与 profile 的其它 plain logging 对象类型/MRO。函数、已核标准 property、classmethod 与 stock C 字典槽仍走其原有明确核验，不一律禁用合法描述符。仅在 Manager 实例字典放普通同名键不构成 Python 类型协议，正常配置仍须成功。
+
+相邻已知分发也在首回调前静态拒绝：Logger/RootLogger 的 name、parent、level、filters、handlers、propagate、disabled、_cache 类字段覆盖；root 类引用须共享同一 root；新增 `__bool__`/`__len__` 会影响标准 Manager 的 parent 遍历，因此与原属性分发 dunder 一并拒绝。未知 class 的身份检查不用 hash/equality，plain 实例字典先要求 exact string keys。所有拒绝都在 getter 和数据回调前进行，原同Manager完整成功与 warning 状态恢复须继续通过。
+
+新增 `tests/test_s2_manager_protocol.py` 的44项覆盖同一 exact Manager 的三种协议、None/函数、有/无合法实例字段，合法 MRO 协议、仅实例普通键和 stock 成功对照，并补 metaclass、root 字段及 truthiness 的真实入口边界；连同原121项组成165项定向测试。此处只声明已核静态布局和受测同步路径，不宣称任意 Python/native/OS 沙箱或全部 logging API 的实现真实性；动态宿主重配仍禁止，真实 Cloud/SDK 兼容性 NOT_RUN。关闭仍须新准确 SHA 独立复审。
+
+## 历史 6d Root 字段残余修复
 
 准确 `d7bb4f0518fec40c69c86524c2164de67e4b8fbb` 独立复审已在受测 stock warnings 范围关闭 S2-N02，原 Manager 实例覆盖也正确拒绝。但新增41个 OS 用例有40符合、1失败：RootLogger.manager 为 property，root 普通字典同时放有合法 stock Manager 时，原 dict 优先模拟忽略了类 data descriptor 优先级。实际预检执行 getter 后进入两个数据回调；另一个标准 Logger/StreamHandler 见证在隔离开启前输出合成 SID、价格和条数。旧纯内存 Manager 反例仍不改称泄漏，实际 Cloud/SDK 未执行。完整失败证据保留于 `BBAG审核/reaudit_S2_006_d7bb4f0518fe_20261101_1445`，S2-006 仍为 P2，关闭待新 SHA 独立复审。
 
