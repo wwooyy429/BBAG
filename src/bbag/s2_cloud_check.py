@@ -13,6 +13,7 @@ import logging
 from pathlib import Path
 import sys
 import threading
+import warnings
 from typing import Callable, Literal, Self
 
 from pydantic import model_validator
@@ -85,12 +86,15 @@ _LOGGING_METHODS = (
     (logging.Handler, "handle"), (logging.StreamHandler, "emit"),
     *((logging, name) for name in ("log", "debug", "info", "warning", "warn", "error", "exception", "critical", "fatal")),
     (logging, "basicConfig"),
+    (logging, "_showwarning"),
     (threading.Thread, "start"),
 )
 _LOGGER_METHODS = frozenset(("debug", "info", "warning", "warn", "error", "exception", "critical",
     "fatal", "log", "_log", "handle", "callHandlers", "makeRecord", "isEnabledFor", "getEffectiveLevel"))
 _ADAPTER_METHODS = frozenset(("debug", "info", "warning", "warn", "error", "exception", "critical",
     "fatal", "log", "_log", "isEnabledFor", "process"))
+_MANAGER_METHODS = frozenset(("__init__", "getLogger", "setLoggerClass", "setLogRecordFactory",
+    "_fixupParents", "_fixupChildren", "_clear_cache"))
 
 
 def _discard_log(*args, **kwargs):
@@ -107,6 +111,10 @@ def _thread_start_rejected(*args, **kwargs):
 
 def _stock_method(cls, name):
     method = cls.__dict__.get(name)
+    return _stock_callable(cls, name, method)
+
+
+def _stock_callable(cls, name, method):
     code = getattr(method, "__code__", None)
     module = threading if cls is threading.Thread else logging
     qualified = name if cls is logging else cls.__name__ + "." + name
@@ -118,6 +126,35 @@ def _stock_method(cls, name):
             or getattr(method, "__qualname__", None) not in aliases):
         raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
     return method
+
+
+def _stock_manager(manager):
+    # Class validation alone misses an instance's effective Python dispatch.
+    # Read its plain state without calling an instance-supplied wrapper.
+    if type(manager) is not logging.Manager:
+        raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
+    state = object.__getattribute__(manager, "__dict__")
+    if ((_MANAGER_METHODS | {"disable"}).intersection(state)
+            or state.get("root") is not logging.root
+            or type(state.get("loggerDict")) is not dict
+            or type(state.get("_disable")) is not int
+            or type(state.get("emittedNoHandlerWarning")) is not bool
+            or not (state.get("loggerClass") is None or state.get("loggerClass") is logging.Logger)
+            or not (state.get("logRecordFactory") is None or state.get("logRecordFactory") is logging.LogRecord)):
+        raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
+    for key, value in state["loggerDict"].items():
+        if type(key) is not str or type(value) not in {logging.Logger, logging.RootLogger, logging.PlaceHolder}:
+            raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
+        if type(value) is logging.PlaceHolder:
+            _stock_placeholder(value)
+
+
+def _stock_placeholder(value):
+    state = object.__getattribute__(value, "__dict__")
+    if ({"__init__", "append"}.intersection(state) or type(state.get("loggerMap")) is not dict
+            or any(type(logger) not in {logging.Logger, logging.RootLogger} or marker is not None
+                   for logger, marker in state["loggerMap"].items())):
+        raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
 
 
 def _logging_preflight() -> tuple[list[tuple[object, str, object]], list[tuple[dict, object]]]:
@@ -132,31 +169,54 @@ def _logging_preflight() -> tuple[list[tuple[object, str, object]], list[tuple[d
             or len(threading.enumerate()) != 1 or sys.gettrace() is not None or sys.getprofile() is not None
             or gc.get_freeze_count() != 0
             or type(logging.root) is not logging.RootLogger
-            or type(logging.root.manager) is not logging.Manager
-            or type(logging.root.manager.loggerDict) is not dict
-            or logging.root.manager.root is not logging.root
-            or logging.root.manager.loggerClass not in {None, logging.Logger}
             or logging.getLoggerClass() is not logging.Logger
             or logging.getLogRecordFactory() is not logging.LogRecord):
         raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
     if _LOGGER_METHODS.intersection(logging.RootLogger.__dict__):
         raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
+    # These are stock instance fields. A class data descriptor would change
+    # effective dispatch even when the ordinary instance dictionary is intact.
+    if ({"root", "loggerDict", "_disable", "emittedNoHandlerWarning", "loggerClass", "logRecordFactory"}
+            .intersection(logging.Manager.__dict__) or "loggerMap" in logging.PlaceHolder.__dict__):
+        raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
+    for cls in (logging.Manager, logging.PlaceHolder, logging.Logger, logging.RootLogger, logging.LoggerAdapter):
+        if {"__getattribute__", "__getattr__", "__setattr__", "__delattr__"}.intersection(cls.__dict__):
+            raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
+    manager = logging.Logger.__dict__.get("manager")
+    root_state = object.__getattribute__(logging.root, "__dict__")
+    effective_root_manager = root_state.get("manager", logging.RootLogger.__dict__.get("manager", manager))
+    if type(manager) is not logging.Manager or effective_root_manager is not manager:
+        raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
+    _stock_manager(manager)
     methods = []
     for cls, name in _LOGGING_METHODS:
         methods.append((cls, name, _stock_method(cls, name)))
     for cls, names in ((logging.Logger, _LOGGER_METHODS | {"__init__"}), (logging.LoggerAdapter, _ADAPTER_METHODS | {"__init__"}),
-                       (logging, {"getLogger"}), (logging.Manager, {"getLogger"})):
+                       (logging, {"getLogger"}), (logging.Manager, _MANAGER_METHODS)):
         for name in names:
             if cls is logging.LoggerAdapter and name == "fatal" and name not in cls.__dict__:
                 continue  # Some supported stdlib versions expose critical only.
             _stock_method(cls, name)
+    for name in ("__init__", "append"):
+        _stock_method(logging.PlaceHolder, name)
+    disable = logging.Manager.__dict__.get("disable")
+    if type(disable) is not property:
+        raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
+    _stock_callable(logging.Manager, "disable", disable.fget)
+    _stock_callable(logging.Manager, "disable", disable.fset)
     # loggerDict omits logging.Logger(...) objects. GC-visible ordinary Logger
     # instances cover that public constructor without touching manager.disable
     # or its registry-only cache invalidation. No object repr/callback is used.
     streams = []
     for value in gc.get_objects():
         cls = type(value)
-        if issubclass(cls, logging.Logger):
+        if issubclass(cls, logging.Manager):
+            _stock_manager(value)
+        elif issubclass(cls, logging.PlaceHolder):
+            if cls is not logging.PlaceHolder:
+                raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
+            _stock_placeholder(value)
+        elif issubclass(cls, logging.Logger):
             if cls not in {logging.Logger, logging.RootLogger}:
                 raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
             state = vars(value)
@@ -193,11 +253,19 @@ def _isolated_output():
         raise _OutputIsolationRejected("OUTPUT_ISOLATION_UNAVAILABLE")
     methods = []
     streams = []
+    warning_route = None
     try:
         methods, streams = _logging_preflight()
+        # captureWarnings stores the function object in warnings.showwarning.
+        # Patching only logging._showwarning would leave that old route live.
+        bridge = logging.__dict__["_showwarning"]
+        if warnings.showwarning is bridge:
+            warning_route = bridge
         sink = _DiscardOutput()
         with redirect_stdout(sink), redirect_stderr(sink):
             try:
+                if warning_route is not None:
+                    warnings.showwarning = _discard_log
                 for state, _ in streams:
                     state["stream"] = sink
                 for cls, name, _ in methods:
@@ -210,6 +278,8 @@ def _isolated_output():
                     setattr(cls, name, original)
                 for state, stream in streams:
                     state["stream"] = stream
+                if warning_route is not None:
+                    warnings.showwarning = warning_route
     finally:
         _OUTPUT_LOCK.release()
 

@@ -1,5 +1,7 @@
 # S2-005 标准日志出口修复
 
+后续准确 `1f6f81d73d298df12884582c223fe744da0df82b` 的独立复审仅在受测 stock 同步范围关闭 S2-005，但整提交因新增 S2-006 仍 FAIL；S2-N02 另为 P3。当前续修见 [Manager 与警告桥状态](S2_006_LOGGING_STATE.md)，旧失败、有限关闭和新发现均保留，不把本说明视为整 S2 平台批准。
+
 被拒版本为准确 `d5615f678d46836d50722e1ea9f7d5f4a26ad597`。独立复审 CHANGES_REQUIRED／工程 FAIL，新增 P2 S2-005：预配置普通 logging.StreamHandler 持有旧 stdout/stderr，绕过 redirect_stdout/redirect_stderr。成功返回 CHECKS_COMPLETED 或错误回执均不能阻止旁路日志输出合成 SID、价格、计数和摘要。原四项安全期望失败与根成功路径见证保存在 `BBAG审核/audit_S2_cloud_d5615f678d46_20261101_0313`，不得改算通过或覆盖。原 1813/12、228 和既有关闭项仅是该审核的实际结果，新修复须绑定新 SHA 独立复审。
 
 ## 支持的同步 profile

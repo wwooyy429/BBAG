@@ -269,6 +269,8 @@ def development_report(root: Path, evidence: Path, commit: str, verification: di
 
 准确实现 SHA：`{commit}`。源码提交后生成；独立审核保持 PENDING，S3 未获授权，不合并本次 S2。
 
+本轮修复准确1f6f81d73d298df12884582c223fe744da0df82b复审新增的 S2-006（P2，Manager实例覆盖未在数据回调前拒绝）和 S2-N02（P3，captureWarnings残留NullHandler吞后续控制日志）。前者本例没有证明泄漏，后者不是旧S0-N02。S2-005仅受测stock同步范围已由该复审关闭，旧FAIL/原反例与有限关闭证据保留。新代码验证Manager生效实例/类/helper和共享关系，并在warning bridge生成logger/handler前截断、finally恢复原钩子；两项关闭仍待本新SHA独立复审，见docs/S2_006_LOGGING_STATE.md。
+
 本轮修复 d5615f678d46836d50722e1ea9f7d5f4a26ad597 独立审核新增的 S2-005（P2）：普通预配置日志处理器持旧stream绕过输出隔离。新修复对支持的 stock 同步 profile 封闭消息生成/分发及便利入口、保留恢复原配置，不依赖logging.disable；已知不支持宿主在数据回调前拒绝。原四失败及成功泄漏见证保留，关闭仍须本新SHA独立复审。真实SDK/Cloud profile未验证，不能把本地测试当作平台批准。见 docs/S2_005_LOG_OUTPUT.md。
 
 本轮以负责人已接受的 `e412c9d0a3ec9148bab7e1f60ce614d2fa1b1ad2` 为基线；该次局部工程复审已关闭 S2-004，旧失败保留。新增 Cloud-local RAW 标准化与原 alias→SID 映射、固定控制回执、完整历史锚定的预算续接 preview、按准确 Git blob 与静态闭包生成的上传/编译增量计划，详见 docs/S2_CLOUD_PREPARATION.md。新增实现只经离线合成测试，新 SHA 必须独立复审；无 QuantConnect 调用、无增量授权、无真实 grant/新账本/任务，保留最后一次 Research。真实 SDK 查询工厂、供应商知识证据、Cloud 缓存/恢复/性能仍未实现或未平台验证，不宣称整 S2 完成。
@@ -337,6 +339,8 @@ def main() -> int:
     (output / "GPT_WORK_AUDIT_REQUEST.md").write_text(f"""# BBAG S2 独立审核请求
 
 准确 SHA：`{commit}`；独立审核 PENDING。前置 S1 被审 `{S1_REVIEWED_SHA}`、合并 `{S1_MERGE_SHA}` 单独记录。
+
+优先复测 S2-006/S2-N02（docs/S2_006_LOGGING_STATE.md）：普通标准Manager实例getLogger包装及其它分发/helper/property shadow，类字典仍stock也必须两个数据回调前ERROR，且包装委托未运行；正常stock配置必须实际成功，核共享Manager/registry/PlaceHolder。captureWarnings(True)+普通warnings.warn，原py.warnings不存在/空handler/已有handler与成功/异常均不得留NullHandler、改registry/parent/cache/filter或吞掉退出后的lastResort/控制日志；恢复原两个hook和方法对象，不替换warn或改过滤语义。原30/75和OS失败见证不改写，适配新source/output须明示，旧攻击成功driver不能当安全oracle。S2-005维持有限stock同步关闭及其原4/64OS无泄漏成功证据，不扩大成任意Python/native/OS或真实SDK批准；S0-N02仍另列历史P3。
 
 优先复测 S2-005（docs/S2_005_LOG_OUTPUT.md）：预配置普通StreamHandler，成功/异常×resolver/fetcher×stdout/stderr；registered/direct Logger冷热cache，标准Adapter/root/lastResort/模块便利函数和captureWarnings。实际OS进程输出必须无SID/价格/计数/摘要，同时成功路径真实返回CHECKS_COMPLETED，不能靠总是拒绝消除泄漏。核原方法/stream/config/cache恢复和退出后控制日志；不支持factory/class/instance/manager、冻结GC、trace/profile、线程/嵌套在首callback前拒绝。BaseException消息不得逃出，Thread.start不得让执行晚于作用域。保留原4fail和根成功泄漏driver，重放用原安全断言/原child加新外部no-leak oracle；不得把旧泄漏断言改成通过。边界仅stock同步日志，不声明任意Python/native/OS沙箱或真实SDK兼容。新payload摘要/字节数须重算；m9/e0编译+9仍未授权、预算保持0/0新增可用。
 
