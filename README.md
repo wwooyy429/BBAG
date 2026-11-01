@@ -10,7 +10,7 @@ S2 接口、白名单、许可与未验证边界见 [S2规范](docs/STAGE2.md)�
 
 `d5615f678d46836d50722e1ea9f7d5f4a26ad597` 的后续独立审核发现 **S2-005**：预配置普通标准 logger 可绕过输出重定向，工程 FAIL。本轮离线修补日志入口及恢复路径，按 [S2-005 修复边界](docs/S2_005_LOG_OUTPUT.md) 在不支持的宿主上先拒绝；新 SHA 待复审。原失败、成功泄漏见证及已关闭问题保留；编译 +9 始终只是未授权、未执行的提案。
 
-准确 `1f6f81d73d298df12884582c223fe744da0df82b` 复审已在受测同步范围关闭 S2-005，但新增 **S2-006（P2）**：Manager 实例覆盖未在首数据回调前拒绝；另有 **S2-N02（P3）**：captureWarnings 残留 handler 使后续控制日志丢失。本轮 [修复 Manager 与警告桥状态](docs/S2_006_LOGGING_STATE.md)，新 SHA 仍待独立复审，不改写原 FAIL 或有限关闭范围。
+准确 `d7bb4f0518fec40c69c86524c2164de67e4b8fbb` 复审关闭受测 stock warnings 范围的 **S2-N02**，但 **S2-006（P2）仍有残余**：RootLogger.manager property 被合法实例字段掩盖，预检执行 getter，后续仍进入数据回调；额外标准日志见证输出了合成标记。本轮 [修复静态属性分发检查](docs/S2_006_LOGGING_STATE.md)，S2-006 关闭待新 SHA 独立复审；原 FAIL、S2-N02 关闭及 S2-005 有限关闭保留。
 
 ## 本地运行
 

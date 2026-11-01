@@ -1,8 +1,20 @@
 # S2-006 与 S2-N02 日志状态修复
 
+## 当前残余修复
+
+准确 `d7bb4f0518fec40c69c86524c2164de67e4b8fbb` 独立复审已在受测 stock warnings 范围关闭 S2-N02，原 Manager 实例覆盖也正确拒绝。但新增41个 OS 用例有40符合、1失败：RootLogger.manager 为 property，root 普通字典同时放有合法 stock Manager 时，原 dict 优先模拟忽略了类 data descriptor 优先级。实际预检执行 getter 后进入两个数据回调；另一个标准 Logger/StreamHandler 见证在隔离开启前输出合成 SID、价格和条数。旧纯内存 Manager 反例仍不改称泄漏，实际 Cloud/SDK 未执行。完整失败证据保留于 `BBAG审核/reaudit_S2_006_d7bb4f0518fe_20261101_1445`，S2-006 仍为 P2，关闭待新 SHA 独立复审。
+
+当前修复从类 MRO 的原始字典静态读取字段，要求 Logger/RootLogger 类默认 manager 为同一 exact stock Manager；遇到 property 或其它 descriptor，即使实例字典有合法同名字段也拒绝，不调用 getter 试探。manager 与 _cache 只从已验证的普通字典读取，移除预检内 `value.manager`、`logging.root.manager`、`value._cache` 的动态读取。类上新增 _cache 字段也属不支持配置。
+
+`object.__getattribute__(obj, "__dict__")` 本身仍会执行类上的同名 property，因此实例状态只通过静态核验的 stock C `__dict__` 槽读取；Logger、Manager、PlaceHolder、Adapter 和 stock stream handler 共用此规则。继承链上的属性分发 dunder 覆盖拒绝，方法须是实际普通 Python function 才读取来源元数据，logger/factory 配置直接读取 logging 模块字典。不存在“先执行 getter 再判结果”的分支。
+
+新增 `tests/test_s2_root_dispatch.py` 的18项保留正常同Manager成功，覆盖 RootLogger.manager 普通/被实例字段掩盖的 descriptor、标准日志影响见证、相邻 _cache 与合法MRO中的 __dict__ descriptor、Adapter.logger 及 stock handler.stream；拒绝用例要求 ERROR、getter/resolver/fetcher 均0、无合成标记逸出，退出后配置恢复。连同原103项组成121项定向测试。真实平台兼容性仍 NOT_RUN；严格同步 profile 和原授权边界不变。
+
+## 历史 d7bb 修复说明
+
 基线为被审 `1f6f81d73d298df12884582c223fe744da0df82b`。独立复审在受测 stock 同步范围关闭 S2-005，但工程仍 CHANGES_REQUIRED／FAIL：S2-006（P2）允许标准 Manager 实例 getLogger 包装进入两条数据回调；本例只记录内存，没有证明数据泄漏。S2-N02（P3）则是 captureWarnings 的 NullHandler 残留，导致后续控制日志被吞。原 Profile30 的29通过/1失败、Logging75 的74通过/1失败和 OS 见证保留于 `BBAG审核/reaudit_S2_005_1f6f81d73d29_20261101_1304`，不改算通过。
 
-新修复的两项关闭均待准确新 SHA 独立复审；既有 S2-005 有限关闭、S0/S1、S2-001/002/003/004 和 S2-N01 原范围保持，S0-N02 仍是另一项历史 P3。
+以下为 d7bb 的历史修复内容；后续独审已关闭 S2-N02，S2-006 仍有上述残余。既有 S2-005 有限关闭、S0/S1、S2-001/002/003/004 和 S2-N01 原范围保持，S0-N02 仍是另一项历史 P3。
 
 ## Manager 生效分发前检
 
